@@ -6,24 +6,24 @@ Integrate the Meta ESMFold API into FoldedHearts using TanStack Start's SSR capa
 
 ## Tasks
 
-- [ ] 1. Install TanStack Query dependencies
+- [x] 1. Install TanStack Query dependencies
   - Install `@tanstack/react-query` and `@tanstack/react-router-ssr-query`
   - _Requirements: 1.1_
 
-- [ ] 2. Set up QueryClient with SSR integration
-  - [ ] 2.1 Create QueryClient factory and query options
+- [x] 2. Set up QueryClient with SSR integration
+  - [x] 2.1 Create QueryClient factory and query options
     - Create `src/lib/queryClient.ts` with `createQueryClient()` function
     - Add `foldProteinKeys` query key factory
     - Add `foldProteinQueryOptions(sequence)` factory
     - Configure staleTime (1 hour), gcTime (24 hours), retry (2)
     - _Requirements: 1.3, 1.4_
-  - [ ] 2.2 Update router with SSR query integration
+  - [x] 2.2 Update router with SSR query integration
     - Modify `src/router.tsx` to create QueryClient per-request
     - Add `context: { queryClient }` to router config
     - Call `setupRouterSsrQueryIntegration({ router, queryClient })`
     - Add TypeScript type augmentation for RouterContext
     - _Requirements: 1.2_
-  - [ ] 2.3 Add QueryClientProvider to root route
+  - [x] 2.3 Add QueryClientProvider to root route
     - Update `src/routes/__root.tsx` to wrap children with QueryClientProvider
     - Get queryClient from router context
     - _Requirements: 1.2_
@@ -32,8 +32,8 @@ Integrate the Meta ESMFold API into FoldedHearts using TanStack Start's SSR capa
   - Ensure app builds and runs without errors
   - Verify QueryClient is available in router context
 
-- [ ] 4. Create ESMFold server function
-  - [ ] 4.1 Implement foldProteinFn server function
+- [x] 4. Create ESMFold server function
+  - [x] 4.1 Implement foldProteinFn server function
     - Create `src/api/foldProtein.ts`
     - Use `createServerFn({ method: 'POST' })` from @tanstack/react-start
     - Add validator for sequence (required, max 400 chars)
@@ -45,8 +45,8 @@ Integrate the Meta ESMFold API into FoldedHearts using TanStack Start's SSR capa
     - **Property 2: Server Function Passthrough Integrity**
     - **Validates: Requirements 2.2, 2.3**
 
-- [ ] 5. Create PDB validator utility
-  - [ ] 5.1 Implement validatePDB function
+- [x] 5. Create PDB validator utility
+  - [x] 5.1 Implement validatePDB function
     - Create `src/utils/pdbValidator.ts`
     - Check for empty/null input
     - Validate presence of ATOM records
@@ -57,8 +57,8 @@ Integrate the Meta ESMFold API into FoldedHearts using TanStack Start's SSR capa
     - **Property 8: PDB Validation Failure**
     - **Validates: Requirements 5.1, 5.3**
 
-- [ ] 6. Create useFoldProtein hook
-  - [ ] 6.1 Implement useFoldProtein hook
+- [x] 6. Create useFoldProtein hook
+  - [x] 6.1 Implement useFoldProtein hook
     - Create `src/hooks/useFoldProtein.ts`
     - Use `useQuery` with `foldProteinQueryOptions`
     - Handle enabled state for empty/undefined sequences
@@ -74,8 +74,8 @@ Integrate the Meta ESMFold API into FoldedHearts using TanStack Start's SSR capa
   - Verify server function calls ESMFold successfully
   - Ensure all tests pass, ask the user if questions arise
 
-- [ ] 8. Add SSR prefetching to routes
-  - [ ] 8.1 Create example fold route with loader
+- [x] 8. Add SSR prefetching to routes
+  - [x] 8.1 Create example fold route with loader
     - Create `src/routes/fold.$names.tsx` (or integrate into existing route)
     - Add loader that calls `queryClient.prefetchQuery(foldProteinQueryOptions(sequence))`
     - Use `createLoveSequence` from foldLogic to generate sequence from names
