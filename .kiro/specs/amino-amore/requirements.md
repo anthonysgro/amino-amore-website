@@ -2,26 +2,25 @@
 
 ## Introduction
 
-Amino-Amore is a fun, free website for couples to generate "love proteins." This spec covers the initial project scaffolding - setting up the Vite + TypeScript + TanStack Router + Shadcn/ui boilerplate with AWS Amplify deployment configuration.
+Amino-Amore project scaffolding completion - adding Prettier configuration and AWS Amplify deployment setup to the existing Vite + TypeScript + Shadcn project.
 
 ## Glossary
 
-- **Boilerplate**: The initial project structure and configuration files needed to start development
-- **Landing_Page**: The homepage that will eventually contain the name input form
+- **Prettier**: Code formatter for consistent code style
+- **Amplify_Config**: The amplify.yml file that defines build and deployment settings for AWS Amplify Hosting
 
 ## Requirements
 
-### Requirement 1: Project Setup
+### Requirement 1: Prettier Configuration
 
-**User Story:** As a developer, I want a properly configured Vite + TypeScript project, so that I can build the amino-amore website.
+**User Story:** As a developer, I want Prettier configured for consistent code formatting, so that the codebase maintains a uniform style.
 
 #### Acceptance Criteria
 
-1. THE Project SHALL use Vite as the build tool with TypeScript configuration
-2. THE Project SHALL include TanStack Router for file-based routing
-3. THE Project SHALL include Shadcn/ui component library configured
-4. THE Project SHALL include ESLint and Prettier for code quality
-5. THE Project SHALL include Vitest for testing
+1. THE Project SHALL include Prettier as a dev dependency
+2. THE Project SHALL include a prettier.config.js configuration file
+3. THE Project SHALL include a format script in package.json
+4. THE Prettier_Config SHALL be compatible with the existing ESLint setup
 
 ### Requirement 2: AWS Amplify Deployment
 
@@ -30,14 +29,6 @@ Amino-Amore is a fun, free website for couples to generate "love proteins." This
 #### Acceptance Criteria
 
 1. THE Project SHALL include an amplify.yml build specification file
-2. THE Project SHALL be deployable to AWS Amplify Hosting
-
-### Requirement 3: Basic Landing Page
-
-**User Story:** As a visitor, I want to see a landing page when I visit the site, so that I know I'm on amino-amore.
-
-#### Acceptance Criteria
-
-1. WHEN a user visits the root URL, THE System SHALL display a landing page
-2. THE Landing_Page SHALL display the site name "Amino Amore"
-3. THE Landing_Page SHALL have a placeholder for future name input functionality
+2. THE Amplify_Config SHALL specify the correct build commands (npm ci, npm run build)
+3. THE Amplify_Config SHALL specify the correct output directory (dist)
+4. THE Amplify_Config SHALL configure appropriate caching for node_modules
