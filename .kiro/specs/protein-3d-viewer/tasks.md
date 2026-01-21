@@ -6,12 +6,12 @@ Create a client-only React component that renders 3D protein structures using 3D
 
 ## Tasks
 
-- [-] 1. Install 3Dmol.js dependency
+- [x] 1. Install 3Dmol.js dependency
   - Install `3dmol` package
   - _Requirements: 2.1_
 
-- [ ] 2. Create ProteinViewer component structure
-  - [ ] 2.1 Create base ProteinViewer component with SSR-safe loading
+- [x] 2. Create ProteinViewer component structure
+  - [x] 2.1 Create base ProteinViewer component with SSR-safe loading
     - Create `src/components/ProteinViewer.tsx`
     - Add containerRef for 3Dmol viewer
     - Add viewerRef to store 3Dmol instance
@@ -22,8 +22,8 @@ Create a client-only React component that renders 3D protein structures using 3D
     - **Property 1: SSR-Safe Module Import**
     - **Validates: Requirements 1.1, 1.4**
 
-- [ ] 3. Implement PDB rendering logic
-  - [ ] 3.1 Add PDB model loading and styling
+- [x] 3. Implement PDB rendering logic
+  - [x] 3.1 Add PDB model loading and styling
     - Call `viewer.addModel(pdbData, 'pdb')` with PDB data
     - Apply cartoon style with spectrum coloring
     - Call `viewer.zoomTo()` and `viewer.render()`
@@ -37,16 +37,16 @@ Create a client-only React component that renders 3D protein structures using 3D
   - Ensure component renders PDB data without SSR errors
   - Verify cartoon styling is applied
 
-- [ ] 5. Add interactive controls
-  - [ ] 5.1 Implement spin toggle functionality
+- [x] 5. Add interactive controls
+  - [x] 5.1 Implement spin toggle functionality
     - Add `isSpinning` state
     - Create `toggleSpin` callback that calls `viewer.spin()`
     - _Requirements: 3.3, 3.5_
-  - [ ] 5.2 Implement screenshot functionality
+  - [x] 5.2 Implement screenshot functionality
     - Create `takeScreenshot` callback that calls `viewer.pngURI()`
     - Trigger download with couple names in filename
     - _Requirements: 3.4_
-  - [ ] 5.3 Create ControlPanel component
+  - [x] 5.3 Create ControlPanel component
     - Create spin toggle button with play/pause icons
     - Create screenshot button with camera icon
     - Style with romantic pink theme
@@ -55,8 +55,8 @@ Create a client-only React component that renders 3D protein structures using 3D
     - **Property 3: Spin Toggle State Consistency**
     - **Validates: Requirements 3.3, 3.5**
 
-- [ ] 6. Add couple name annotations
-  - [ ] 6.1 Implement 3D label creation for names
+- [x] 6. Add couple name annotations
+  - [x] 6.1 Implement 3D label creation for names
     - Add labels using `viewer.addLabel()` when names provided
     - Position labels near protein termini
     - Style with pink background and romantic colors
@@ -65,19 +65,19 @@ Create a client-only React component that renders 3D protein structures using 3D
     - **Property 4: Name Label Creation**
     - **Validates: Requirements 4.1**
 
-- [ ] 7. Implement loading and error states
-  - [ ] 7.1 Create LoadingSkeleton component
+- [x] 7. Implement loading and error states
+  - [x] 7.1 Create LoadingSkeleton component
     - Show animated skeleton while loading
     - Display "Folding your Love Protein..." message
     - _Requirements: 5.1_
-  - [ ] 7.2 Create ErrorDisplay component
+  - [x] 7.2 Create ErrorDisplay component
     - Show error message with broken heart icon
     - Handle WebGL not supported case
     - _Requirements: 5.2, 5.3_
-  - [ ] 7.3 Create EmptyState component
+  - [x] 7.3 Create EmptyState component
     - Show prompt to enter names
     - _Requirements: 5.2_
-  - [ ] 7.4 Add conditional rendering logic
+  - [x] 7.4 Add conditional rendering logic
     - Render LoadingSkeleton when isLoading=true
     - Render ErrorDisplay when error is set
     - Render EmptyState when pdbData is undefined
@@ -87,19 +87,19 @@ Create a client-only React component that renders 3D protein structures using 3D
     - **Property 5: Loading and Error State Rendering**
     - **Validates: Requirements 5.1, 5.2, 5.3**
 
-- [ ] 8. Apply romantic styling
-  - [ ] 8.1 Style ProteinViewer container
+- [x] 8. Apply romantic styling
+  - [x] 8.1 Style ProteinViewer container
     - Add transparent/gradient background
     - Add rounded corners and shadow
     - Make responsive for mobile
     - _Requirements: 6.1, 6.2, 6.4_
-  - [ ] 8.2 Style control buttons
+  - [x] 8.2 Style control buttons
     - Apply soft pink colors
     - Add rounded button styling
     - _Requirements: 6.3_
 
-- [ ] 9. Integrate with fold route
-  - [ ] 9.1 Add ProteinViewer to fold.$names.tsx route
+- [x] 9. Integrate with fold route
+  - [x] 9.1 Add ProteinViewer to fold.$names.tsx route
     - Import ProteinViewer component
     - Pass pdbData from useFoldProtein hook
     - Pass name1 and name2 from route params
