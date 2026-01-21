@@ -102,13 +102,13 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
         >
           {/* Decorative gradient background */}
           <div
-            className="absolute inset-0 rounded-3xl bg-gradient-to-br from-chart-1/20 via-chart-2/20 to-chart-4/20 blur-3xl"
+            className="absolute inset-0 rounded-3xl bg-linear-to-br from-chart-1/20 via-chart-2/20 to-chart-4/20 blur-3xl"
             aria-hidden="true"
           />
 
           {/* Hero visual container */}
           <div
-            className="relative aspect-square w-full max-w-md rounded-3xl bg-gradient-to-br from-chart-1/30 via-chart-2/40 to-chart-4/30 p-1 shadow-2xl shadow-primary/20"
+            className="relative aspect-square w-full max-w-md rounded-3xl bg-linear-to-br from-chart-1/30 via-chart-2/40 to-chart-4/30 p-1 shadow-2xl shadow-primary/20"
             role="img"
             aria-label="Decorative protein structure visualization representing love and connection"
           >
@@ -147,5 +147,5 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
   )
 }
 
-export { HeroSection, heroTextVariants, heroVisualVariants }
+export { HeroSection }
 export type { HeroSectionProps }
