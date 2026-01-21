@@ -1,0 +1,140 @@
+import * as React from "react"
+import { Link } from "@tanstack/react-router"
+import { Dialog as DialogPrimitive } from "radix-ui"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import type { NavItem } from "./Navigation"
+
+interface MobileNavProps {
+  items: NavItem[]
+  className?: string
+}
+
+function MobileNav({ items, className }: MobileNavProps) {
+  const [open, setOpen] = React.useState(false)
+
+  const handleLinkClick = () => {
+    setOpen(false)
+  }
+
+  return (
+    <DialogPrimitive.Root open={open} onOpenChange={setOpen}>
+      <DialogPrimitive.Trigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "size-11 min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            className
+          )}
+          aria-label="Open navigation menu"
+          aria-expanded={open}
+          aria-controls="mobile-nav-content"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <line x1="4" x2="20" y1="12" y2="12" />
+            <line x1="4" x2="20" y1="6" y2="6" />
+            <line x1="4" x2="20" y1="18" y2="18" />
+          </svg>
+        </Button>
+      </DialogPrimitive.Trigger>
+
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay
+          className="data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 fixed inset-0 z-50 bg-black/80 backdrop-blur-sm duration-200"
+        />
+        <DialogPrimitive.Content
+          id="mobile-nav-content"
+          className="data-open:animate-in data-closed:animate-out data-closed:slide-out-to-right data-open:slide-in-from-right fixed inset-y-0 right-0 z-50 flex h-full w-full max-w-sm flex-col bg-background p-6 shadow-lg duration-300 focus:outline-none focus-visible:outline-none"
+          aria-label="Mobile navigation menu"
+          role="dialog"
+          aria-modal="true"
+        >
+          {/* Close button */}
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-2 text-lg font-semibold">
+              <span className="text-primary" aria-hidden="true">💕</span>
+              <span>FoldedHearts</span>
+            </span>
+            <DialogPrimitive.Close asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-11 min-h-[44px] min-w-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                aria-label="Close navigation menu"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
+              </Button>
+            </DialogPrimitive.Close>
+          </div>
+
+          {/* Navigation Links */}
+          <nav className="mt-8 flex flex-col gap-4" aria-label="Mobile navigation">
+            <ul role="list" className="flex flex-col gap-4">
+              {items.map((item) => (
+                <li key={item.label}>
+                  <a
+                    href={item.href}
+                    onClick={handleLinkClick}
+                    className="block text-lg font-medium text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:rounded-md rounded-md px-2 py-2"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* CTA Button */}
+          <div className="mt-auto pt-6">
+            <Button
+              asChild
+              className="w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              size="lg"
+              onClick={handleLinkClick}
+            >
+              <Link
+                to="/fold/$names"
+                params={{ names: "Your-Love" }}
+                aria-label="Create Your Love Protein - start the protein folding experience"
+              >
+                Create Your Love Protein
+              </Link>
+            </Button>
+          </div>
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
+  )
+}
+
+export { MobileNav }
+export type { MobileNavProps }
