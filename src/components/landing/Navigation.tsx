@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { MobileNav } from "./MobileNav"
 
 interface NavigationProps {
@@ -70,6 +71,9 @@ function Navigation({ className }: NavigationProps) {
 
         {/* Right side: CTA + Mobile Menu */}
         <div className="flex items-center gap-3">
+          {/* Theme Toggle */}
+          <ThemeToggle />
+
           {/* Desktop CTA */}
           <Button
             asChild

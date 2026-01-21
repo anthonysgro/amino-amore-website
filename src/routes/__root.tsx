@@ -8,6 +8,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { QueryClientProvider, type QueryClient } from '@tanstack/react-query'
 
+import { ThemeProvider } from '@/hooks/use-theme.js'
 import appCss from '../styles.css?url'
 
 interface RouterContext {
@@ -45,7 +46,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <ThemeProvider defaultTheme="system">
+        <Outlet />
+      </ThemeProvider>
     </QueryClientProvider>
   )
 }
