@@ -4,7 +4,11 @@ import { Dialog as DialogPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import type { NavItem } from "./Navigation"
+
+export interface NavItem {
+  label: string
+  href: string
+}
 
 interface MobileNavProps {
   items: NavItem[]
