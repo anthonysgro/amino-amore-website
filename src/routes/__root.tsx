@@ -94,7 +94,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="system">
+      <ThemeProvider defaultTheme="dark">
         <Outlet />
       </ThemeProvider>
     </QueryClientProvider>
@@ -106,9 +106,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   const themeScript = `
     (function() {
       const stored = localStorage.getItem('folded-love-theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = stored || 'system';
-      const isDark = theme === 'dark' || (theme === 'system' && prefersDark);
+      const theme = stored || 'dark';
+      const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
       if (isDark) document.documentElement.classList.add('dark');
     })();
   `
