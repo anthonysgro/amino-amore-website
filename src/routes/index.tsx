@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { Navigation } from "@/components/landing/Navigation";
+import { Footer } from "@/components/landing/Footer";
 import { HeroSection } from "@/components/landing/HeroSection";
+import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
+import { Navigation } from "@/components/landing/Navigation";
 
 export const Route = createFileRoute("/")({ component: App });
 
@@ -11,7 +13,9 @@ function App() {
       <Navigation />
       <main>
         <HeroSection />
+        <HowItWorksSection />
       </main>
+      <Footer />
     </div>
   );
 }
