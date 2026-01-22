@@ -20,5 +20,7 @@
   },
   "menuColor": "default",
   "menuAccent": "subtle",
-  "registries": {}
+  "registries": {
+    "@fancy": "https://www.fancycomponents.dev/r/{name}"
+  }
 }

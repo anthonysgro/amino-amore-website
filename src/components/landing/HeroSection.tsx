@@ -61,9 +61,10 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
         variants={visualVariants}
         aria-hidden="true"
       >
-        {/* Decorative gradient background */}
+        {/* Soft animated glow background */}
         <div
-          className="absolute inset-0 bg-linear-to-br from-pink-500/10 via-rose-500/10 to-purple-500/10 blur-3xl"
+          className="absolute inset-[15%] rounded-full blur-[200px] animate-pulse bg-pink-500/20"
+          style={{ animationDuration: "8s" }}
           aria-hidden="true"
         />
 
