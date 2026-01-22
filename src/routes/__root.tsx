@@ -31,7 +31,49 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'FoldedHearts - Your Love Protein',
+        title: 'folded.love - Your Love Protein',
+      },
+      {
+        name: 'description',
+        content: 'Transform your names into a unique 3D protein structure. Real science, wrapped in a love letter.',
+      },
+      // Open Graph
+      {
+        property: 'og:title',
+        content: 'folded.love - Your Love Protein',
+      },
+      {
+        property: 'og:description',
+        content: 'Transform your names into a unique 3D protein structure. Real science, wrapped in a love letter.',
+      },
+      {
+        property: 'og:image',
+        content: 'https://folded.love/preview.png',
+      },
+      {
+        property: 'og:url',
+        content: 'https://folded.love',
+      },
+      {
+        property: 'og:type',
+        content: 'website',
+      },
+      // Twitter Card
+      {
+        name: 'twitter:card',
+        content: 'summary_large_image',
+      },
+      {
+        name: 'twitter:title',
+        content: 'folded.love - Your Love Protein',
+      },
+      {
+        name: 'twitter:description',
+        content: 'Transform your names into a unique 3D protein structure. Real science, wrapped in a love letter.',
+      },
+      {
+        name: 'twitter:image',
+        content: 'https://folded.love/preview.png',
       },
     ],
     links: [
@@ -63,7 +105,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   // Inline script to prevent flash of wrong theme
   const themeScript = `
     (function() {
-      const stored = localStorage.getItem('folded-hearts-theme');
+      const stored = localStorage.getItem('folded-love-theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const theme = stored || 'system';
       const isDark = theme === 'dark' || (theme === 'system' && prefersDark);

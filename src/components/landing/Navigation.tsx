@@ -28,7 +28,7 @@ interface NavigationProps {
 const navItems: NavItem[] = [
   { label: "Home", href: "#" },
   { label: "How It Works", href: "#how-it-works" },
-  { label: "About", href: "#about" },
+  { label: "About", href: "/about" },
 ]
 
 // ============================================================================
@@ -97,10 +97,10 @@ function BrandMark() {
       href="#"
       onClick={(e) => handleSmoothScroll(e, "#")}
       className={sharedClasses}
-      aria-label="FoldedHearts - Home"
+      aria-label="folded.love - Home"
     >
       <DNAHeartLogo size={36} />
-      <span className="text-primary whitespace-nowrap">FoldedHearts</span>
+      <span><span className="text-primary">folded</span><span className="text-muted-foreground">.love</span></span>
     </a>
   )
 }

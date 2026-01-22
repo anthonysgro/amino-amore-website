@@ -71,7 +71,7 @@ function MobileNav({ items, className }: MobileNavProps) {
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 text-lg font-semibold">
               <span className="text-primary" aria-hidden="true">💕</span>
-              <span>FoldedHearts</span>
+              <span className="text-primary">folded</span><span className="text-muted-foreground">.love</span>
             </span>
             <DialogPrimitive.Close asChild>
               <Button

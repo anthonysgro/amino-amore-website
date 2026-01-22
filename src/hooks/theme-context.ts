@@ -12,7 +12,7 @@ export const ThemeProviderContext = React.createContext<
   ThemeProviderState | undefined
 >(undefined)
 
-export const STORAGE_KEY = "folded-hearts-theme"
+export const STORAGE_KEY = "folded-love-theme"
 
 export function getSystemTheme(): "light" | "dark" {
   if (typeof window === "undefined") return "light"
