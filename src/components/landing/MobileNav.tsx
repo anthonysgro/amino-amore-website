@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Link } from "@tanstack/react-router"
 import { Dialog as DialogPrimitive } from "radix-ui"
+import { Coffee } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -118,7 +119,17 @@ function MobileNav({ items, className }: MobileNavProps) {
           </nav>
 
           {/* CTA Button */}
-          <div className="mt-auto pt-6">
+          <div className="mt-auto pt-6 flex flex-col gap-3">
+            <a
+              href="https://www.buymeacoffee.com/sgro"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleLinkClick}
+              className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-md border border-border text-foreground font-medium transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <Coffee className="h-5 w-5" />
+              Buy Me a Coffee
+            </a>
             <Button
               asChild
               className="w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
