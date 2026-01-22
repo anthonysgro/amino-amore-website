@@ -46,7 +46,9 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
   return (
     <Section
       className={cn(
-        "relative min-h-[calc(100vh-5rem)] flex items-center py-12 lg:py-20 overflow-hidden",
+        "relative flex items-center py-8 lg:py-20 overflow-hidden",
+        // Mobile: auto height, Desktop: full viewport minus nav
+        "min-h-0 lg:min-h-[calc(100vh-5rem)]",
         className
       )}
       aria-labelledby="hero-headline"
@@ -56,12 +58,12 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
       {/* 3D DNA Heart - absolutely positioned on desktop, in-flow on mobile */}
       <motion.div
         className={cn(
-          // Mobile: in-flow, centered, smaller
+          // Mobile: in-flow, centered, fills width
           "relative flex items-center justify-center",
-          "w-[350px] h-[350px] mx-auto mb-8",
+          "w-full max-w-[600px] aspect-square mx-auto -mb-8",
           // Desktop: absolute positioned like original
           "lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-1/4 lg:-translate-y-1/2",
-          "lg:w-[1100px] lg:h-[1100px] lg:mb-0 lg:mx-0",
+          "lg:w-[1100px] lg:max-w-none lg:h-[1100px] lg:mb-0 lg:mx-0",
           "lg:z-20"
         )}
         initial="hidden"
