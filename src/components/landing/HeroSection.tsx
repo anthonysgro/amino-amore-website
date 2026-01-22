@@ -79,8 +79,14 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
             <Button
               asChild
-              size="lg"
-              className="text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className={cn(
+                "bg-primary text-primary-foreground",
+                "hover:brightness-95 transition-all",
+                "px-8 py-4 h-auto rounded-md",
+                "font-semibold text-lg",
+                "shadow-md hover:shadow-lg",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              )}
             >
               <Link
                 to="/create"
