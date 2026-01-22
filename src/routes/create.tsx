@@ -1,5 +1,7 @@
 import * as React from "react"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { AnimatePresence, motion } from "motion/react"
+import { useQueryClient } from "@tanstack/react-query"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,10 +16,21 @@ import {
 import { Navigation } from "@/components/landing/Navigation"
 import { Section } from "@/components/landing/Section"
 import { DNAHeartLogo } from "@/components/landing/DNAHeartLogo"
+import { foldProteinQueryOptions } from "@/lib/queryClient"
+import { createLoveSequence, isCreateLoveSequenceError } from "@/utils/foldLogic"
 
 export const Route = createFileRoute("/create")({
   component: CreatePage,
 })
+
+const CUTE_MESSAGES = [
+  "Weaving your names into amino acids... 🧬",
+  "Adding the heart linker... 💕",
+  "Folding your love protein... 🔬",
+  "Calculating molecular bonds... ⚛️",
+  "Almost there, love takes time... 💫",
+  "Creating something beautiful... ✨",
+]
 
 interface PartnerFormData {
   firstName: string
@@ -27,6 +40,7 @@ interface PartnerFormData {
 
 function CreatePage() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const [partner1, setPartner1] = React.useState<PartnerFormData>({
     firstName: "",
@@ -40,7 +54,19 @@ function CreatePage() {
     lastName: "",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isGenerating, setIsGenerating] = React.useState(false)
+  const [messageIndex, setMessageIndex] = React.useState(0)
+
+  // Cycle through cute messages while loading
+  React.useEffect(() => {
+    if (!isGenerating) return
+    const interval = setInterval(() => {
+      setMessageIndex((prev) => (prev + 1) % CUTE_MESSAGES.length)
+    }, 2500)
+    return () => clearInterval(interval)
+  }, [isGenerating])
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     const name1Parts = [partner1.firstName, partner1.middleName, partner1.lastName]
@@ -52,6 +78,22 @@ function CreatePage() {
 
     if (!name1Parts || !name2Parts) return
 
+    setIsGenerating(true)
+    setMessageIndex(0)
+
+    // Create the sequence and prefetch the protein data
+    const result = createLoveSequence(name1Parts, name2Parts)
+    
+    if (!isCreateLoveSequenceError(result)) {
+      try {
+        // Prefetch the protein fold data
+        await queryClient.prefetchQuery(foldProteinQueryOptions(result.sequence))
+      } catch {
+        // Even if prefetch fails, we'll navigate and let the fold page handle it
+      }
+    }
+
+    // Navigate to the fold page
     navigate({
       to: "/fold/$names",
       params: { names: `${name1Parts}-${name2Parts}` },
@@ -67,48 +109,154 @@ function CreatePage() {
 
       <Section className="py-12 lg:py-20">
         <div className="mx-auto max-w-2xl">
-          <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              Create Your{" "}
-              <span className="text-primary">Love Protein</span>
-            </h1>
-            <p className="mt-4 text-lg text-muted-foreground">
-              Enter both partners' names to generate your unique molecular bond
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <PartnerCard
-              title="Partner 1"
-              emoji="💕"
-              data={partner1}
-              onChange={setPartner1}
-            />
-
-            <div className="flex items-center justify-center">
-              <DNAHeartLogo size={48} />
-            </div>
-
-            <PartnerCard
-              title="Partner 2"
-              emoji="💕"
-              data={partner2}
-              onChange={setPartner2}
-            />
-
-            <div className="flex justify-center pt-4">
-              <Button
-                type="submit"
-                disabled={!isValid}
-                className="bg-primary text-primary-foreground hover:brightness-95 transition-all px-8 py-4 h-auto rounded-md font-semibold text-lg shadow-md hover:shadow-lg"
+          <AnimatePresence mode="wait">
+            {isGenerating ? (
+              <LoadingState
+                key="loading"
+                message={CUTE_MESSAGES[messageIndex]}
+                name1={partner1.firstName}
+                name2={partner2.firstName}
+              />
+            ) : (
+              <motion.div
+                key="form"
+                initial={{ opacity: 1 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
               >
-                Generate Love Protein 🧬
-              </Button>
-            </div>
-          </form>
+                <div className="mb-8 text-center">
+                  <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+                    Create Your{" "}
+                    <span className="text-primary">Love Protein</span>
+                  </h1>
+                  <p className="mt-4 text-lg text-muted-foreground">
+                    Enter both partners' names to generate your unique molecular bond
+                  </p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-8">
+                  <PartnerCard
+                    title="Partner 1"
+                    emoji="💕"
+                    data={partner1}
+                    onChange={setPartner1}
+                  />
+
+                  <div className="flex items-center justify-center">
+                    <DNAHeartLogo size={48} />
+                  </div>
+
+                  <PartnerCard
+                    title="Partner 2"
+                    emoji="💕"
+                    data={partner2}
+                    onChange={setPartner2}
+                  />
+
+                  <div className="flex justify-center pt-4">
+                    <Button
+                      type="submit"
+                      disabled={!isValid}
+                      className="bg-primary text-primary-foreground hover:brightness-95 transition-all px-8 py-4 h-auto rounded-md font-semibold text-lg shadow-md hover:shadow-lg"
+                    >
+                      Generate Love Protein 🧬
+                    </Button>
+                  </div>
+                </form>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </Section>
     </div>
+  )
+}
+
+// Loading state component with animations
+interface LoadingStateProps {
+  message: string
+  name1: string
+  name2: string
+}
+
+function LoadingState({ message, name1, name2 }: LoadingStateProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="flex min-h-[400px] flex-col items-center justify-center text-center"
+    >
+      {/* Animated DNA Heart */}
+      <motion.div
+        animate={{
+          scale: [1, 1.1, 1],
+          rotate: [0, 5, -5, 0],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="mb-8"
+      >
+        <DNAHeartLogo size={80} />
+      </motion.div>
+
+      {/* Names with heart */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="mb-6"
+      >
+        <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
+          <span className="text-primary">{name1}</span>
+          <motion.span
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 1, repeat: Infinity }}
+            className="mx-3 inline-block text-pink-400"
+          >
+            ♥
+          </motion.span>
+          <span className="text-primary">{name2}</span>
+        </h2>
+      </motion.div>
+
+      {/* Rotating message */}
+      <AnimatePresence mode="wait">
+        <motion.p
+          key={message}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.3 }}
+          className="text-lg text-muted-foreground"
+        >
+          {message}
+        </motion.p>
+      </AnimatePresence>
+
+      {/* Loading dots */}
+      <div className="mt-8 flex gap-2">
+        {[0, 1, 2].map((i) => (
+          <motion.div
+            key={i}
+            className="h-3 w-3 rounded-full bg-primary"
+            animate={{
+              scale: [1, 1.3, 1],
+              opacity: [0.5, 1, 0.5],
+            }}
+            transition={{
+              duration: 1,
+              repeat: Infinity,
+              delay: i * 0.2,
+            }}
+          />
+        ))}
+      </div>
+    </motion.div>
   )
 }
 

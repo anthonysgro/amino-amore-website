@@ -84,8 +84,8 @@ export function StrategySelector({
   return (
     <div className={cn('space-y-3', className)}>
       <div className="text-center">
-        <h3 className="text-sm font-medium text-pink-700">Choose Your Bond Type</h3>
-        <p className="text-xs text-pink-500">Each creates a unique protein shape</p>
+        <h3 className="text-sm font-medium text-pink-700 dark:text-pink-300">Choose Your Bond Type</h3>
+        <p className="text-xs text-pink-500 dark:text-pink-400">Each creates a unique protein shape</p>
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {strategies.map((strategy) => {
@@ -103,10 +103,10 @@ export function StrategySelector({
                 'border-2',
                 // Selected state
                 isSelected
-                  ? 'border-pink-400 bg-pink-100/80 shadow-lg shadow-pink-200/50'
-                  : 'border-pink-200/50 bg-white/60 hover:border-pink-300 hover:bg-pink-50/80 hover:shadow-md',
+                  ? 'border-pink-400 bg-pink-100/80 shadow-lg shadow-pink-200/50 dark:border-pink-500 dark:bg-pink-950/60 dark:shadow-pink-900/30'
+                  : 'border-pink-200/50 bg-white/60 hover:border-pink-300 hover:bg-pink-50/80 hover:shadow-md dark:border-pink-800/50 dark:bg-pink-950/30 dark:hover:border-pink-600 dark:hover:bg-pink-900/40',
                 // Focus state for accessibility
-                'focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2'
+                'focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 dark:focus:ring-pink-500 dark:focus:ring-offset-background'
               )}
               aria-pressed={isSelected}
               aria-label={`Select ${config.displayName} strategy`}
@@ -136,7 +136,7 @@ export function StrategySelector({
                   'flex h-10 w-10 items-center justify-center rounded-full',
                   isSelected
                     ? 'bg-pink-500 text-white'
-                    : 'bg-pink-100 text-pink-500'
+                    : 'bg-pink-100 text-pink-500 dark:bg-pink-900/50 dark:text-pink-400'
                 )}
               >
                 {STRATEGY_ICONS[strategy]}
@@ -146,14 +146,14 @@ export function StrategySelector({
               <span
                 className={cn(
                   'text-sm font-semibold',
-                  isSelected ? 'text-pink-700' : 'text-pink-600'
+                  isSelected ? 'text-pink-700 dark:text-pink-200' : 'text-pink-600 dark:text-pink-300'
                 )}
               >
                 {config.displayName}
               </span>
 
               {/* Description */}
-              <span className="text-xs text-pink-500/80 leading-tight">
+              <span className="text-xs text-pink-500/80 dark:text-pink-400/80 leading-tight">
                 {config.description}
               </span>
             </button>

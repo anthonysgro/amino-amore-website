@@ -1,12 +1,13 @@
-import { useState, useMemo } from 'react'
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { useMemo, useState } from 'react'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { motion, useReducedMotion } from 'motion/react'
+import type {LinkerStrategy} from '@/utils/foldLogic';
 import { foldProteinQueryOptions } from '@/lib/queryClient'
 import {
-  createLoveSequence,
-  isCreateLoveSequenceError,
-  type LinkerStrategy,
   LINKER_CONFIGS,
+  
+  createLoveSequence,
+  isCreateLoveSequenceError
 } from '@/utils/foldLogic'
 import { useFoldProtein } from '@/hooks/useFoldProtein'
 import { ProteinViewer } from '@/components/ProteinViewer'
@@ -14,7 +15,6 @@ import { StrategySelector } from '@/components/StrategySelector'
 import { Navigation } from '@/components/landing/Navigation'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import AnimatedGradient from '@/components/ui/animated-gradient'
 
 export const Route = createFileRoute('/fold/$names')({
   loader: async ({ context, params }) => {
@@ -96,22 +96,13 @@ function FoldRoute() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
-      {/* Animated gradient background */}
-      <div className="pointer-events-none absolute inset-0">
-        <AnimatedGradient
-          colors={[
-            'oklch(0.82 0.11 346 / 0.3)',
-            'oklch(0.73 0.18 350 / 0.25)',
-            'oklch(0.66 0.21 354 / 0.2)',
-            'oklch(0.59 0.22 1 / 0.15)',
-          ]}
-          speed={8}
-          blur="heavy"
-        />
-      </div>
+      {/* Static gradient background - GPU friendly */}
+      <div 
+        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-pink-100/60 via-rose-50/40 to-purple-100/50 dark:from-pink-950/30 dark:via-rose-950/20 dark:to-purple-950/30" 
+      />
 
       {/* Subtle overlay for better contrast */}
-      <div className="pointer-events-none absolute inset-0 bg-background/40 dark:bg-background/60" />
+      <div className="pointer-events-none absolute inset-0 bg-background/30 dark:bg-background/50" />
 
       <Navigation />
 
@@ -187,7 +178,7 @@ function FoldRoute() {
 
               {/* Interaction hint */}
               <p className="mt-3 text-center text-sm text-muted-foreground">
-                🔬 Drag to rotate • Scroll to zoom • Pinch on mobile
+                🔬 Drag to rotate&nbsp; •&nbsp; Scroll to zoom&nbsp; •&nbsp; Pinch on mobile
               </p>
 
               {/* Strategy toggle button */}

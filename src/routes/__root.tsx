@@ -1,13 +1,20 @@
 import {
   HeadContent,
+  Link,
   Outlet,
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
-import { QueryClientProvider, type QueryClient } from '@tanstack/react-query'
-
-import { ThemeProvider } from '@/components/theme-provider'
+import { QueryClientProvider } from '@tanstack/react-query'
 import appCss from '../styles.css?url'
+
+import type { QueryClient } from '@tanstack/react-query'
+
+import { Navigation } from '@/components/landing/Navigation'
+import { Section } from '@/components/landing/Section'
+import { DNAHeartLogo } from '@/components/landing/DNAHeartLogo'
+import { ThemeProvider } from '@/components/theme-provider'
+import { Button } from '@/components/ui/button'
 
 interface RouterContext {
   queryClient: QueryClient
@@ -37,6 +44,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
   component: RootComponent,
   shellComponent: RootDocument,
+  notFoundComponent: NotFoundPage,
 })
 
 function RootComponent() {
@@ -74,5 +82,42 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
+  )
+}
+
+function NotFoundPage() {
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+
+      <Section className="py-16 lg:py-24">
+        <div className="mx-auto max-w-lg text-center">
+          {/* Broken heart DNA icon */}
+          <div className="mb-8 flex justify-center opacity-60">
+            <DNAHeartLogo size={80} />
+          </div>
+
+          {/* 404 message */}
+          <h1 className="text-6xl font-bold text-primary sm:text-7xl">404</h1>
+          <h2 className="mt-4 text-2xl font-semibold text-foreground sm:text-3xl">
+            This bond doesn't exist
+          </h2>
+          <p className="mt-3 text-muted-foreground">
+            Looks like this molecular structure got lost in the lab. 
+            Let's get you back to creating something beautiful.
+          </p>
+
+          {/* Navigation buttons */}
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <Button asChild size="lg" className="bg-primary text-primary-foreground">
+              <Link to="/create">Create a Love Protein</Link>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link to="/">Back to Home</Link>
+            </Button>
+          </div>
+        </div>
+      </Section>
+    </div>
   )
 }
