@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { Github } from "lucide-react"
+import { Coffee, Github } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Navigation } from "@/components/landing/Navigation"
@@ -42,7 +42,7 @@ function AboutPage() {
             </div>
 
             {/* Links */}
-            <div className="mt-10 flex justify-center gap-4">
+            <div className="mt-10 flex flex-wrap justify-center gap-4">
               <Button asChild variant="outline" size="lg">
                 <a
                   href="https://github.com/anthonysgro"
@@ -52,6 +52,17 @@ function AboutPage() {
                 >
                   <Github className="h-5 w-5" />
                   GitHub
+                </a>
+              </Button>
+              <Button asChild variant="outline" size="lg">
+                <a
+                  href="https://www.buymeacoffee.com/sgro"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2"
+                >
+                  <Coffee className="h-5 w-5" />
+                  Buy Me a Coffee
                 </a>
               </Button>
               <Button asChild size="lg" className="bg-primary text-primary-foreground">

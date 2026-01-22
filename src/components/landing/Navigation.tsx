@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Link } from "@tanstack/react-router"
-import { Github } from "lucide-react"
+import { Coffee } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -170,7 +170,7 @@ function CenterNavLinks() {
 }
 
 /**
- * RightActions - Right-side actions (theme toggle, GitHub, CTA)
+ * RightActions - Right-side actions (theme toggle, coffee, CTA)
  */
 function RightActions() {
   return (
@@ -178,9 +178,9 @@ function RightActions() {
       {/* Theme Toggle */}
       <ThemeToggle />
 
-      {/* GitHub Link - desktop only */}
+      {/* Buy Me a Coffee Link - desktop only */}
       <a
-        href="https://github.com"
+        href="https://www.buymeacoffee.com/sgro"
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
@@ -192,9 +192,9 @@ function RightActions() {
           "transition-all duration-200",
           "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         )}
-        aria-label="View on GitHub"
+        aria-label="Buy me a coffee"
       >
-        <Github className="h-5 w-5" />
+        <Coffee className="h-5 w-5" />
       </a>
 
       {/* CTA Button - desktop only */}
