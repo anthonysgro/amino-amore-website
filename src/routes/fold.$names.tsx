@@ -153,10 +153,10 @@ function FoldRoute() {
                 // Inline layout for short names
                 <h1
                   ref={headerRef}
-                  className="whitespace-nowrap text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl lg:text-5xl"
+                  className="flex items-center justify-center whitespace-nowrap text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl lg:text-5xl"
                 >
                   <span className="text-primary">{formatName(name1)}</span>
-                  <span className="mx-2 sm:mx-3 text-pink-400">♥</span>
+                  <DNAHeartLogo size={32} className="mx-2 sm:mx-3" />
                   <span className="text-primary">{formatName(name2)}</span>
                 </h1>
               )}
@@ -177,6 +177,7 @@ function FoldRoute() {
                 isLoading={isPending || isLoading}
                 name1={name1}
                 name2={name2}
+                sequence={sequence}
                 className="min-h-[450px] sm:min-h-[500px] md:min-h-[550px] lg:min-h-[600px]"
               />
             </motion.div>

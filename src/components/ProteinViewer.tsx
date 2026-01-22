@@ -15,6 +15,7 @@ interface ProteinViewerProps {
   isLoading?: boolean
   name1?: string
   name2?: string
+  sequence?: string
   className?: string
   colorMode?: ColorMode
   onColorModeChange?: (mode: ColorMode) => void
@@ -25,6 +26,7 @@ export function ProteinViewer({
   isLoading = false,
   name1,
   name2,
+  sequence,
   className,
   colorMode = 'spectrum',
   onColorModeChange,
@@ -59,8 +61,12 @@ export function ProteinViewer({
           viewerRef.current.clear()
         }
 
+        // Use theme-aware background color
+        const isDarkMode = document.documentElement.classList.contains('dark')
+        const bgColor = isDarkMode ? '#141414' : '#fafafa'
+
         const viewer = $3Dmol.createViewer(containerRef.current, {
-          backgroundColor: 'transparent',
+          backgroundColor: bgColor,
         })
 
         viewer.addModel(pdbData, 'pdb')
@@ -189,22 +195,27 @@ export function ProteinViewer({
     
     const img = new Image()
     img.onload = () => {
-      // Set canvas size to match the protein image
+      // Detect current theme
+      const isDarkMode = document.documentElement.classList.contains('dark')
+      const footerBg = isDarkMode ? 'rgb(20, 20, 20)' : 'rgb(250, 250, 250)'
+      const seqTextColor = isDarkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.7)'
+      const brandTextColor = isDarkMode ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.5)'
+      
+      // Add extra space at bottom for sequence + branding
+      const footerHeight = sequence ? 105 : 0
       canvas.width = img.width
-      canvas.height = img.height
+      canvas.height = img.height + footerHeight
+      
+      // Fill the footer area with theme-appropriate background
+      if (footerHeight > 0) {
+        ctx.fillStyle = footerBg
+        ctx.fillRect(0, img.height, canvas.width, footerHeight)
+      }
       
       // Draw the protein image
       ctx.drawImage(img, 0, 0)
       
-      // Add subtle gradient overlay at top-left for branding
-      const gradientSize = 220
-      const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, gradientSize)
-      gradient.addColorStop(0, 'rgba(0, 0, 0, 0.4)')
-      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)')
-      ctx.fillStyle = gradient
-      ctx.fillRect(0, 0, gradientSize, gradientSize)
-      
-      // Draw the DNA heart logo SVG (bigger - 32px)
+      // Draw the DNA heart logo SVG for footer branding
       const logoSvg = `<svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M32 56 C16 44 8 32 8 22 C8 12 16 6 24 6 C28 6 31 8 32 12 C33 8 36 6 40 6 C48 6 56 12 56 22 C56 32 48 44 32 56" stroke="#f472b6" stroke-width="3.5" stroke-linecap="round" fill="none"/>
         <path d="M32 48 C20 40 14 32 14 24 C14 17 19 12 25 12 C28 12 30 13 32 16 C34 13 36 12 39 12 C45 12 50 17 50 24 C50 32 44 40 32 48" stroke="#fb7185" stroke-width="3.5" stroke-linecap="round" fill="none"/>
@@ -214,29 +225,39 @@ export function ProteinViewer({
       const logoDataUrl = 'data:image/svg+xml;base64,' + btoa(logoSvg)
       
       logoImg.onload = () => {
-        // Logo and text sized to match - both 30px
-        const logoSize = 30
-        const fontSize = 30
-        const topPadding = 14
-        // Align text with bottom of logo + offset to push text down
-        const textY = topPadding + logoSize + 4
-        
-        // Draw logo at top-left
-        ctx.drawImage(logoImg, 14, topPadding, logoSize, logoSize)
-        
-        // Add "folded" in pink (primary color)
-        ctx.font = `bold ${fontSize}px "Nunito Sans Variable", "Nunito Sans", sans-serif`
-        ctx.fillStyle = '#f472b6'
-        ctx.textAlign = 'left'
-        ctx.textBaseline = 'bottom'
-        ctx.fillText('folded', 14 + logoSize + 8, textY)
-        
-        // Measure "folded" width to position ".love"
-        const foldedWidth = ctx.measureText('folded').width
-        
-        // Add ".love" in muted white/gray
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)'
-        ctx.fillText('.love', 14 + logoSize + 8 + foldedWidth, textY)
+        if (sequence) {
+          // Draw sequence text centered in footer
+          ctx.font = '14px monospace'
+          ctx.fillStyle = seqTextColor
+          ctx.textAlign = 'center'
+          ctx.textBaseline = 'top'
+          ctx.fillText(sequence, canvas.width / 2, img.height + 12)
+          
+          // Draw branding below sequence: logo + "folded.love"
+          const brandY = img.height + 62
+          const logoSize = 28
+          const fontSize = 26
+          
+          // Measure text to center the whole brand block
+          ctx.font = `bold ${fontSize}px "Nunito Sans Variable", "Nunito Sans", sans-serif`
+          const foldedWidth = ctx.measureText('folded').width
+          const loveWidth = ctx.measureText('.love').width
+          const totalWidth = logoSize + 6 + foldedWidth + loveWidth
+          const startX = (canvas.width - totalWidth) / 2
+          
+          // Draw logo
+          ctx.drawImage(logoImg, startX, brandY - logoSize / 2 - 2, logoSize, logoSize)
+          
+          // Draw "folded" in pink
+          ctx.fillStyle = '#f472b6'
+          ctx.textAlign = 'left'
+          ctx.textBaseline = 'middle'
+          ctx.fillText('folded', startX + logoSize + 6, brandY)
+          
+          // Draw ".love" in muted color
+          ctx.fillStyle = brandTextColor
+          ctx.fillText('.love', startX + logoSize + 6 + foldedWidth, brandY)
+        }
         
         // Download the branded image
         const link = document.createElement('a')
@@ -247,7 +268,7 @@ export function ProteinViewer({
       logoImg.src = logoDataUrl
     }
     img.src = proteinDataUrl
-  }, [name1, name2])
+  }, [name1, name2, sequence])
 
   const containerStyles = cn(
     'relative overflow-hidden',
