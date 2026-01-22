@@ -23,7 +23,7 @@ export const Route = createFileRoute('/fold/$names')({
     const [name1 = '', name2 = ''] = names.split('-')
     const formatName = (n: string) => n ? n.charAt(0).toUpperCase() + n.slice(1).toLowerCase() : ''
     const title = `${formatName(name1)} 💕 ${formatName(name2)} - Our Love Protein`
-    const description = `Someone special created a unique molecular bond from our names! See our Love Protein at folded.love 🧬`
+    const description = `Someone special created a unique molecular bond from your names! See your Love Protein at folded.love 🧬`
     
     return {
       meta: [
