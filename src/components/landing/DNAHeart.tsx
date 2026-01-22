@@ -106,7 +106,7 @@ function DNAHeart({ className }: DNAHeartProps) {
       renderer.setClearColor(0x000000, 0)
       container.appendChild(renderer.domElement)
 
-      camera.position.z = 26
+      camera.position.z = 38
 
       // Romantic colors
       const pink = 0xf472b6
@@ -123,7 +123,7 @@ function DNAHeart({ className }: DNAHeartProps) {
 
       const numPoints = 100
       const helixRadius = 2.2
-      const helixTwist = 0.12
+      const helixTwist = 0.12 // Original twist amount
 
       const strand1Points = generateStrandPoints(numPoints, helixRadius, helixTwist, 0)
       const strand2Points = generateStrandPoints(numPoints, helixRadius, helixTwist, Math.PI)

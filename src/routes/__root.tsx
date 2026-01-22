@@ -4,8 +4,6 @@ import {
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
 import { QueryClientProvider, type QueryClient } from '@tanstack/react-query'
 
 import { ThemeProvider } from '@/components/theme-provider'
@@ -73,17 +71,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
         <Scripts />
       </body>
     </html>

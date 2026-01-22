@@ -46,18 +46,41 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
   return (
     <Section
       className={cn(
-        "min-h-[calc(100vh-5rem)] flex items-center py-12 lg:py-20",
+        "relative min-h-[calc(100vh-5rem)] flex items-center py-12 lg:py-20 overflow-hidden",
         className
       )}
       aria-labelledby="hero-headline"
       role="region"
       {...props}
     >
-      {/* Grid layout: stacked on mobile, side-by-side on desktop */}
-      <div className="grid w-full gap-12 lg:grid-cols-2 lg:gap-16 lg:items-center">
-        {/* Text Content */}
+      {/* 3D DNA Heart - absolutely positioned, on top for interaction */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/4 -translate-y-1/2 w-[900px] h-[900px] lg:w-[1100px] lg:h-[1100px] z-20"
+        initial="hidden"
+        animate="visible"
+        variants={visualVariants}
+        aria-hidden="true"
+      >
+        {/* Decorative gradient background */}
+        <div
+          className="absolute inset-0 bg-linear-to-br from-pink-500/10 via-rose-500/10 to-purple-500/10 blur-3xl"
+          aria-hidden="true"
+        />
+
+        {/* 3D DNA Heart */}
+        <div
+          className="relative w-full h-full"
+          role="img"
+          aria-label="Interactive 3D DNA double helix shaped like a heart, representing love through molecular biology"
+        >
+          <DNAHeart className="w-full h-full" />
+        </div>
+      </motion.div>
+
+      {/* Text Content - on top of heart for readability */}
+      <div className="relative z-30 grid w-full lg:grid-cols-2 lg:items-center pointer-events-none">
         <motion.div
-          className="flex flex-col gap-6 text-center lg:text-left"
+          className="flex flex-col gap-6 text-center lg:text-left pointer-events-auto"
           initial="hidden"
           animate="visible"
           variants={textVariants}
@@ -95,30 +118,6 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
                 Create Your Love Protein
               </Link>
             </Button>
-          </div>
-        </motion.div>
-
-        {/* Visual Element - 3D DNA Heart */}
-        <motion.div
-          className="relative flex items-center justify-center order-first lg:order-last"
-          initial="hidden"
-          animate="visible"
-          variants={visualVariants}
-          aria-hidden="true"
-        >
-          {/* Decorative gradient background */}
-          <div
-            className="absolute inset-0 bg-linear-to-br from-pink-500/10 via-rose-500/10 to-purple-500/10 blur-3xl"
-            aria-hidden="true"
-          />
-
-          {/* 3D DNA Heart - no container box */}
-          <div
-            className="relative aspect-square w-full max-w-xl"
-            role="img"
-            aria-label="Interactive 3D DNA double helix shaped like a heart, representing love through molecular biology"
-          >
-            <DNAHeart className="w-full h-full" />
           </div>
         </motion.div>
       </div>
