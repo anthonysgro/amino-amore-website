@@ -2,10 +2,10 @@ import * as React from "react"
 import { Link } from "@tanstack/react-router"
 import { motion, useReducedMotion } from "motion/react"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Section } from "./Section"
+import { cn } from "@/lib/utils"
 import { DNAHeart } from "./DNAHeart"
+import { Section } from "./Section"
 
 interface HeroSectionProps extends React.ComponentProps<"section"> {
   className?: string
@@ -53,9 +53,17 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
       role="region"
       {...props}
     >
-      {/* 3D DNA Heart - absolutely positioned, on top for interaction */}
+      {/* 3D DNA Heart - absolutely positioned on desktop, in-flow on mobile */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/4 -translate-y-1/2 w-[900px] h-[900px] lg:w-[1100px] lg:h-[1100px] z-20"
+        className={cn(
+          // Mobile: in-flow, centered, smaller
+          "relative flex items-center justify-center",
+          "w-[350px] h-[350px] mx-auto mb-8",
+          // Desktop: absolute positioned like original
+          "lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-1/4 lg:-translate-y-1/2",
+          "lg:w-[1100px] lg:h-[1100px] lg:mb-0 lg:mx-0",
+          "lg:z-20"
+        )}
         initial="hidden"
         animate="visible"
         variants={visualVariants}
@@ -63,7 +71,7 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
       >
         {/* Soft animated glow background */}
         <div
-          className="absolute inset-[15%] rounded-full blur-[200px] animate-pulse bg-pink-500/40 dark:bg-pink-500/20"
+          className="absolute inset-[15%] rounded-full blur-[100px] lg:blur-[200px] animate-pulse bg-pink-500/40 dark:bg-pink-500/20"
           style={{ animationDuration: "8s" }}
           aria-hidden="true"
         />
