@@ -5,6 +5,7 @@ import { motion, useReducedMotion } from "motion/react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Section } from "./Section"
+import { DNAHeart } from "./DNAHeart"
 
 interface HeroSectionProps extends React.ComponentProps<"section"> {
   className?: string
@@ -91,7 +92,7 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
           </div>
         </motion.div>
 
-        {/* Visual Element */}
+        {/* Visual Element - 3D DNA Heart */}
         <motion.div
           className="relative flex items-center justify-center order-first lg:order-last"
           initial="hidden"
@@ -101,44 +102,17 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
         >
           {/* Decorative gradient background */}
           <div
-            className="absolute inset-0 rounded-3xl bg-linear-to-br from-chart-1/20 via-chart-2/20 to-chart-4/20 blur-3xl"
+            className="absolute inset-0 bg-linear-to-br from-pink-500/10 via-rose-500/10 to-purple-500/10 blur-3xl"
             aria-hidden="true"
           />
 
-          {/* Hero visual container */}
+          {/* 3D DNA Heart - no container box */}
           <div
-            className="relative aspect-square w-full max-w-md rounded-3xl bg-linear-to-br from-chart-1/30 via-chart-2/40 to-chart-4/30 p-1 shadow-2xl shadow-primary/20"
+            className="relative aspect-square w-full max-w-xl"
             role="img"
-            aria-label="Decorative protein structure visualization representing love and connection"
+            aria-label="Interactive 3D DNA double helix shaped like a heart, representing love through molecular biology"
           >
-            <div className="flex h-full w-full items-center justify-center rounded-[calc(1.5rem-4px)] bg-background/80 backdrop-blur-sm">
-              {/* Decorative protein/heart visual */}
-              <div className="relative">
-                {/* Animated rings */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="h-48 w-48 rounded-full border-2 border-chart-2/30 animate-pulse" />
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="h-36 w-36 rounded-full border-2 border-chart-3/40" />
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="h-24 w-24 rounded-full border-2 border-chart-4/50" />
-                </div>
-
-                {/* Center heart/protein icon */}
-                <div className="relative flex h-64 w-64 items-center justify-center">
-                  <span className="text-7xl" aria-hidden="true">
-                    🧬
-                  </span>
-                  <span
-                    className="absolute -right-2 -top-2 text-4xl"
-                    aria-hidden="true"
-                  >
-                    💕
-                  </span>
-                </div>
-              </div>
-            </div>
+            <DNAHeart className="w-full h-full" />
           </div>
         </motion.div>
       </div>
