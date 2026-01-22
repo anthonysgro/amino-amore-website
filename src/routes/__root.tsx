@@ -8,7 +8,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { QueryClientProvider, type QueryClient } from '@tanstack/react-query'
 
-import { ThemeProvider } from '@/hooks/use-theme.js'
+import { ThemeProvider } from '@/components/theme-provider'
 import appCss from '../styles.css?url'
 
 interface RouterContext {
@@ -54,10 +54,22 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  // Inline script to prevent flash of wrong theme
+  const themeScript = `
+    (function() {
+      const stored = localStorage.getItem('folded-hearts-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = stored || 'system';
+      const isDark = theme === 'dark' || (theme === 'system' && prefersDark);
+      if (isDark) document.documentElement.classList.add('dark');
+    })();
+  `
+
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
         {children}

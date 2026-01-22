@@ -1,52 +1,18 @@
-"use client"
-
 import * as React from "react"
 
-type Theme = "light" | "dark" | "system"
+import {
+  ThemeProviderContext,
+  STORAGE_KEY,
+  getStoredTheme,
+  getSystemTheme,
+  resolveTheme,
+  type Theme,
+} from "@/hooks/theme-context"
 
 interface ThemeProviderProps {
   children: React.ReactNode
   defaultTheme?: Theme
   storageKey?: string
-}
-
-interface ThemeProviderState {
-  theme: Theme
-  resolvedTheme: "light" | "dark"
-  setTheme: (theme: Theme) => void
-}
-
-const ThemeProviderContext = React.createContext<ThemeProviderState | undefined>(
-  undefined
-)
-
-const STORAGE_KEY = "folded-hearts-theme"
-
-function getSystemTheme(): "light" | "dark" {
-  if (typeof window === "undefined") return "light"
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light"
-}
-
-function getStoredTheme(storageKey: string): Theme | null {
-  if (typeof window === "undefined") return null
-  try {
-    const stored = localStorage.getItem(storageKey)
-    if (stored === "light" || stored === "dark" || stored === "system") {
-      return stored
-    }
-    return null
-  } catch {
-    return null
-  }
-}
-
-function resolveTheme(theme: Theme): "light" | "dark" {
-  if (theme === "system") {
-    return getSystemTheme()
-  }
-  return theme
 }
 
 export function ThemeProvider({
@@ -125,13 +91,3 @@ export function ThemeProvider({
     </ThemeProviderContext.Provider>
   )
 }
-
-export function useTheme(): ThemeProviderState {
-  const context = React.useContext(ThemeProviderContext)
-  if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider")
-  }
-  return context
-}
-
-export { ThemeProviderContext }

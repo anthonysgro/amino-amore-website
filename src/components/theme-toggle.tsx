@@ -2,7 +2,7 @@ import * as React from "react"
 import { Moon, Sun } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { useTheme } from "@/hooks/use-theme.js"
+import { useTheme } from "@/hooks/use-theme"
 
 export interface ThemeToggleProps {
   className?: string

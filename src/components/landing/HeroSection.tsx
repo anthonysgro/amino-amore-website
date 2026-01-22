@@ -82,8 +82,7 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
               className="text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               <Link
-                to="/fold/$names"
-                params={{ names: "Your-Love" }}
+                to="/create"
                 aria-label="Create Your Love Protein - start the protein folding experience"
               >
                 Create Your Love Protein

@@ -79,7 +79,7 @@ function Navigation({ className }: NavigationProps) {
             asChild
             className="hidden lg:inline-flex focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            <Link to="/fold/$names" params={{ names: "Your-Love" }}>
+            <Link to="/create">
               Create Your Love Protein
             </Link>
           </Button>
@@ -92,5 +92,5 @@ function Navigation({ className }: NavigationProps) {
   )
 }
 
-export { Navigation, navItems }
-export type { NavigationProps, NavItem }
+export { Navigation }
+export type { NavigationProps }
