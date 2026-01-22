@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { motion, useReducedMotion } from 'motion/react'
 import type {LinkerStrategy} from '@/utils/foldLogic';
@@ -18,6 +18,25 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
 export const Route = createFileRoute('/fold/$names')({
+  head: ({ params }) => {
+    const names = params.names || ''
+    const [name1 = '', name2 = ''] = names.split('-')
+    const formatName = (n: string) => n ? n.charAt(0).toUpperCase() + n.slice(1).toLowerCase() : ''
+    const title = `${formatName(name1)} 💕 ${formatName(name2)} - Our Love Protein`
+    const description = `Someone special created a unique molecular bond from our names! See our Love Protein at folded.love 🧬`
+    
+    return {
+      meta: [
+        { title },
+        { name: 'description', content: description },
+        { property: 'og:title', content: title },
+        { property: 'og:description', content: description },
+        { property: 'og:image', content: 'https://folded.love/preview.png' },
+        { name: 'twitter:title', content: title },
+        { name: 'twitter:description', content: description },
+      ],
+    }
+  },
   loader: async ({ context, params }) => {
     const { queryClient } = context
     const [name1, name2] = params.names.split('-')
@@ -82,22 +101,6 @@ function FoldRoute() {
 
   const [selectedStrategy, setSelectedStrategy] = useState<LinkerStrategy>('anchor')
   const [showStrategyPanel, setShowStrategyPanel] = useState(false)
-  const [shouldStack, setShouldStack] = useState(false)
-  const headerRef = useRef<HTMLHeadingElement>(null)
-
-  // Check if names overflow and need stacking
-  useEffect(() => {
-    const checkOverflow = () => {
-      if (headerRef.current) {
-        const isOverflowing = headerRef.current.scrollWidth > headerRef.current.clientWidth
-        setShouldStack(isOverflowing)
-      }
-    }
-    
-    checkOverflow()
-    window.addEventListener('resize', checkOverflow)
-    return () => window.removeEventListener('resize', checkOverflow)
-  }, [name1, name2])
 
   const sequenceResult = useMemo(() => {
     return createLoveSequence(name1, name2, { strategy: selectedStrategy })
@@ -138,28 +141,12 @@ function FoldRoute() {
               animate="visible"
               variants={textVariants}
             >
-              {shouldStack ? (
-                // Stacked layout for long names
-                <div className="flex flex-col items-center gap-2">
-                  <span className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">
-                    {formatName(name1)}
-                  </span>
-                  <DNAHeartLogo size={32} />
-                  <span className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">
-                    {formatName(name2)}
-                  </span>
-                </div>
-              ) : (
-                // Inline layout for short names
-                <h1
-                  ref={headerRef}
-                  className="flex items-center justify-center whitespace-nowrap text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl lg:text-5xl"
-                >
-                  <span className="text-primary">{formatName(name1)}</span>
-                  <DNAHeartLogo size={32} className="mx-2 sm:mx-3" />
-                  <span className="text-primary">{formatName(name2)}</span>
-                </h1>
-              )}
+              {/* Stacked on mobile, inline on larger screens */}
+              <h1 className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl lg:text-5xl">
+                <span className="text-primary">{formatName(name1)}</span>
+                <DNAHeartLogo size={32} className="shrink-0 my-1 sm:my-0" />
+                <span className="text-primary">{formatName(name2)}</span>
+              </h1>
               <p className="mt-2 text-sm text-muted-foreground sm:text-base">
                 Your names, bonded at the molecular level
               </p>
@@ -192,12 +179,7 @@ function FoldRoute() {
               {/* Sequence and strategy info */}
               <div className="flex flex-wrap items-center justify-center gap-2">
                 {sequence && (
-                  <Badge
-                    variant="secondary"
-                    className="max-w-[200px] truncate font-mono text-xs sm:max-w-none"
-                  >
-                    {sequence}
-                  </Badge>
+                  <SequenceBadge sequence={sequence} />
                 )}
                 {data && (
                   <>
@@ -217,7 +199,7 @@ function FoldRoute() {
               </p>
 
               {/* Strategy toggle button */}
-              <div className="mt-4 flex justify-center">
+              <div className="mt-4 flex justify-center gap-3">
                 <Button
                   variant="outline"
                   size="sm"
@@ -226,6 +208,7 @@ function FoldRoute() {
                 >
                   {showStrategyPanel ? 'Hide' : 'Change'} Folding Strategy
                 </Button>
+                <ShareButton name1={name1} name2={name2} />
               </div>
 
               {/* Collapsible strategy selector */}
@@ -322,5 +305,105 @@ function ErrorState({ error, textVariants }: ErrorStateProps) {
         <Button onClick={() => window.location.reload()}>Try Again</Button>
       </div>
     </motion.div>
+  )
+}
+
+// Sequence badge with copy button
+function SequenceBadge({ sequence }: { sequence: string }) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(sequence)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <button
+      onClick={handleCopy}
+      className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground transition-colors hover:bg-secondary/80"
+    >
+      <span className="max-w-[200px] truncate font-mono sm:max-w-none">
+        {sequence}
+      </span>
+      {copied ? (
+        <span className="text-primary">Copied!</span>
+      ) : (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="opacity-60"
+        >
+          <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+        </svg>
+      )}
+    </button>
+  )
+}
+
+// Share button component
+function ShareButton({ name1, name2 }: { name1: string; name2: string }) {
+  const [shared, setShared] = useState(false)
+
+  const handleShare = async () => {
+    const url = window.location.href
+    const title = `${name1} 💕 ${name2} - Our Love Protein`
+    const text = `Someone special created a unique protein from our names! See our molecular bond at folded.love 🧬💕`
+
+    // Try native share API first (mobile)
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text, url })
+        return
+      } catch {
+        // User cancelled or share failed, fall back to clipboard
+      }
+    }
+
+    // Fall back to clipboard
+    await navigator.clipboard.writeText(`${text}\n${url}`)
+    setShared(true)
+    setTimeout(() => setShared(false), 2000)
+  }
+
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={handleShare}
+      className="border-pink-300 text-pink-500 hover:bg-pink-50 dark:border-pink-700 dark:text-pink-400 dark:hover:bg-pink-950"
+    >
+      {shared ? (
+        'Link Copied! 💕'
+      ) : (
+        <>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="mr-1.5"
+          >
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+            <polyline points="16 6 12 2 8 6" />
+            <line x1="12" x2="12" y1="2" y2="15" />
+          </svg>
+          Share the Love
+        </>
+      )}
+    </Button>
   )
 }
