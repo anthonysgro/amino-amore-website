@@ -186,7 +186,9 @@ export function ProteinViewer({
   const takeScreenshot = useCallback(() => {
     if (!viewerRef.current) return
     
-    const proteinDataUrl = viewerRef.current.pngURI()
+    // Get high-res screenshot (2x scale for retina quality)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const proteinDataUrl = (viewerRef.current as any).pngURI(2)
     
     // Create a canvas to composite the screenshot with branding
     const canvas = document.createElement('canvas')
@@ -202,7 +204,9 @@ export function ProteinViewer({
       const brandTextColor = isDarkMode ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.5)'
       
       // Add extra space at bottom for sequence + branding
-      const footerHeight = sequence ? 105 : 0
+      // Scale footer height based on canvas width - cap at 1.2x for desktop
+      const footerScale = Math.min(1.2, Math.max(1, img.width / 600))
+      const footerHeight = sequence ? Math.round(110 * footerScale) : 0
       canvas.width = img.width
       canvas.height = img.height + footerHeight
       
@@ -226,17 +230,22 @@ export function ProteinViewer({
       
       logoImg.onload = () => {
         if (sequence) {
+          // Scale sizes based on canvas width - cap at 1.2x for desktop
+          const scale = Math.min(1.2, Math.max(1, canvas.width / 600))
+          const seqFontSize = Math.round(14 * scale)
+          const brandFontSize = Math.round(26 * scale)
+          const logoSize = Math.round(28 * scale)
+          
           // Draw sequence text centered in footer
-          ctx.font = '14px monospace'
+          ctx.font = `${seqFontSize}px monospace`
           ctx.fillStyle = seqTextColor
           ctx.textAlign = 'center'
           ctx.textBaseline = 'top'
-          ctx.fillText(sequence, canvas.width / 2, img.height + 12)
+          ctx.fillText(sequence, canvas.width / 2, img.height + 12 * scale)
           
           // Draw branding below sequence: logo + "folded.love"
-          const brandY = img.height + 62
-          const logoSize = 28
-          const fontSize = 26
+          const brandY = img.height + 60 * scale
+          const fontSize = brandFontSize
           
           // Measure text to center the whole brand block
           ctx.font = `bold ${fontSize}px "Nunito Sans Variable", "Nunito Sans", sans-serif`
@@ -259,11 +268,36 @@ export function ProteinViewer({
           ctx.fillText('.love', startX + logoSize + 6 + foldedWidth, brandY)
         }
         
-        // Download the branded image
-        const link = document.createElement('a')
-        link.download = `love-protein-${name1 || 'partner1'}-${name2 || 'partner2'}.png`
-        link.href = canvas.toDataURL('image/png')
-        link.click()
+        // Convert canvas to blob and share/download
+        canvas.toBlob(async (blob) => {
+          if (!blob) return
+          
+          const fileName = `love-protein-${name1 || 'partner1'}-${name2 || 'partner2'}.png`
+          
+          // Try native share with file (mobile - saves to Photos)
+          const canShare = typeof navigator !== 'undefined' && 'share' in navigator && 'canShare' in navigator
+          if (canShare) {
+            const file = new File([blob], fileName, { type: 'image/png' })
+            const shareData = { files: [file] }
+            
+            if (navigator.canShare(shareData)) {
+              try {
+                await navigator.share(shareData)
+                return
+              } catch {
+                // User cancelled or share failed, fall back to download
+              }
+            }
+          }
+          
+          // Fall back to download link
+          const url = URL.createObjectURL(blob)
+          const link = document.createElement('a')
+          link.download = fileName
+          link.href = url
+          link.click()
+          URL.revokeObjectURL(url)
+        }, 'image/png')
       }
       logoImg.src = logoDataUrl
     }
