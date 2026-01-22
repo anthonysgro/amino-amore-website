@@ -34,7 +34,7 @@ export function ProteinViewer({
 }: ProteinViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const viewerRef = useRef<GLViewer | null>(null)
-  const [isSpinning, setIsSpinning] = useState(false)
+  const [isSpinning, setIsSpinning] = useState(true)
   const [viewerReady, setViewerReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [internalColorMode, setInternalColorMode] = useState<ColorMode>(colorMode)
@@ -190,6 +190,10 @@ export function ProteinViewer({
         }
 
         viewer.zoomTo()
+        // Zoom out a bit to give the protein more breathing room
+        viewer.zoom(0.8)
+        // Start spinning by default with a slow, gentle rotation
+        viewer.spin('y', 0.5)
         viewer.render()
 
         viewerRef.current = viewer
@@ -215,7 +219,12 @@ export function ProteinViewer({
   const toggleSpin = useCallback(() => {
     if (!viewerRef.current) return
     const newSpinState = !isSpinning
-    viewerRef.current.spin(newSpinState)
+    if (newSpinState) {
+      // Slow, gentle rotation around Y axis
+      viewerRef.current.spin('y', 0.5)
+    } else {
+      viewerRef.current.spin(false)
+    }
     setIsSpinning(newSpinState)
   }, [isSpinning])
 
@@ -229,18 +238,18 @@ export function ProteinViewer({
     link.click()
   }, [name1, name2])
 
-  // Container styles for romantic aesthetic - hero sizing
+  // Container styles for romantic aesthetic - hero sizing, minimal wrapper
   const containerStyles = cn(
     // Base container styling
     'relative overflow-hidden',
-    // Romantic gradient background
-    'bg-linear-to-br from-pink-50/80 via-rose-50/60 to-purple-50/80',
-    // Rounded corners and shadow for polished look
-    'rounded-2xl shadow-lg shadow-pink-200/50',
-    // Border for subtle definition
-    'border border-pink-100/50',
+    // Clean, minimal background - let the protein be the star
+    'bg-gradient-to-br from-pink-50/40 via-white/60 to-purple-50/40',
+    // Rounded corners with subtle shadow
+    'rounded-xl shadow-sm',
+    // Thin, elegant border
+    'border border-pink-200/40',
     // Hero sizing - larger for visual impact
-    'w-full min-h-[400px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[550px]',
+    'w-full min-h-[500px] sm:min-h-[550px] md:min-h-[650px] lg:min-h-[700px]',
     className
   )
 
@@ -278,7 +287,7 @@ export function ProteinViewer({
         className="protein-viewer-canvas flex-1"
         style={{ 
           width: '100%', 
-          minHeight: '400px',
+          minHeight: '500px',
           height: '100%',
           touchAction: 'none' 
         }}
@@ -426,7 +435,7 @@ function ControlPanel({ isSpinning, onToggleSpin, onScreenshot, colorMode, onCol
 // Loading skeleton component with animated heart and romantic styling
 function LoadingSkeleton() {
   return (
-    <div className="loading-skeleton flex h-full min-h-[400px] flex-col items-center justify-center p-6 sm:min-h-[450px] md:min-h-[500px]">
+    <div className="loading-skeleton flex h-full min-h-[500px] flex-col items-center justify-center p-6 sm:min-h-[550px] md:min-h-[650px] lg:min-h-[700px]">
       {/* Animated pulsing heart container */}
       <div className="relative">
         {/* Outer glow ring */}
@@ -466,7 +475,7 @@ function ErrorDisplay({ message }: { message: string }) {
   const isWebGLError = message.toLowerCase().includes('webgl')
 
   return (
-    <div className="error-display flex h-full min-h-[400px] flex-col items-center justify-center p-6 text-center sm:min-h-[450px] md:min-h-[500px]">
+    <div className="error-display flex h-full min-h-[500px] flex-col items-center justify-center p-6 text-center sm:min-h-[550px] md:min-h-[650px] lg:min-h-[700px]">
       {/* Broken heart SVG icon */}
       <div className="relative">
         <svg
@@ -514,7 +523,7 @@ function ErrorDisplay({ message }: { message: string }) {
 // Empty state component with romantic prompt to enter names
 function EmptyState() {
   return (
-    <div className="empty-state flex h-full min-h-[400px] flex-col items-center justify-center p-6 text-center sm:min-h-[450px] md:min-h-[500px]">
+    <div className="empty-state flex h-full min-h-[500px] flex-col items-center justify-center p-6 text-center sm:min-h-[550px] md:min-h-[650px] lg:min-h-[700px]">
       {/* Intertwined hearts icon */}
       <div className="relative">
         <svg
