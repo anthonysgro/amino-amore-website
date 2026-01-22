@@ -229,7 +229,7 @@ export function ProteinViewer({
     link.click()
   }, [name1, name2])
 
-  // Container styles for romantic aesthetic
+  // Container styles for romantic aesthetic - hero sizing
   const containerStyles = cn(
     // Base container styling
     'relative overflow-hidden',
@@ -239,8 +239,8 @@ export function ProteinViewer({
     'rounded-2xl shadow-lg shadow-pink-200/50',
     // Border for subtle definition
     'border border-pink-100/50',
-    // Responsive sizing
-    'w-full min-h-[300px] sm:min-h-[400px] md:min-h-[450px]',
+    // Hero sizing - larger for visual impact
+    'w-full min-h-[400px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[550px]',
     className
   )
 
@@ -278,7 +278,7 @@ export function ProteinViewer({
         className="protein-viewer-canvas flex-1"
         style={{ 
           width: '100%', 
-          minHeight: '300px',
+          minHeight: '400px',
           height: '100%',
           touchAction: 'none' 
         }}
@@ -426,7 +426,7 @@ function ControlPanel({ isSpinning, onToggleSpin, onScreenshot, colorMode, onCol
 // Loading skeleton component with animated heart and romantic styling
 function LoadingSkeleton() {
   return (
-    <div className="loading-skeleton flex h-full min-h-[300px] flex-col items-center justify-center p-6 sm:min-h-[400px]">
+    <div className="loading-skeleton flex h-full min-h-[400px] flex-col items-center justify-center p-6 sm:min-h-[450px] md:min-h-[500px]">
       {/* Animated pulsing heart container */}
       <div className="relative">
         {/* Outer glow ring */}
@@ -466,7 +466,7 @@ function ErrorDisplay({ message }: { message: string }) {
   const isWebGLError = message.toLowerCase().includes('webgl')
 
   return (
-    <div className="error-display flex h-full min-h-[300px] flex-col items-center justify-center p-6 text-center sm:min-h-[400px]">
+    <div className="error-display flex h-full min-h-[400px] flex-col items-center justify-center p-6 text-center sm:min-h-[450px] md:min-h-[500px]">
       {/* Broken heart SVG icon */}
       <div className="relative">
         <svg
@@ -514,7 +514,7 @@ function ErrorDisplay({ message }: { message: string }) {
 // Empty state component with romantic prompt to enter names
 function EmptyState() {
   return (
-    <div className="empty-state flex h-full min-h-[300px] flex-col items-center justify-center p-6 text-center sm:min-h-[400px]">
+    <div className="empty-state flex h-full min-h-[400px] flex-col items-center justify-center p-6 text-center sm:min-h-[450px] md:min-h-[500px]">
       {/* Intertwined hearts icon */}
       <div className="relative">
         <svg
