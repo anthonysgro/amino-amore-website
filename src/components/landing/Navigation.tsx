@@ -1,11 +1,12 @@
 import * as React from "react"
 import { Link } from "@tanstack/react-router"
-import { GithubIcon } from "lucide-react"
+import { Github } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { MobileNav } from "./MobileNav"
+import { DNAHeartLogo } from "./DNAHeartLogo"
 
 // ============================================================================
 // Types
@@ -98,9 +99,7 @@ function BrandMark() {
       className={sharedClasses}
       aria-label="FoldedHearts - Home"
     >
-      <span className="text-2xl md:text-3xl" aria-hidden="true">
-        💕
-      </span>
+      <DNAHeartLogo size={36} />
       <span className="text-primary whitespace-nowrap">FoldedHearts</span>
     </a>
   )
@@ -195,7 +194,7 @@ function RightActions() {
         )}
         aria-label="View on GitHub"
       >
-        <GithubIcon className="h-5 w-5" />
+        <Github className="h-5 w-5" />
       </a>
 
       {/* CTA Button - desktop only */}
