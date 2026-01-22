@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { motion, useReducedMotion } from 'motion/react'
 import type {LinkerStrategy} from '@/utils/foldLogic';
@@ -13,6 +13,7 @@ import { useFoldProtein } from '@/hooks/useFoldProtein'
 import { ProteinViewer } from '@/components/ProteinViewer'
 import { StrategySelector } from '@/components/StrategySelector'
 import { Navigation } from '@/components/landing/Navigation'
+import { DNAHeartLogo } from '@/components/landing/DNAHeartLogo'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
@@ -81,6 +82,22 @@ function FoldRoute() {
 
   const [selectedStrategy, setSelectedStrategy] = useState<LinkerStrategy>('anchor')
   const [showStrategyPanel, setShowStrategyPanel] = useState(false)
+  const [shouldStack, setShouldStack] = useState(false)
+  const headerRef = useRef<HTMLHeadingElement>(null)
+
+  // Check if names overflow and need stacking
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (headerRef.current) {
+        const isOverflowing = headerRef.current.scrollWidth > headerRef.current.clientWidth
+        setShouldStack(isOverflowing)
+      }
+    }
+    
+    checkOverflow()
+    window.addEventListener('resize', checkOverflow)
+    return () => window.removeEventListener('resize', checkOverflow)
+  }, [name1, name2])
 
   const sequenceResult = useMemo(() => {
     return createLoveSequence(name1, name2, { strategy: selectedStrategy })
@@ -121,11 +138,28 @@ function FoldRoute() {
               animate="visible"
               variants={textVariants}
             >
-              <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl">
-                <span className="text-primary">{formatName(name1)}</span>
-                <span className="mx-3 text-pink-400">♥</span>
-                <span className="text-primary">{formatName(name2)}</span>
-              </h1>
+              {shouldStack ? (
+                // Stacked layout for long names
+                <div className="flex flex-col items-center gap-2">
+                  <span className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">
+                    {formatName(name1)}
+                  </span>
+                  <DNAHeartLogo size={32} />
+                  <span className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">
+                    {formatName(name2)}
+                  </span>
+                </div>
+              ) : (
+                // Inline layout for short names
+                <h1
+                  ref={headerRef}
+                  className="whitespace-nowrap text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl lg:text-5xl"
+                >
+                  <span className="text-primary">{formatName(name1)}</span>
+                  <span className="mx-2 sm:mx-3 text-pink-400">♥</span>
+                  <span className="text-primary">{formatName(name2)}</span>
+                </h1>
+              )}
               <p className="mt-2 text-sm text-muted-foreground sm:text-base">
                 Your names, bonded at the molecular level
               </p>

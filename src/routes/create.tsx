@@ -107,7 +107,7 @@ function CreatePage() {
     <div className="min-h-screen bg-background">
       <Navigation />
 
-      <Section className="py-12 lg:py-20">
+      <Section className="py-6 lg:py-20">
         <div className="mx-auto max-w-2xl">
           <AnimatePresence mode="wait">
             {isGenerating ? (
@@ -124,17 +124,17 @@ function CreatePage() {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4, ease: "easeInOut" }}
               >
-                <div className="mb-8 text-center">
-                  <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+                <div className="mb-4 lg:mb-8 text-center">
+                  <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
                     Create Your{" "}
                     <span className="text-primary">Love Protein</span>
                   </h1>
-                  <p className="mt-4 text-lg text-muted-foreground">
+                  <p className="mt-2 lg:mt-4 text-base lg:text-lg text-muted-foreground">
                     Enter both partners' names to generate your unique molecular bond
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-8">
+                <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-8">
                   <PartnerCard
                     title="Partner 1"
                     emoji="💕"
@@ -142,8 +142,9 @@ function CreatePage() {
                     onChange={setPartner1}
                   />
 
-                  <div className="flex items-center justify-center">
-                    <DNAHeartLogo size={48} />
+                  <div className="flex items-center justify-center py-1 lg:py-0">
+                    <DNAHeartLogo size={32} className="lg:hidden" />
+                    <DNAHeartLogo size={48} className="hidden lg:block" />
                   </div>
 
                   <PartnerCard
@@ -153,7 +154,7 @@ function CreatePage() {
                     onChange={setPartner2}
                   />
 
-                  <div className="flex justify-center pt-4">
+                  <div className="flex justify-center pt-2 lg:pt-4">
                     <Button
                       type="submit"
                       disabled={!isValid}
@@ -186,7 +187,7 @@ function LoadingState({ message, name1, name2 }: LoadingStateProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="flex min-h-[400px] flex-col items-center justify-center text-center"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background text-center"
     >
       {/* Animated DNA Heart */}
       <motion.div

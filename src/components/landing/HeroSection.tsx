@@ -62,7 +62,7 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
           "relative flex items-center justify-center",
           "w-full max-w-[600px] aspect-square mx-auto -mb-8",
           // Desktop: absolute positioned like original
-          "lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-1/4 lg:-translate-y-1/2",
+          "lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-[20%] lg:-translate-y-1/2",
           "lg:w-[1100px] lg:max-w-none lg:h-[1100px] lg:mb-0 lg:mx-0",
           "lg:z-20"
         )}
