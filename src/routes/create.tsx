@@ -132,6 +132,9 @@ function CreatePage() {
                   <p className="mt-2 lg:mt-4 text-base lg:text-lg text-muted-foreground">
                     Enter both partners' names to generate your unique molecular bond
                   </p>
+                  <p className="mt-1 text-sm text-muted-foreground/70">
+                    💡 Add middle and last names for an even more unique protein structure
+                  </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-8">
