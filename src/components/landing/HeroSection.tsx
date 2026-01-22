@@ -63,7 +63,7 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
       >
         {/* Soft animated glow background */}
         <div
-          className="absolute inset-[15%] rounded-full blur-[200px] animate-pulse bg-pink-500/20"
+          className="absolute inset-[15%] rounded-full blur-[200px] animate-pulse bg-pink-500/40 dark:bg-pink-500/20"
           style={{ animationDuration: "8s" }}
           aria-hidden="true"
         />

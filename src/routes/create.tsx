@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card"
 import { Navigation } from "@/components/landing/Navigation"
 import { Section } from "@/components/landing/Section"
+import { DNAHeartLogo } from "@/components/landing/DNAHeartLogo"
 
 export const Route = createFileRoute("/create")({
   component: CreatePage,
@@ -85,9 +86,7 @@ function CreatePage() {
             />
 
             <div className="flex items-center justify-center">
-              <span className="text-4xl" aria-hidden="true">
-                ❤️
-              </span>
+              <DNAHeartLogo size={48} />
             </div>
 
             <PartnerCard
@@ -100,9 +99,8 @@ function CreatePage() {
             <div className="flex justify-center pt-4">
               <Button
                 type="submit"
-                size="lg"
                 disabled={!isValid}
-                className="text-lg px-8"
+                className="bg-primary text-primary-foreground hover:brightness-95 transition-all px-8 py-4 h-auto rounded-md font-semibold text-lg shadow-md hover:shadow-lg"
               >
                 Generate Love Protein 🧬
               </Button>
