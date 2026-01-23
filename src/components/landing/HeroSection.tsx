@@ -108,14 +108,16 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
             id="hero-headline"
             className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl"
           >
-            Love at the{' '}
+            A love letter that's
+            <br />
+            also a{' '}
             <span
               className="text-primary whitespace-nowrap"
               style={{
                 filter: 'drop-shadow(0 0 5px rgba(244, 114, 182, 0.5))',
               }}
             >
-              molecular level
+              molecule
             </span>
           </h1>
 
