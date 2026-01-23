@@ -91,7 +91,7 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
       {/* Text Content - on top of heart for readability */}
       <div className="relative z-30 grid w-full lg:grid-cols-2 lg:items-center pointer-events-none">
         <motion.div
-          className="flex flex-col gap-6 text-center lg:text-left pointer-events-auto"
+          className="flex flex-col gap-6 text-center lg:text-left pointer-events-auto pt-16 sm:pt-0 lg:pt-0"
           initial="hidden"
           animate="visible"
           variants={textVariants}

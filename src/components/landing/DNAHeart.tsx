@@ -106,7 +106,9 @@ function DNAHeart({ className }: DNAHeartProps) {
       renderer.setClearColor(0x000000, 0)
       container.appendChild(renderer.domElement)
 
-      camera.position.z = 38
+      // Zoom in more on mobile/tablet (below 1024px)
+      const isMobile = window.innerWidth < 1024
+      camera.position.z = isMobile ? 28 : 38
 
       // Romantic colors
       const pink = 0xf472b6
@@ -285,6 +287,10 @@ function DNAHeart({ className }: DNAHeartProps) {
         sceneRef.current.camera.aspect = newWidth / newHeight
         sceneRef.current.camera.updateProjectionMatrix()
         sceneRef.current.renderer.setSize(newWidth, newHeight)
+        
+        // Update camera zoom based on viewport width
+        const isMobile = window.innerWidth < 1024
+        sceneRef.current.camera.position.z = isMobile ? 28 : 38
       }
 
       window.addEventListener("resize", handleResize)
