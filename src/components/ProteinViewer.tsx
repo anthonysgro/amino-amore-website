@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { GLViewer } from '3dmol'
 import { cn } from '@/lib/utils'
 import { parsePdbStats } from '@/utils/pdbStats'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
 
 export type ColorMode = 'spectrum' | 'plddt'
 
@@ -38,6 +40,8 @@ export function ProteinViewer({
   const [viewerReady, setViewerReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [internalColorMode, setInternalColorMode] = useState<ColorMode>(colorMode)
+  const [showStats, setShowStats] = useState(true)
+  const [showSequence, setShowSequence] = useState(true)
 
   const toggleColorMode = useCallback(() => {
     const newMode: ColorMode = internalColorMode === 'spectrum' ? 'plddt' : 'spectrum'
@@ -268,11 +272,11 @@ export function ProteinViewer({
       
       // Draw sequence at the bottom (bigger)
       if (sequence) {
-        ctx.fillStyle = isDarkMode ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.4)'
-        ctx.font = '18px monospace'
+        ctx.fillStyle = isDarkMode ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)'
+        ctx.font = '24px monospace'
         ctx.textAlign = 'center'
         ctx.textBaseline = 'bottom'
-        ctx.fillText(sequence, canvas.width / 2, canvas.height - 16)
+        ctx.fillText(sequence, canvas.width / 2, canvas.height - 20)
       }
       
       // Draw logo + branding in bottom right
@@ -288,7 +292,9 @@ export function ProteinViewer({
         const logoSize = 48
         const brandFontSize = 28
         const rightPadding = 20
-        const bottomPadding = 20
+        // Align with sequence baseline (sequence is at canvas.height - 20, font 24px)
+        // Logo center should align with text baseline
+        const brandY = canvas.height - 20 - 12 // baseline minus half of font height
         
         // Measure brand text
         ctx.font = `bold ${brandFontSize}px system-ui, -apple-system, sans-serif`
@@ -297,16 +303,16 @@ export function ProteinViewer({
         const totalWidth = logoSize + 10 + foldedWidth + loveWidth
         
         const brandX = canvas.width - rightPadding - totalWidth
-        const brandY = canvas.height - bottomPadding - logoSize / 2
         
         // Draw semi-transparent background behind brand
+        const bgHeight = logoSize + 10
         ctx.fillStyle = panelBg
-        ctx.fillRect(brandX - 16, brandY - logoSize / 2 - 10, totalWidth + 32, logoSize + 20)
+        ctx.fillRect(brandX - 16, brandY - bgHeight / 2, totalWidth + 32, bgHeight)
         
-        // Draw logo
+        // Draw logo (vertically centered on brandY)
         ctx.drawImage(logoImg, brandX, brandY - logoSize / 2, logoSize, logoSize)
         
-        // Draw "folded" in pink
+        // Draw "folded" in pink (text baseline at brandY + some offset for visual centering)
         ctx.fillStyle = accentColor
         ctx.textAlign = 'left'
         ctx.textBaseline = 'middle'
@@ -386,18 +392,58 @@ export function ProteinViewer({
     )
   }
 
+  // Parse stats for overlay
+  const stats = pdbData ? parsePdbStats(pdbData) : null
+
   return (
     <div className={cn(containerStyles, 'flex flex-col')}>
-      <div
-        ref={containerRef}
-        className="protein-viewer-canvas flex-1"
-        style={{
-          width: '100%',
-          minHeight: '450px',
-          height: '100%',
-          touchAction: 'none',
-        }}
-      />
+      <div className="relative flex-1 min-h-[450px]">
+        <div
+          ref={containerRef}
+          className="protein-viewer-canvas absolute inset-0"
+          style={{
+            touchAction: 'none',
+          }}
+        />
+        
+        {/* Stats overlay */}
+        {viewerReady && stats && stats.atomCount > 0 && showStats && (
+          <div className="absolute top-3 left-3 pointer-events-none">
+            <div className="bg-background/85 backdrop-blur-sm rounded-lg p-3 text-xs">
+              <div className="text-primary font-semibold text-[10px] uppercase tracking-wider mb-2">
+                Structure Data
+              </div>
+              <div className="space-y-1 font-mono">
+                <div className="flex justify-between gap-4">
+                  <span className="text-muted-foreground">Residues</span>
+                  <span className="text-foreground font-medium">{stats.residueCount}</span>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <span className="text-muted-foreground">Atoms</span>
+                  <span className="text-foreground font-medium">{stats.atomCount.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <span className="text-muted-foreground">Uniqueness</span>
+                  <span className="text-foreground font-medium">{(100 - stats.averagePlddt).toFixed(1)}%</span>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <span className="text-muted-foreground">Size (Å)</span>
+                  <span className="text-foreground font-medium">{stats.dimensions.width.toFixed(0)}×{stats.dimensions.height.toFixed(0)}×{stats.dimensions.depth.toFixed(0)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Sequence overlay */}
+        {viewerReady && sequence && showSequence && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none">
+            <div className="text-sm font-mono text-foreground/50">
+              {sequence}
+            </div>
+          </div>
+        )}
+      </div>
       {viewerReady && (
         <ControlPanel
           isSpinning={isSpinning}
@@ -405,6 +451,10 @@ export function ProteinViewer({
           onScreenshot={takeScreenshot}
           colorMode={internalColorMode}
           onColorModeToggle={toggleColorMode}
+          showStats={showStats}
+          onShowStatsChange={setShowStats}
+          showSequence={showSequence}
+          onShowSequenceChange={setShowSequence}
         />
       )}
     </div>
@@ -453,9 +503,23 @@ interface ControlPanelProps {
   onScreenshot: () => void
   colorMode: ColorMode
   onColorModeToggle: () => void
+  showStats: boolean
+  onShowStatsChange: (show: boolean) => void
+  showSequence: boolean
+  onShowSequenceChange: (show: boolean) => void
 }
 
-function ControlPanel({ isSpinning, onToggleSpin, onScreenshot, colorMode, onColorModeToggle }: ControlPanelProps) {
+function ControlPanel({ 
+  isSpinning, 
+  onToggleSpin, 
+  onScreenshot, 
+  colorMode, 
+  onColorModeToggle,
+  showStats,
+  onShowStatsChange,
+  showSequence,
+  onShowSequenceChange,
+}: ControlPanelProps) {
   const buttonStyles = cn(
     'flex items-center justify-center gap-1.5',
     'px-3 py-2 sm:px-4',
@@ -469,19 +533,44 @@ function ControlPanel({ isSpinning, onToggleSpin, onScreenshot, colorMode, onCol
   )
 
   return (
-    <div className="flex justify-center gap-2 p-3 sm:gap-3 sm:p-4">
-      <button onClick={onToggleSpin} className={buttonStyles} aria-label={isSpinning ? 'Stop rotation' : 'Start rotation'}>
-        {isSpinning ? <PauseIcon /> : <PlayIcon />}
-        <span className="text-sm font-medium">{isSpinning ? 'Stop' : 'Spin'}</span>
-      </button>
-      <button onClick={onScreenshot} className={buttonStyles} aria-label="Download screenshot">
-        <CameraIcon />
-        <span className="text-sm font-medium">Save</span>
-      </button>
-      <button onClick={onColorModeToggle} className={buttonStyles} aria-label="Toggle color mode">
-        <PaletteIcon />
-        <span className="text-sm font-medium">{colorMode === 'spectrum' ? 'pLDDT' : 'Spectrum'}</span>
-      </button>
+    <div className="p-3 sm:p-4 space-y-3">
+      <div className="flex justify-center gap-2 sm:gap-3">
+        <button onClick={onToggleSpin} className={buttonStyles} aria-label={isSpinning ? 'Stop rotation' : 'Start rotation'}>
+          {isSpinning ? <PauseIcon /> : <PlayIcon />}
+          <span className="text-sm font-medium">{isSpinning ? 'Stop' : 'Spin'}</span>
+        </button>
+        <button onClick={onScreenshot} className={buttonStyles} aria-label="Download screenshot">
+          <CameraIcon />
+          <span className="text-sm font-medium">Save</span>
+        </button>
+        <button onClick={onColorModeToggle} className={buttonStyles} aria-label="Toggle color mode">
+          <PaletteIcon />
+          <span className="text-sm font-medium">{colorMode === 'spectrum' ? 'pLDDT' : 'Spectrum'}</span>
+        </button>
+      </div>
+      
+      <div className="flex justify-center gap-4 text-sm">
+        <div className="flex items-center gap-2">
+          <Checkbox 
+            id="show-stats" 
+            checked={showStats} 
+            onCheckedChange={(checked) => onShowStatsChange(checked === true)}
+          />
+          <Label htmlFor="show-stats" className="text-muted-foreground cursor-pointer">
+            Stats
+          </Label>
+        </div>
+        <div className="flex items-center gap-2">
+          <Checkbox 
+            id="show-sequence" 
+            checked={showSequence} 
+            onCheckedChange={(checked) => onShowSequenceChange(checked === true)}
+          />
+          <Label htmlFor="show-sequence" className="text-muted-foreground cursor-pointer">
+            Sequence
+          </Label>
+        </div>
+      </div>
     </div>
   )
 }

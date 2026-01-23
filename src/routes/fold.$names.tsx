@@ -17,6 +17,7 @@ import { Navigation } from '@/components/landing/Navigation'
 import { DNAHeartLogo } from '@/components/landing/DNAHeartLogo'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 export const Route = createFileRoute('/fold/$names')({
   head: ({ params }) => {
@@ -415,6 +416,47 @@ function ShareButton({ name1, name2 }: { name1: string; name2: string }) {
   )
 }
 
+// Info icon with tooltip
+function InfoTooltip({ text }: { text: string }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className="ml-1.5 inline-flex cursor-help">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 16v-4" />
+            <path d="M12 8h.01" />
+          </svg>
+        </span>
+      </TooltipTrigger>
+      <TooltipContent side="top">
+        {text}
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+// Stat descriptions for tooltips
+const STAT_DESCRIPTIONS = {
+  residues: "Amino acids in your protein sequence. Each letter in your names becomes one residue.",
+  atoms: "Total atoms making up the 3D structure. More atoms = more molecular detail.",
+  uniqueness: "How structurally novel your protein is. Higher = more one-of-a-kind shape.",
+  dimensions: "The 3D bounding box of your protein in Ångströms (1Å = 0.1 nanometers).",
+  mass: "Estimated molecular weight. For reference, water is 0.018 kDa.",
+  backbone: "Alpha carbon atoms forming the protein's spine. One per residue.",
+}
+
 // Protein stats card component
 function ProteinStatsCard({ pdbData, sequence }: { pdbData: string; sequence: string }) {
   const stats = useMemo(() => parsePdbStats(pdbData), [pdbData])
@@ -441,35 +483,65 @@ function ProteinStatsCard({ pdbData, sequence }: { pdbData: string; sequence: st
       <table className="w-full text-sm">
         <tbody className="divide-y divide-border/50">
           <tr>
-            <td className="py-1.5 text-muted-foreground">Residues</td>
+            <td className="py-1.5 text-muted-foreground">
+              <span className="inline-flex items-center">
+                Residues
+                <InfoTooltip text={STAT_DESCRIPTIONS.residues} />
+              </span>
+            </td>
             <td className="py-1.5 text-right font-mono text-foreground">{stats.residueCount}</td>
           </tr>
           <tr>
-            <td className="py-1.5 text-muted-foreground">Atoms</td>
+            <td className="py-1.5 text-muted-foreground">
+              <span className="inline-flex items-center">
+                Atoms
+                <InfoTooltip text={STAT_DESCRIPTIONS.atoms} />
+              </span>
+            </td>
             <td className="py-1.5 text-right font-mono text-foreground">{stats.atomCount.toLocaleString()}</td>
           </tr>
           <tr>
-            <td className="py-1.5 text-muted-foreground">Uniqueness</td>
+            <td className="py-1.5 text-muted-foreground">
+              <span className="inline-flex items-center">
+                Uniqueness
+                <InfoTooltip text={STAT_DESCRIPTIONS.uniqueness} />
+              </span>
+            </td>
             <td className="py-1.5 text-right font-mono text-foreground">
               {(100 - stats.averagePlddt).toFixed(1)}
               <span className="ml-1 text-xs text-muted-foreground">/ 100</span>
             </td>
           </tr>
           <tr>
-            <td className="py-1.5 text-muted-foreground">Dimensions (Å)</td>
+            <td className="py-1.5 text-muted-foreground">
+              <span className="inline-flex items-center">
+                Dimensions (Å)
+                <InfoTooltip text={STAT_DESCRIPTIONS.dimensions} />
+              </span>
+            </td>
             <td className="py-1.5 text-right font-mono text-foreground">
               {stats.dimensions.width.toFixed(1)} × {stats.dimensions.height.toFixed(1)} × {stats.dimensions.depth.toFixed(1)}
             </td>
           </tr>
           <tr>
-            <td className="py-1.5 text-muted-foreground">Est. Mass</td>
+            <td className="py-1.5 text-muted-foreground">
+              <span className="inline-flex items-center">
+                Est. Mass
+                <InfoTooltip text={STAT_DESCRIPTIONS.mass} />
+              </span>
+            </td>
             <td className="py-1.5 text-right font-mono text-foreground">
               {stats.molecularWeight.toFixed(1)}
               <span className="ml-1 text-xs text-muted-foreground">kDa</span>
             </td>
           </tr>
           <tr>
-            <td className="py-1.5 text-muted-foreground">Backbone (Cα)</td>
+            <td className="py-1.5 text-muted-foreground">
+              <span className="inline-flex items-center">
+                Backbone (Cα)
+                <InfoTooltip text={STAT_DESCRIPTIONS.backbone} />
+              </span>
+            </td>
             <td className="py-1.5 text-right font-mono text-foreground">{stats.backboneAtoms}</td>
           </tr>
         </tbody>
