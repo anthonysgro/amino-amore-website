@@ -68,29 +68,65 @@ export function ProteinViewer({
     setInternalColorMode(colorMode)
   }, [colorMode])
 
-  // Fullscreen handling
+  // Fullscreen handling - with mobile fallback
   const toggleFullscreen = useCallback(() => {
     if (!fullscreenRef.current) return
     
-    if (!document.fullscreenElement) {
-      fullscreenRef.current.requestFullscreen().then(() => {
-        setIsFullscreen(true)
-      }).catch(() => {
-        // Fullscreen not supported or denied
-      })
+    // Check if native fullscreen API is available
+    const canUseNativeFullscreen = document.fullscreenEnabled || 
+      (document as unknown as { webkitFullscreenEnabled?: boolean }).webkitFullscreenEnabled
+    
+    if (canUseNativeFullscreen) {
+      // Use native fullscreen API
+      const elem = fullscreenRef.current as HTMLElement & {
+        webkitRequestFullscreen?: () => Promise<void>
+      }
+      const doc = document as Document & {
+        webkitFullscreenElement?: Element
+        webkitExitFullscreen?: () => Promise<void>
+      }
+      
+      if (!document.fullscreenElement && !doc.webkitFullscreenElement) {
+        // Enter fullscreen
+        const requestFn = elem.webkitRequestFullscreen ?? elem.requestFullscreen
+        requestFn.call(elem).then(() => {
+          setIsFullscreen(true)
+        }).catch(() => {
+          // Native fullscreen failed, use CSS fallback
+          setIsFullscreen(true)
+        })
+      } else {
+        // Exit fullscreen
+        const exitFn = doc.webkitExitFullscreen ?? document.exitFullscreen
+        exitFn.call(document).then(() => {
+          setIsFullscreen(false)
+        }).catch(() => {
+          setIsFullscreen(false)
+        })
+      }
     } else {
-      document.exitFullscreen().then(() => {
-        setIsFullscreen(false)
-      }).catch(() => {})
+      // Mobile fallback: toggle CSS-based fullscreen
+      setIsFullscreen(prev => !prev)
     }
   }, [])
 
   useEffect(() => {
     const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement)
+      const doc = document as Document & {
+        webkitFullscreenElement?: Element
+      }
+      const isNativeFullscreen = !!(document.fullscreenElement || doc.webkitFullscreenElement)
+      // Only update if we're using native fullscreen (not CSS fallback)
+      if (document.fullscreenEnabled || (document as unknown as { webkitFullscreenEnabled?: boolean }).webkitFullscreenEnabled) {
+        setIsFullscreen(isNativeFullscreen)
+      }
     }
     document.addEventListener('fullscreenchange', handleFullscreenChange)
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange)
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange)
+    }
   }, [])
 
   useEffect(() => {
@@ -533,7 +569,11 @@ export function ProteinViewer({
   const stats = pdbData ? parsePdbStats(pdbData) : null
 
   return (
-    <div ref={fullscreenRef} className={cn(containerStyles, 'flex flex-col', isFullscreen && 'rounded-none')}>
+    <div ref={fullscreenRef} className={cn(
+      containerStyles, 
+      'flex flex-col', 
+      isFullscreen && 'fixed inset-0 z-50 rounded-none bg-background'
+    )}>
       {/* Ambient glow effect */}
       <div className="absolute -inset-1 bg-linear-to-r from-pink-500/20 via-rose-500/20 to-purple-500/20 rounded-2xl blur-xl opacity-50 -z-10 animate-pulse" style={{ animationDuration: '3s' }} />
       
@@ -594,15 +634,15 @@ export function ProteinViewer({
         
         {/* pLDDT Legend */}
         {viewerReady && internalColorMode === 'plddt' && (
-          <div className="absolute top-3 left-3 pointer-events-none">
-            <div className="bg-background/85 backdrop-blur-sm rounded-lg p-3 text-xs">
-              <div className="text-primary font-semibold text-[10px] uppercase tracking-wider mb-2">
+          <div className="absolute top-2 left-2 sm:top-3 sm:left-3 pointer-events-none">
+            <div className="bg-background/85 backdrop-blur-sm rounded-lg p-2 sm:p-3 text-[10px] sm:text-xs">
+              <div className="text-primary font-semibold text-[8px] sm:text-[10px] uppercase tracking-wider mb-1.5 sm:mb-2">
                 Confidence (pLDDT)
               </div>
-              <div className="space-y-1.5">
+              <div className="space-y-1 sm:space-y-1.5">
                 {Object.entries(PLDDT_COLOR_SCHEME).map(([key, { color, label, min, max }]) => (
-                  <div key={key} className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: color }} />
+                  <div key={key} className="flex items-center gap-1.5 sm:gap-2">
+                    <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-sm" style={{ backgroundColor: color }} />
                     <span className="text-muted-foreground">{label}</span>
                     <span className="text-foreground/50 ml-auto">{min}-{max}</span>
                   </div>
@@ -614,25 +654,25 @@ export function ProteinViewer({
         
         {/* Stats overlay (when not pLDDT mode) */}
         {viewerReady && stats && stats.atomCount > 0 && showStats && internalColorMode !== 'plddt' && (
-          <div className="absolute top-3 left-3 pointer-events-none">
-            <div className="bg-background/85 backdrop-blur-sm rounded-lg p-3 text-xs">
-              <div className="text-primary font-semibold text-[10px] uppercase tracking-wider mb-2">
+          <div className="absolute top-2 left-2 sm:top-3 sm:left-3 pointer-events-none">
+            <div className="bg-background/85 backdrop-blur-sm rounded-lg p-2 sm:p-3 text-[10px] sm:text-xs">
+              <div className="text-primary font-semibold text-[8px] sm:text-[10px] uppercase tracking-wider mb-1.5 sm:mb-2">
                 Structure Data
               </div>
-              <div className="space-y-1 font-mono">
-                <div className="flex justify-between gap-4">
+              <div className="space-y-0.5 sm:space-y-1 font-mono">
+                <div className="flex justify-between gap-2 sm:gap-4">
                   <span className="text-muted-foreground">Residues</span>
                   <span className="text-foreground font-medium">{stats.residueCount}</span>
                 </div>
-                <div className="flex justify-between gap-4">
+                <div className="flex justify-between gap-2 sm:gap-4">
                   <span className="text-muted-foreground">Atoms</span>
                   <span className="text-foreground font-medium">{stats.atomCount.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between gap-4">
+                <div className="flex justify-between gap-2 sm:gap-4">
                   <span className="text-muted-foreground">Uniqueness</span>
                   <span className="text-foreground font-medium">{(100 - stats.averagePlddt).toFixed(1)}%</span>
                 </div>
-                <div className="flex justify-between gap-4">
+                <div className="flex justify-between gap-2 sm:gap-4">
                   <span className="text-muted-foreground">Size (Å)</span>
                   <span className="text-foreground font-medium">{stats.dimensions.width.toFixed(0)}×{stats.dimensions.height.toFixed(0)}×{stats.dimensions.depth.toFixed(0)}</span>
                 </div>
@@ -887,7 +927,7 @@ function FloatingToolbar({
 }: FloatingToolbarProps) {
   const buttonStyles = cn(
     'flex items-center justify-center',
-    'w-10 h-10',
+    'w-9 h-9 sm:w-10 sm:h-10',
     'rounded-full',
     'bg-background/80 backdrop-blur-md',
     'text-foreground/80',
@@ -898,11 +938,21 @@ function FloatingToolbar({
     'shadow-lg shadow-black/5'
   )
 
+  // Divider: vertical on mobile (horizontal layout), horizontal on desktop (vertical layout)
+  const dividerStyles = 'bg-border/50 w-px h-6 sm:w-auto sm:h-px sm:my-1'
+
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-2"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={cn(
+        'absolute',
+        // Mobile: horizontal bar at bottom center
+        'bottom-3 left-1/2 -translate-x-1/2 flex-row gap-2',
+        // Desktop: vertical bar on right side
+        'sm:bottom-auto sm:left-auto sm:translate-x-0 sm:right-3 sm:top-1/2 sm:-translate-y-1/2 sm:flex-col',
+        'flex'
+      )}
     >
       <Tooltip>
         <TooltipTrigger asChild>
@@ -910,7 +960,8 @@ function FloatingToolbar({
             {isSpinning ? <PauseIcon /> : <PlayIcon />}
           </button>
         </TooltipTrigger>
-        <TooltipContent side="left">{isSpinning ? 'Stop rotation' : 'Start rotation'}</TooltipContent>
+        <TooltipContent side="top" className="sm:hidden">{isSpinning ? 'Stop rotation' : 'Start rotation'}</TooltipContent>
+        <TooltipContent side="left" className="hidden sm:block">{isSpinning ? 'Stop rotation' : 'Start rotation'}</TooltipContent>
       </Tooltip>
       
       <Tooltip>
@@ -919,12 +970,15 @@ function FloatingToolbar({
             <PaletteIcon />
           </button>
         </TooltipTrigger>
-        <TooltipContent side="left">
+        <TooltipContent side="top" className="sm:hidden">
+          {colorMode === 'spectrum' ? 'Show pLDDT colors' : 'Show spectrum colors'}
+        </TooltipContent>
+        <TooltipContent side="left" className="hidden sm:block">
           {colorMode === 'spectrum' ? 'Show pLDDT colors' : 'Show spectrum colors'}
         </TooltipContent>
       </Tooltip>
       
-      <div className="h-px bg-border/50 my-1" />
+      <div className={dividerStyles} />
       
       <Tooltip>
         <TooltipTrigger asChild>
@@ -932,7 +986,8 @@ function FloatingToolbar({
             <CameraIcon />
           </button>
         </TooltipTrigger>
-        <TooltipContent side="left">Save image</TooltipContent>
+        <TooltipContent side="top" className="sm:hidden">Save image</TooltipContent>
+        <TooltipContent side="left" className="hidden sm:block">Save image</TooltipContent>
       </Tooltip>
       
       <Tooltip>
@@ -941,10 +996,11 @@ function FloatingToolbar({
             <DownloadIcon />
           </button>
         </TooltipTrigger>
-        <TooltipContent side="left">Download PDB file</TooltipContent>
+        <TooltipContent side="top" className="sm:hidden">Download PDB file</TooltipContent>
+        <TooltipContent side="left" className="hidden sm:block">Download PDB file</TooltipContent>
       </Tooltip>
       
-      <div className="h-px bg-border/50 my-1" />
+      <div className={dividerStyles} />
       
       <Tooltip>
         <TooltipTrigger asChild>
@@ -952,7 +1008,8 @@ function FloatingToolbar({
             {isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
           </button>
         </TooltipTrigger>
-        <TooltipContent side="left">{isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}</TooltipContent>
+        <TooltipContent side="top" className="sm:hidden">{isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}</TooltipContent>
+        <TooltipContent side="left" className="hidden sm:block">{isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}</TooltipContent>
       </Tooltip>
     </motion.div>
   )
