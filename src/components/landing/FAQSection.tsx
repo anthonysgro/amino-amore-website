@@ -90,9 +90,6 @@ export function FAQSection({ className, ...props }: FAQSectionProps) {
         <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
           Questions?
         </h2>
-        <p className="mt-4 text-lg text-muted-foreground">
-          We got answers (and they're not boring)
-        </p>
       </MotionDiv>
 
       <MotionDiv
