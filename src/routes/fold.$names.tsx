@@ -383,8 +383,8 @@ function ShareButton({ name1, name2 }: { name1: string; name2: string }) {
       }
     }
 
-    // Fall back to clipboard
-    await navigator.clipboard.writeText(`${text}\n${url}`)
+    // Fall back to clipboard - URL first, then text
+    await navigator.clipboard.writeText(`${url}\n${text}`)
     setShared(true)
     setTimeout(() => setShared(false), 2000)
   }
