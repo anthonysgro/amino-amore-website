@@ -1,35 +1,38 @@
-import * as React from "react"
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { AnimatePresence, motion } from "motion/react"
-import { useQueryClient } from "@tanstack/react-query"
+import * as React from 'react'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { AnimatePresence, motion } from 'motion/react'
+import { useQueryClient } from '@tanstack/react-query'
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Navigation } from "@/components/landing/Navigation"
-import { Section } from "@/components/landing/Section"
-import { DNAHeartLogo } from "@/components/landing/DNAHeartLogo"
-import { foldProteinQueryOptions } from "@/lib/queryClient"
-import { createLoveSequence, isCreateLoveSequenceError } from "@/utils/foldLogic"
+} from '@/components/ui/card'
+import { Navigation } from '@/components/landing/Navigation'
+import { Section } from '@/components/landing/Section'
+import { DNAHeartLogo } from '@/components/landing/DNAHeartLogo'
+import { foldProteinQueryOptions } from '@/lib/queryClient'
+import {
+  createLoveSequence,
+  isCreateLoveSequenceError,
+} from '@/utils/foldLogic'
 
-export const Route = createFileRoute("/create")({
+export const Route = createFileRoute('/create')({
   component: CreatePage,
 })
 
 const CUTE_MESSAGES = [
-  "Working on some amino amore...",
-  "Weaving your names into amino acids... 🧬",
-  "Adding the heart linker... 💗",
-  "Folding your love protein... 🔬",
-  "Calculating molecular bonds... ⚛️",
-  "Almost there, love takes time... 💫",
+  'Working on some amino amore...',
+  'Weaving your names into amino acids... 🧬',
+  'Adding the heart linker... 💗',
+  'Folding your love protein... 🔬',
+  'Calculating molecular bonds... ⚛️',
+  'Almost there, love takes time... 💫',
 ]
 
 interface PartnerFormData {
@@ -43,15 +46,15 @@ function CreatePage() {
   const queryClient = useQueryClient()
 
   const [partner1, setPartner1] = React.useState<PartnerFormData>({
-    firstName: "",
-    middleName: "",
-    lastName: "",
+    firstName: '',
+    middleName: '',
+    lastName: '',
   })
 
   const [partner2, setPartner2] = React.useState<PartnerFormData>({
-    firstName: "",
-    middleName: "",
-    lastName: "",
+    firstName: '',
+    middleName: '',
+    lastName: '',
   })
 
   const [isGenerating, setIsGenerating] = React.useState(false)
@@ -69,12 +72,20 @@ function CreatePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const name1Parts = [partner1.firstName, partner1.middleName, partner1.lastName]
+    const name1Parts = [
+      partner1.firstName,
+      partner1.middleName,
+      partner1.lastName,
+    ]
       .filter(Boolean)
-      .join("")
-    const name2Parts = [partner2.firstName, partner2.middleName, partner2.lastName]
+      .join('')
+    const name2Parts = [
+      partner2.firstName,
+      partner2.middleName,
+      partner2.lastName,
+    ]
       .filter(Boolean)
-      .join("")
+      .join('')
 
     if (!name1Parts || !name2Parts) return
 
@@ -83,11 +94,13 @@ function CreatePage() {
 
     // Create the sequence and prefetch the protein data
     const result = createLoveSequence(name1Parts, name2Parts)
-    
+
     if (!isCreateLoveSequenceError(result)) {
       try {
         // Prefetch the protein fold data
-        await queryClient.prefetchQuery(foldProteinQueryOptions(result.sequence))
+        await queryClient.prefetchQuery(
+          foldProteinQueryOptions(result.sequence),
+        )
       } catch {
         // Even if prefetch fails, we'll navigate and let the fold page handle it
       }
@@ -95,13 +108,13 @@ function CreatePage() {
 
     // Navigate to the fold page
     navigate({
-      to: "/fold/$names",
+      to: '/fold/$names',
       params: { names: `${name1Parts}-${name2Parts}` },
     })
   }
 
   const isValid =
-    partner1.firstName.trim() !== "" && partner2.firstName.trim() !== ""
+    partner1.firstName.trim() !== '' && partner2.firstName.trim() !== ''
 
   return (
     <div className="min-h-screen bg-background">
@@ -122,22 +135,27 @@ function CreatePage() {
                 key="form"
                 initial={{ opacity: 1 }}
                 exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
+                transition={{ duration: 0.4, ease: 'easeInOut' }}
               >
                 <div className="mb-4 lg:mb-8 text-center">
                   <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-                    Create Your{" "}
+                    Create Your{' '}
                     <span className="text-primary">Love Protein</span>
                   </h1>
                   <p className="mt-2 lg:mt-4 text-base lg:text-lg text-muted-foreground">
-                    Enter both partners' names to generate your unique molecular bond
+                    Enter both partners' names to generate your unique molecular
+                    bond
                   </p>
                   <p className="mt-1 text-sm text-muted-foreground/70">
-                    💡 Add middle and last names for an even more unique protein structure
+                    💡 Add middle and last names for an even more unique protein
+                    structure
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-8">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-4 lg:space-y-8"
+                >
                   <PartnerCard
                     title="Partner 1"
                     emoji="💕"
@@ -189,7 +207,7 @@ function LoadingState({ message, name1, name2 }: LoadingStateProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
       className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background text-center"
     >
       {/* Animated DNA Heart */}
@@ -201,7 +219,7 @@ function LoadingState({ message, name1, name2 }: LoadingStateProps) {
         transition={{
           duration: 2,
           repeat: Infinity,
-          ease: "easeInOut",
+          ease: 'easeInOut',
         }}
         className="mb-8"
       >
@@ -297,7 +315,7 @@ function PartnerCard({ title, emoji, data, onChange }: PartnerCardProps) {
               id={`${title}-first`}
               placeholder="First"
               value={data.firstName}
-              onChange={(e) => updateField("firstName", e.target.value)}
+              onChange={(e) => updateField('firstName', e.target.value)}
               required
             />
           </div>
@@ -307,7 +325,7 @@ function PartnerCard({ title, emoji, data, onChange }: PartnerCardProps) {
               id={`${title}-middle`}
               placeholder="Middle"
               value={data.middleName}
-              onChange={(e) => updateField("middleName", e.target.value)}
+              onChange={(e) => updateField('middleName', e.target.value)}
             />
           </div>
           <div className="space-y-2">
@@ -316,7 +334,7 @@ function PartnerCard({ title, emoji, data, onChange }: PartnerCardProps) {
               id={`${title}-last`}
               placeholder="Last"
               value={data.lastName}
-              onChange={(e) => updateField("lastName", e.target.value)}
+              onChange={(e) => updateField('lastName', e.target.value)}
             />
           </div>
         </div>

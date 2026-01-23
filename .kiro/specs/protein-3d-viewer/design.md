@@ -286,11 +286,11 @@ function EmptyState() {
 
 ```typescript
 interface ProteinViewerProps {
-  pdbData: string | undefined    // Raw PDB text from ESMFold
-  isLoading?: boolean            // Show loading state
-  name1?: string                 // First person's name (for labels)
-  name2?: string                 // Second person's name (for labels)
-  className?: string             // Additional CSS classes
+  pdbData: string | undefined // Raw PDB text from ESMFold
+  isLoading?: boolean // Show loading state
+  name1?: string // First person's name (for labels)
+  name2?: string // Second person's name (for labels)
+  className?: string // Additional CSS classes
 }
 ```
 
@@ -298,43 +298,43 @@ interface ProteinViewerProps {
 
 ```typescript
 interface ViewerState {
-  isSpinning: boolean           // Auto-rotation enabled
-  viewerReady: boolean          // 3Dmol initialized successfully
-  error: string | null          // Initialization error message
+  isSpinning: boolean // Auto-rotation enabled
+  viewerReady: boolean // 3Dmol initialized successfully
+  error: string | null // Initialization error message
 }
 ```
 
 ## Correctness Properties
 
-*A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+_A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees._
 
 ### Property 1: SSR-Safe Module Import
 
-*For any* import of the ProteinViewer module in a Node.js environment (where `window` is undefined), the import SHALL complete without throwing errors related to `window`, `document`, or WebGL.
+_For any_ import of the ProteinViewer module in a Node.js environment (where `window` is undefined), the import SHALL complete without throwing errors related to `window`, `document`, or WebGL.
 
 **Validates: Requirements 1.1, 1.4**
 
 ### Property 2: PDB Model Management
 
-*For any* sequence of PDB data changes (including initial load and updates), the viewer SHALL clear any existing model before adding the new one, ensuring only one model is displayed at a time.
+_For any_ sequence of PDB data changes (including initial load and updates), the viewer SHALL clear any existing model before adding the new one, ensuring only one model is displayed at a time.
 
 **Validates: Requirements 2.1, 2.5**
 
 ### Property 3: Spin Toggle State Consistency
 
-*For any* number of spin toggle clicks, the spin state SHALL alternate between true and false, and the viewer's spin() method SHALL be called with the corresponding boolean value.
+_For any_ number of spin toggle clicks, the spin state SHALL alternate between true and false, and the viewer's spin() method SHALL be called with the corresponding boolean value.
 
 **Validates: Requirements 3.3, 3.5**
 
 ### Property 4: Name Label Creation
 
-*For any* pair of non-empty name strings provided to the component, the viewer SHALL create exactly two labels containing those names.
+_For any_ pair of non-empty name strings provided to the component, the viewer SHALL create exactly two labels containing those names.
 
 **Validates: Requirements 4.1**
 
 ### Property 5: Loading and Error State Rendering
 
-*For any* combination of `isLoading`, `error`, and `pdbData` props, the component SHALL render exactly one of: loading skeleton (when isLoading=true), error message (when error is set), empty state (when pdbData is undefined), or the 3D viewer (when pdbData is valid).
+_For any_ combination of `isLoading`, `error`, and `pdbData` props, the component SHALL render exactly one of: loading skeleton (when isLoading=true), error message (when error is set), empty state (when pdbData is undefined), or the 3D viewer (when pdbData is valid).
 
 **Validates: Requirements 5.1, 5.2, 5.3**
 
@@ -342,19 +342,19 @@ interface ViewerState {
 
 ### Initialization Errors
 
-| Error Type | Detection | User Message |
-|------------|-----------|--------------|
-| WebGL not supported | 3Dmol throws on createViewer | "Unable to initialize 3D viewer. WebGL may not be supported." |
-| Invalid PDB data | 3Dmol throws on addModel | "Unable to display protein. The structure data may be invalid." |
-| Dynamic import fails | import('3dmol') rejects | "Unable to load 3D viewer library." |
+| Error Type           | Detection                    | User Message                                                    |
+| -------------------- | ---------------------------- | --------------------------------------------------------------- |
+| WebGL not supported  | 3Dmol throws on createViewer | "Unable to initialize 3D viewer. WebGL may not be supported."   |
+| Invalid PDB data     | 3Dmol throws on addModel     | "Unable to display protein. The structure data may be invalid." |
+| Dynamic import fails | import('3dmol') rejects      | "Unable to load 3D viewer library."                             |
 
 ### Runtime Errors
 
-| Error Type | Detection | Handling |
-|------------|-----------|----------|
-| Spin on null viewer | viewerRef.current is null | Early return, no-op |
-| Screenshot on null viewer | viewerRef.current is null | Early return, no-op |
-| Container unmounted | containerRef.current is null | Skip initialization |
+| Error Type                | Detection                    | Handling            |
+| ------------------------- | ---------------------------- | ------------------- |
+| Spin on null viewer       | viewerRef.current is null    | Early return, no-op |
+| Screenshot on null viewer | viewerRef.current is null    | Early return, no-op |
+| Container unmounted       | containerRef.current is null | Skip initialization |
 
 ## Testing Strategy
 

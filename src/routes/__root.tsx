@@ -36,7 +36,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       },
       {
         name: 'description',
-        content: 'Transform your names into a unique 3D protein structure. Real science, wrapped in a love letter.',
+        content:
+          'Transform your names into a unique 3D protein structure. Real science, wrapped in a love letter.',
       },
       // Open Graph
       {
@@ -45,7 +46,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       },
       {
         property: 'og:description',
-        content: 'Transform your names into a unique 3D protein structure. Real science, wrapped in a love letter.',
+        content:
+          'Transform your names into a unique 3D protein structure. Real science, wrapped in a love letter.',
       },
       {
         property: 'og:image',
@@ -70,7 +72,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       },
       {
         name: 'twitter:description',
-        content: 'Transform your names into a unique 3D protein structure. Real science, wrapped in a love letter.',
+        content:
+          'Transform your names into a unique 3D protein structure. Real science, wrapped in a love letter.',
       },
       {
         name: 'twitter:image',
@@ -105,7 +108,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="dark">
+      <ThemeProvider>
         <Outlet />
       </ThemeProvider>
     </QueryClientProvider>
@@ -156,13 +159,17 @@ function NotFoundPage() {
             This bond doesn't exist
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Looks like this molecular structure got lost in the lab. 
-            Let's get you back to creating something beautiful.
+            Looks like this molecular structure got lost in the lab. Let's get
+            you back to creating something beautiful.
           </p>
 
           {/* Navigation buttons */}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Button asChild size="lg" className="bg-primary text-primary-foreground">
+            <Button
+              asChild
+              size="lg"
+              className="bg-primary text-primary-foreground"
+            >
               <Link to="/create">Create a Love Protein</Link>
             </Button>
             <Button asChild variant="outline" size="lg">

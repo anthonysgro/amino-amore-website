@@ -1,12 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
 
-import { FAQSection } from "@/components/landing/FAQSection";
-import { Footer } from "@/components/landing/Footer";
-import { HeroSection } from "@/components/landing/HeroSection";
-import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
-import { Navigation } from "@/components/landing/Navigation";
+import { FAQSection } from '@/components/landing/FAQSection'
+import { Footer } from '@/components/landing/Footer'
+import { HeroSection } from '@/components/landing/HeroSection'
+import { HowItWorksSection } from '@/components/landing/HowItWorksSection'
+import { Navigation } from '@/components/landing/Navigation'
 
-export const Route = createFileRoute("/")({ component: App });
+export const Route = createFileRoute('/')({ component: App })
 
 function App() {
   return (
@@ -19,5 +19,5 @@ function App() {
       </main>
       <Footer />
     </div>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useState } from "react"
+import { RefObject, useEffect, useState } from 'react'
 
 interface Dimensions {
   width: number
@@ -6,7 +6,7 @@ interface Dimensions {
 }
 
 export function useDimensions(
-  ref: RefObject<HTMLElement | SVGElement | null>
+  ref: RefObject<HTMLElement | SVGElement | null>,
 ): Dimensions {
   const [dimensions, setDimensions] = useState<Dimensions>({
     width: 0,
@@ -22,8 +22,8 @@ export function useDimensions(
     }
 
     updateDimensions()
-    window.addEventListener("resize", updateDimensions)
-    return () => window.removeEventListener("resize", updateDimensions)
+    window.addEventListener('resize', updateDimensions)
+    return () => window.removeEventListener('resize', updateDimensions)
   }, [ref])
 
   return dimensions

@@ -41,7 +41,7 @@ Integrate the Meta ESMFold API into FoldedHearts using TanStack Start's SSR capa
     - Add 30-second timeout with AbortController
     - Return `{ pdb, sequence }` on success
     - _Requirements: 2.2, 2.3, 2.4_
-  - [ ]* 4.2 Write property test for server function passthrough
+  - [ ]\* 4.2 Write property test for server function passthrough
     - **Property 2: Server Function Passthrough Integrity**
     - **Validates: Requirements 2.2, 2.3**
 
@@ -52,7 +52,7 @@ Integrate the Meta ESMFold API into FoldedHearts using TanStack Start's SSR capa
     - Validate presence of ATOM records
     - Return `{ isValid, error? }` result
     - _Requirements: 5.1, 5.2, 5.3_
-  - [ ]* 5.2 Write property tests for PDB validation
+  - [ ]\* 5.2 Write property tests for PDB validation
     - **Property 7: PDB Validation Success**
     - **Property 8: PDB Validation Failure**
     - **Validates: Requirements 5.1, 5.3**
@@ -64,7 +64,7 @@ Integrate the Meta ESMFold API into FoldedHearts using TanStack Start's SSR capa
     - Handle enabled state for empty/undefined sequences
     - Return `{ data, isLoading, isPending, isFetching, isError, error, refetch }`
     - _Requirements: 3.1, 3.2, 3.4, 3.5_
-  - [ ]* 6.2 Write property tests for hook behavior
+  - [ ]\* 6.2 Write property tests for hook behavior
     - **Property 4: Hook State Shape**
     - **Property 5: Invalid Input Rejection**
     - **Validates: Requirements 3.2, 3.5**
@@ -80,7 +80,7 @@ Integrate the Meta ESMFold API into FoldedHearts using TanStack Start's SSR capa
     - Add loader that calls `queryClient.prefetchQuery(foldProteinQueryOptions(sequence))`
     - Use `createLoveSequence` from foldLogic to generate sequence from names
     - _Requirements: 1.4, 3.3_
-  - [ ]* 8.2 Write property test for cache behavior
+  - [ ]\* 8.2 Write property test for cache behavior
     - **Property 1: Cache Hit Returns Cached Data**
     - **Property 6: Cache Persistence on Error**
     - **Validates: Requirements 1.4, 3.3, 4.4**

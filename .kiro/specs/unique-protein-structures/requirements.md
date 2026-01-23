@@ -73,4 +73,3 @@ This feature enhances the FoldedHearts protein folding logic to generate more vi
 2. THE User_Interface SHALL show descriptive names for each strategy: "Flexible Bond", "Structural Anchor", "True Love Bond"
 3. WHEN a user selects a strategy, THE User_Interface SHALL pass the selection to the Fold_Logic
 4. THE User_Interface SHALL display a brief explanation of what each strategy does
-

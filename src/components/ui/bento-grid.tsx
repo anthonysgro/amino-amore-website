@@ -1,17 +1,17 @@
-import * as React from "react"
-import { cva } from "class-variance-authority"
+import * as React from 'react'
+import { cva } from 'class-variance-authority'
 
-import type { VariantProps } from "class-variance-authority"
+import type { VariantProps } from 'class-variance-authority'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
-const bentoGridVariants = cva("grid gap-4 md:gap-6", {
+const bentoGridVariants = cva('grid gap-4 md:gap-6', {
   variants: {
     columns: {
-      1: "grid-cols-1",
-      2: "grid-cols-1 md:grid-cols-2",
-      3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
-      4: "grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
+      1: 'grid-cols-1',
+      2: 'grid-cols-1 md:grid-cols-2',
+      3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+      4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
     },
   },
   defaultVariants: {
@@ -20,8 +20,7 @@ const bentoGridVariants = cva("grid gap-4 md:gap-6", {
 })
 
 interface BentoGridProps
-  extends React.ComponentProps<"div">,
-    VariantProps<typeof bentoGridVariants> {}
+  extends React.ComponentProps<'div'>, VariantProps<typeof bentoGridVariants> {}
 
 function BentoGrid({ columns, className, children, ...props }: BentoGridProps) {
   return (
@@ -35,16 +34,16 @@ function BentoGrid({ columns, className, children, ...props }: BentoGridProps) {
   )
 }
 
-const bentoGridItemVariants = cva("", {
+const bentoGridItemVariants = cva('', {
   variants: {
     colSpan: {
-      1: "col-span-1",
-      2: "col-span-1 md:col-span-2",
-      3: "col-span-1 md:col-span-2 lg:col-span-3",
+      1: 'col-span-1',
+      2: 'col-span-1 md:col-span-2',
+      3: 'col-span-1 md:col-span-2 lg:col-span-3',
     },
     rowSpan: {
-      1: "row-span-1",
-      2: "row-span-1 md:row-span-2",
+      1: 'row-span-1',
+      2: 'row-span-1 md:row-span-2',
     },
   },
   defaultVariants: {
@@ -54,7 +53,8 @@ const bentoGridItemVariants = cva("", {
 })
 
 interface BentoGridItemProps
-  extends React.ComponentProps<"div">,
+  extends
+    React.ComponentProps<'div'>,
     VariantProps<typeof bentoGridItemVariants> {}
 
 function BentoGridItem({

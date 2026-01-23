@@ -1,13 +1,13 @@
-"use client"
+'use client'
 
-import React, { useMemo, useRef, useState } from "react"
-import { cn } from "@/lib/utils"
-import { useDimensions } from "@/hooks/use-dimensions"
+import React, { useMemo, useRef, useState } from 'react'
+import { cn } from '@/lib/utils'
+import { useDimensions } from '@/hooks/use-dimensions'
 
 interface AnimatedGradientProps {
   colors: string[]
   speed?: number
-  blur?: "light" | "medium" | "heavy"
+  blur?: 'light' | 'medium' | 'heavy'
 }
 
 interface CircleConfig {
@@ -43,7 +43,7 @@ function generateCircleConfigs(count: number): CircleConfig[] {
 const AnimatedGradient: React.FC<AnimatedGradientProps> = ({
   colors,
   speed = 5,
-  blur = "light",
+  blur = 'light',
 }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const dimensions = useDimensions(containerRef)
@@ -53,15 +53,15 @@ const AnimatedGradient: React.FC<AnimatedGradientProps> = ({
 
   const circleSize = useMemo(
     () => Math.max(dimensions.width, dimensions.height),
-    [dimensions.width, dimensions.height]
+    [dimensions.width, dimensions.height],
   )
 
   const blurClass =
-    blur === "light"
-      ? "blur-2xl"
-      : blur === "medium"
-        ? "blur-3xl"
-        : "blur-[100px]"
+    blur === 'light'
+      ? 'blur-2xl'
+      : blur === 'medium'
+        ? 'blur-3xl'
+        : 'blur-[100px]'
 
   return (
     <div ref={containerRef} className="absolute inset-0 overflow-hidden">
@@ -73,20 +73,20 @@ const AnimatedGradient: React.FC<AnimatedGradientProps> = ({
             animationDuration: `${speed}s`,
             top: `${config.top}%`,
             left: `${config.left}%`,
-            "--tx-1": config.tx1,
-            "--ty-1": config.ty1,
-            "--tx-2": config.tx2,
-            "--ty-2": config.ty2,
-            "--tx-3": config.tx3,
-            "--ty-3": config.ty3,
-            "--tx-4": config.tx4,
-            "--ty-4": config.ty4,
+            '--tx-1': config.tx1,
+            '--ty-1': config.ty1,
+            '--tx-2': config.tx2,
+            '--ty-2': config.ty2,
+            '--tx-3': config.tx3,
+            '--ty-3': config.ty3,
+            '--tx-4': config.tx4,
+            '--ty-4': config.ty4,
           } as React.CSSProperties
 
           return (
             <svg
               key={index}
-              className={cn("absolute", "animate-background-gradient")}
+              className={cn('absolute', 'animate-background-gradient')}
               width={circleSize * config.sizeMultiplier}
               height={circleSize * config.sizeMultiplier}
               viewBox="0 0 100 100"

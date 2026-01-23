@@ -39,7 +39,7 @@ This plan implements the FoldedHearts homepage hero section and navigation heade
     - Handle link clicks to close overlay
     - _Requirements: 1.4, 5.1, 5.2, 5.3, 5.4, 5.5_
 
-  - [ ]* 3.4 Write property test for mobile navigation completeness
+  - [ ]\* 3.4 Write property test for mobile navigation completeness
     - **Property 3: Mobile Navigation Completeness**
     - **Validates: Requirements 5.2**
 
@@ -70,11 +70,11 @@ This plan implements the FoldedHearts homepage hero section and navigation heade
     - Ensure durations are 300-500ms with ease-out easing
     - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
-  - [ ]* 4.5 Write property test for animation duration bounds
+  - [ ]\* 4.5 Write property test for animation duration bounds
     - **Property 1: Animation Duration Bounds**
     - **Validates: Requirements 4.3**
 
-  - [ ]* 4.6 Write property test for reduced motion respect
+  - [ ]\* 4.6 Write property test for reduced motion respect
     - **Property 2: Reduced Motion Respect**
     - **Validates: Requirements 4.4**
 
@@ -90,7 +90,7 @@ This plan implements the FoldedHearts homepage hero section and navigation heade
     - Ensure keyboard navigation works correctly
     - _Requirements: 6.3, 4.5_
 
-  - [ ]* 5.3 Write property test for focus indicators
+  - [ ]\* 5.3 Write property test for focus indicators
     - **Property 4: Interactive Element Focus Indicators**
     - **Validates: Requirements 6.3**
 
@@ -108,5 +108,5 @@ This plan implements the FoldedHearts homepage hero section and navigation heade
 - Tasks marked with `*` are optional and can be skipped for faster MVP
 - Each task references specific requirements for traceability
 - Property tests validate universal correctness properties
-- The romantic palette colors are already defined in CSS variables (--primary, --chart-*)
+- The romantic palette colors are already defined in CSS variables (--primary, --chart-\*)
 - Motion library provides useReducedMotion hook for accessibility

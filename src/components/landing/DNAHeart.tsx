@@ -1,12 +1,16 @@
-import { useEffect, useRef, useState } from "react"
-import * as THREE from "three"
+import { useEffect, useRef, useState } from 'react'
+import * as THREE from 'three'
 
 interface DNAHeartProps {
   className?: string
 }
 
 // Heart curve parametric equation - with adjustable "heartiness"
-function getHeartPoint(t: number, scale: number = 15, heartiness: number = 0.55): THREE.Vector3 {
+function getHeartPoint(
+  t: number,
+  scale: number = 15,
+  heartiness: number = 0.55,
+): THREE.Vector3 {
   const heartX = 16 * Math.pow(Math.sin(t), 3)
   const heartY =
     13 * Math.cos(t) -
@@ -35,7 +39,7 @@ function generateStrandPoints(
   numPoints: number,
   helixRadius: number,
   helixTwist: number,
-  offset: number = 0
+  offset: number = 0,
 ): Array<THREE.Vector3> {
   const points: Array<THREE.Vector3> = []
 
@@ -92,9 +96,17 @@ function DNAHeart({ className }: DNAHeartProps) {
     if (width === 0 || height === 0) {
       const resizeObserver = new ResizeObserver((entries) => {
         const entry = entries[0]
-        if (entry && entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+        if (
+          entry &&
+          entry.contentRect.width > 0 &&
+          entry.contentRect.height > 0
+        ) {
           resizeObserver.disconnect()
-          initScene(container, entry.contentRect.width, entry.contentRect.height)
+          initScene(
+            container,
+            entry.contentRect.width,
+            entry.contentRect.height,
+          )
         }
       })
       resizeObserver.observe(container)
@@ -103,7 +115,11 @@ function DNAHeart({ className }: DNAHeartProps) {
 
     return initScene(container, width, height)
 
-    function initScene(container: HTMLDivElement, width: number, height: number) {
+    function initScene(
+      container: HTMLDivElement,
+      width: number,
+      height: number,
+    ) {
       const scene = new THREE.Scene()
       const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000)
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
@@ -134,16 +150,38 @@ function DNAHeart({ className }: DNAHeartProps) {
       const helixRadius = 2.2
       const helixTwist = 0.12
 
-      const strand1Points = generateStrandPoints(numPoints, helixRadius, helixTwist, 0)
-      const strand2Points = generateStrandPoints(numPoints, helixRadius, helixTwist, Math.PI)
+      const strand1Points = generateStrandPoints(
+        numPoints,
+        helixRadius,
+        helixTwist,
+        0,
+      )
+      const strand2Points = generateStrandPoints(
+        numPoints,
+        helixRadius,
+        helixTwist,
+        Math.PI,
+      )
 
       const curve1 = new THREE.CatmullRomCurve3(strand1Points, true)
-      const tubeGeom1 = new THREE.TubeGeometry(curve1, numPoints * 4, 0.28, 24, true)
+      const tubeGeom1 = new THREE.TubeGeometry(
+        curve1,
+        numPoints * 4,
+        0.28,
+        24,
+        true,
+      )
       const strand1Mesh = new THREE.Mesh(tubeGeom1, pinkMaterial)
       dna.add(strand1Mesh)
 
       const curve2 = new THREE.CatmullRomCurve3(strand2Points, true)
-      const tubeGeom2 = new THREE.TubeGeometry(curve2, numPoints * 4, 0.28, 24, true)
+      const tubeGeom2 = new THREE.TubeGeometry(
+        curve2,
+        numPoints * 4,
+        0.28,
+        24,
+        true,
+      )
       const strand2Mesh = new THREE.Mesh(tubeGeom2, roseMaterial)
       dna.add(strand2Mesh)
 
@@ -201,36 +239,42 @@ function DNAHeart({ className }: DNAHeartProps) {
         const id = requestAnimationFrame(animate)
         if (sceneRef.current) {
           sceneRef.current.animationId = id
-          
+
           time += 0.008
-          
+
           const targetY = Math.sin(time) * 0.5
           const targetX = 0
-          
+
           if (!sceneRef.current.isDragging) {
             manualRotationY += velocityY
             manualRotationX += velocityX
-            
+
             velocityY *= 0.96
             velocityX *= 0.96
-            
+
             manualRotationY *= 0.985
             manualRotationX *= 0.985
-            
-            if (Math.abs(manualRotationY) < 0.001 && Math.abs(velocityY) < 0.0001) {
+
+            if (
+              Math.abs(manualRotationY) < 0.001 &&
+              Math.abs(velocityY) < 0.0001
+            ) {
               manualRotationY = 0
               velocityY = 0
             }
-            if (Math.abs(manualRotationX) < 0.001 && Math.abs(velocityX) < 0.0001) {
+            if (
+              Math.abs(manualRotationX) < 0.001 &&
+              Math.abs(velocityX) < 0.0001
+            ) {
               manualRotationX = 0
               velocityX = 0
             }
           }
-          
+
           dna.rotation.y = targetY + manualRotationY
           dna.rotation.x = targetX + manualRotationX
         }
-        
+
         renderer.render(scene, camera)
       }
       animate()
@@ -241,7 +285,7 @@ function DNAHeart({ className }: DNAHeartProps) {
         sceneRef.current.previousMousePosition = { x: e.clientX, y: e.clientY }
         velocityY = 0
         velocityX = 0
-        container.style.cursor = "grabbing"
+        container.style.cursor = 'grabbing'
       }
 
       const onMouseMove = (e: MouseEvent) => {
@@ -258,19 +302,19 @@ function DNAHeart({ className }: DNAHeartProps) {
       const onMouseUp = () => {
         if (!sceneRef.current) return
         sceneRef.current.isDragging = false
-        container.style.cursor = "grab"
+        container.style.cursor = 'grab'
       }
 
       const onMouseLeave = () => {
         if (!sceneRef.current) return
         sceneRef.current.isDragging = false
-        container.style.cursor = "grab"
+        container.style.cursor = 'grab'
       }
 
-      container.addEventListener("mousedown", onMouseDown)
-      container.addEventListener("mousemove", onMouseMove)
-      container.addEventListener("mouseup", onMouseUp)
-      container.addEventListener("mouseleave", onMouseLeave)
+      container.addEventListener('mousedown', onMouseDown)
+      container.addEventListener('mousemove', onMouseMove)
+      container.addEventListener('mouseup', onMouseUp)
+      container.addEventListener('mouseleave', onMouseLeave)
 
       const handleResize = () => {
         if (!containerRef.current || !sceneRef.current) return
@@ -279,19 +323,19 @@ function DNAHeart({ className }: DNAHeartProps) {
         sceneRef.current.camera.aspect = newWidth / newHeight
         sceneRef.current.camera.updateProjectionMatrix()
         sceneRef.current.renderer.setSize(newWidth, newHeight)
-        
+
         const isMobile = window.innerWidth < 1024
         sceneRef.current.camera.position.z = isMobile ? 28 : 38
       }
 
-      window.addEventListener("resize", handleResize)
+      window.addEventListener('resize', handleResize)
 
       return () => {
-        window.removeEventListener("resize", handleResize)
-        container.removeEventListener("mousedown", onMouseDown)
-        container.removeEventListener("mousemove", onMouseMove)
-        container.removeEventListener("mouseup", onMouseUp)
-        container.removeEventListener("mouseleave", onMouseLeave)
+        window.removeEventListener('resize', handleResize)
+        container.removeEventListener('mousedown', onMouseDown)
+        container.removeEventListener('mousemove', onMouseMove)
+        container.removeEventListener('mouseup', onMouseUp)
+        container.removeEventListener('mouseleave', onMouseLeave)
         if (sceneRef.current) {
           cancelAnimationFrame(sceneRef.current.animationId)
         }
@@ -307,12 +351,14 @@ function DNAHeart({ className }: DNAHeartProps) {
     <div
       ref={containerRef}
       className={className}
-      style={{ 
-        width: "100%", 
-        height: "100%", 
-        cursor: "grab",
+      style={{
+        width: '100%',
+        height: '100%',
+        cursor: 'grab',
         // Only apply drop-shadow on non-Safari browsers (Safari has issues with WebGL canvas filters)
-        filter: isSafari ? "none" : "drop-shadow(0 0 8px rgba(244, 114, 182, 0.6)) drop-shadow(0 0 20px rgba(168, 85, 247, 0.4))",
+        filter: isSafari
+          ? 'none'
+          : 'drop-shadow(0 0 8px rgba(244, 114, 182, 0.6)) drop-shadow(0 0 20px rgba(168, 85, 247, 0.4))',
       }}
       aria-hidden="true"
     />

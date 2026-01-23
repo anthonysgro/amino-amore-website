@@ -1,13 +1,13 @@
-import * as React from "react"
-import { Link } from "@tanstack/react-router"
-import { motion, useReducedMotion } from "motion/react"
+import * as React from 'react'
+import { Link } from '@tanstack/react-router'
+import { motion, useReducedMotion } from 'motion/react'
 
-import { DNAHeart } from "./DNAHeart"
-import { Section } from "./Section"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { DNAHeart } from './DNAHeart'
+import { Section } from './Section'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
-interface HeroSectionProps extends React.ComponentProps<"section"> {
+interface HeroSectionProps extends React.ComponentProps<'section'> {
   className?: string
 }
 
@@ -41,15 +41,17 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
   const shouldReduceMotion = useReducedMotion()
 
   const textVariants = shouldReduceMotion ? staticVariants : heroTextVariants
-  const visualVariants = shouldReduceMotion ? staticVariants : heroVisualVariants
+  const visualVariants = shouldReduceMotion
+    ? staticVariants
+    : heroVisualVariants
 
   return (
     <Section
       className={cn(
-        "relative flex items-center py-8 lg:py-20 overflow-hidden",
+        'relative flex items-center py-8 lg:py-20 overflow-hidden',
         // Mobile: auto height, Desktop: full viewport minus nav
-        "min-h-0 lg:min-h-[calc(100vh-5rem)]",
-        className
+        'min-h-0 lg:min-h-[calc(100vh-5rem)]',
+        className,
       )}
       aria-labelledby="hero-headline"
       role="region"
@@ -59,12 +61,12 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
       <motion.div
         className={cn(
           // Mobile: in-flow, centered, fills width
-          "relative flex items-center justify-center",
-          "w-full max-w-[700px] aspect-square mx-auto -mb-8",
+          'relative flex items-center justify-center',
+          'w-full max-w-[700px] aspect-square mx-auto -mb-8',
           // Desktop: absolute positioned like original
-          "lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-[20%] lg:-translate-y-1/2",
-          "lg:w-[1250px] lg:max-w-none lg:h-[1250px] lg:mb-0 lg:mx-0",
-          "lg:z-20"
+          'lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-[20%] lg:-translate-y-1/2',
+          'lg:w-[1250px] lg:max-w-none lg:h-[1250px] lg:mb-0 lg:mx-0',
+          'lg:z-20',
         )}
         initial="hidden"
         animate="visible"
@@ -74,11 +76,12 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
         {/* Soft animated glow background - Safari-compatible */}
         <div
           className="absolute inset-[15%] rounded-full animate-pulse"
-          style={{ 
-            animationDuration: "8s",
-            background: "radial-gradient(circle, rgba(236, 72, 153, 0.4) 0%, rgba(236, 72, 153, 0.3) 20%, rgba(236, 72, 153, 0.15) 40%, rgba(236, 72, 153, 0.05) 60%, rgba(236, 72, 153, 0) 70%)",
-            transform: "translateZ(0)", // Force GPU acceleration for Safari
-            willChange: "opacity",
+          style={{
+            animationDuration: '8s',
+            background:
+              'radial-gradient(circle, rgba(236, 72, 153, 0.4) 0%, rgba(236, 72, 153, 0.3) 20%, rgba(236, 72, 153, 0.15) 40%, rgba(236, 72, 153, 0.05) 60%, rgba(236, 72, 153, 0) 70%)',
+            transform: 'translateZ(0)', // Force GPU acceleration for Safari
+            willChange: 'opacity',
           }}
           aria-hidden="true"
         />
@@ -105,11 +108,11 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
             id="hero-headline"
             className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl"
           >
-            Love at the{" "}
-            <span 
+            Love at the{' '}
+            <span
               className="text-primary whitespace-nowrap"
-              style={{ 
-                filter: "drop-shadow(0 0 5px rgba(244, 114, 182, 0.5))",
+              style={{
+                filter: 'drop-shadow(0 0 5px rgba(244, 114, 182, 0.5))',
               }}
             >
               molecular level
@@ -117,20 +120,20 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
           </h1>
 
           <p className="text-lg text-muted-foreground sm:text-xl max-w-2xl mx-auto lg:mx-0">
-            Two names → one amino acid sequence → a 3D protein that only exists for you two. 
-            Powered by Nobel Prize-winning AI.
+            Two names → one amino acid sequence → a 3D protein that only exists
+            for you two. Powered by Nobel Prize-winning AI.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
             <Button
               asChild
               className={cn(
-                "bg-primary text-primary-foreground",
-                "hover:brightness-95 transition-all",
-                "px-8 py-4 h-auto rounded-md",
-                "font-semibold text-lg",
-                "shadow-md hover:shadow-lg",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                'bg-primary text-primary-foreground',
+                'hover:brightness-95 transition-all',
+                'px-8 py-4 h-auto rounded-md',
+                'font-semibold text-lg',
+                'shadow-md hover:shadow-lg',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               )}
             >
               <Link

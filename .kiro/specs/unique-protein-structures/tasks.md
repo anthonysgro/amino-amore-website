@@ -20,23 +20,23 @@ Enhance the FoldedHearts protein folding system with three linker strategies (Fl
     - Implement cysteine strategy (C + Name1 + Linker + Name2 + C)
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 2.2_
 
-  - [ ]* 1.3 Write property test for linker strategy correctness
+  - [ ]\* 1.3 Write property test for linker strategy correctness
     - **Property 1: Linker Strategy Correctness**
     - **Validates: Requirements 1.1, 1.2, 1.3**
 
-  - [ ]* 1.4 Write property test for cysteine bridge structure
+  - [ ]\* 1.4 Write property test for cysteine bridge structure
     - **Property 2: Cysteine Bridge Structure**
     - **Validates: Requirements 1.4, 2.2, 2.3**
 
-  - [ ]* 1.5 Write property test for valid amino acid output
+  - [ ]\* 1.5 Write property test for valid amino acid output
     - **Property 3: Valid Amino Acid Output**
     - **Validates: Requirements 1.6**
 
-  - [ ]* 1.6 Write property test for input sanitization
+  - [ ]\* 1.6 Write property test for input sanitization
     - **Property 4: Input Sanitization**
     - **Validates: Requirements 4.1, 4.2**
 
-  - [ ]* 1.7 Write property test for sequence length bounds
+  - [ ]\* 1.7 Write property test for sequence length bounds
     - **Property 5: Sequence Length Bounds**
     - **Validates: Requirements 4.3, 4.4, 4.5**
 
@@ -89,4 +89,3 @@ Enhance the FoldedHearts protein folding system with three linker strategies (Fl
 - Property tests use fast-check library with minimum 100 iterations
 - The anchor strategy (WPHWP) is the default for most interesting shapes
 - pLDDT coloring requires PDB data with b-factor values from ESMFold
-

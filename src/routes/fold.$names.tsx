@@ -1,13 +1,12 @@
 import { useMemo, useState } from 'react'
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { motion, useReducedMotion } from 'motion/react'
-import type {LinkerStrategy} from '@/utils/foldLogic';
+import type { LinkerStrategy } from '@/utils/foldLogic'
 import { foldProteinQueryOptions } from '@/lib/queryClient'
 import {
   LINKER_CONFIGS,
-  
   createLoveSequence,
-  isCreateLoveSequenceError
+  isCreateLoveSequenceError,
 } from '@/utils/foldLogic'
 import { getProteinPersonality, parsePdbStats } from '@/utils/pdbStats'
 import { useFoldProtein } from '@/hooks/useFoldProtein'
@@ -17,16 +16,21 @@ import { Navigation } from '@/components/landing/Navigation'
 import { DNAHeartLogo } from '@/components/landing/DNAHeartLogo'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 export const Route = createFileRoute('/fold/$names')({
   head: ({ params }) => {
     const names = params.names || ''
     const [name1 = '', name2 = ''] = names.split('-')
-    const formatName = (n: string) => n ? n.charAt(0).toUpperCase() + n.slice(1).toLowerCase() : ''
+    const formatName = (n: string) =>
+      n ? n.charAt(0).toUpperCase() + n.slice(1).toLowerCase() : ''
     const title = `${formatName(name1)} 💕 ${formatName(name2)} - Our Love Protein`
     const description = `Someone special created a unique molecular bond from your names! See your Love Protein at folded.love 🧬`
-    
+
     return {
       meta: [
         { title },
@@ -101,17 +105,23 @@ function FoldRoute() {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
   }
 
-  const [selectedStrategy, setSelectedStrategy] = useState<LinkerStrategy>('anchor')
+  const [selectedStrategy, setSelectedStrategy] =
+    useState<LinkerStrategy>('anchor')
   const [showStrategyPanel, setShowStrategyPanel] = useState(false)
 
   const sequenceResult = useMemo(() => {
     return createLoveSequence(name1, name2, { strategy: selectedStrategy })
   }, [name1, name2, selectedStrategy])
 
-  const sequence = isCreateLoveSequenceError(sequenceResult) ? undefined : sequenceResult.sequence
-  const strategyError = isCreateLoveSequenceError(sequenceResult) ? sequenceResult.error : null
+  const sequence = isCreateLoveSequenceError(sequenceResult)
+    ? undefined
+    : sequenceResult.sequence
+  const strategyError = isCreateLoveSequenceError(sequenceResult)
+    ? sequenceResult.error
+    : null
 
-  const { data, isLoading, isPending, isError, error } = useFoldProtein(sequence)
+  const { data, isLoading, isPending, isError, error } =
+    useFoldProtein(sequence)
 
   const currentStrategyConfig = LINKER_CONFIGS[selectedStrategy]
   const hasError = sequenceError || strategyError || isError
@@ -119,9 +129,7 @@ function FoldRoute() {
   return (
     <div className="relative min-h-screen bg-background">
       {/* Static gradient background - GPU friendly */}
-      <div 
-        className="pointer-events-none fixed inset-0 bg-gradient-to-br from-pink-100/60 via-rose-50/40 to-purple-100/50 dark:from-pink-950/30 dark:via-rose-950/20 dark:to-purple-950/30" 
-      />
+      <div className="pointer-events-none fixed inset-0 bg-gradient-to-br from-pink-100/60 via-rose-50/40 to-purple-100/50 dark:from-pink-950/30 dark:via-rose-950/20 dark:to-purple-950/30" />
 
       {/* Subtle overlay for better contrast */}
       <div className="pointer-events-none fixed inset-0 bg-background/30 dark:bg-background/50" />
@@ -180,9 +188,7 @@ function FoldRoute() {
             >
               {/* Sequence and strategy info */}
               <div className="flex flex-wrap items-center justify-center gap-2">
-                {sequence && (
-                  <SequenceBadge sequence={sequence} />
-                )}
+                {sequence && <SequenceBadge sequence={sequence} />}
                 {data && (
                   <>
                     <Badge className="bg-primary/10 text-primary hover:bg-primary/20">
@@ -197,7 +203,8 @@ function FoldRoute() {
 
               {/* Interaction hint */}
               <p className="mt-3 text-center text-sm text-muted-foreground">
-                🔬 Drag to rotate&nbsp; •&nbsp; Scroll to zoom&nbsp; •&nbsp; Pinch on mobile
+                🔬 Drag to rotate&nbsp; •&nbsp; Scroll to zoom&nbsp; •&nbsp;
+                Pinch on mobile
               </p>
 
               {/* Strategy toggle button */}
@@ -440,27 +447,38 @@ function InfoTooltip({ text }: { text: string }) {
           </svg>
         </span>
       </TooltipTrigger>
-      <TooltipContent side="top">
-        {text}
-      </TooltipContent>
+      <TooltipContent side="top">{text}</TooltipContent>
     </Tooltip>
   )
 }
 
 // Stat descriptions for tooltips
 const STAT_DESCRIPTIONS = {
-  residues: "Amino acids in your protein sequence. Each letter in your names becomes one residue.",
-  atoms: "Total atoms making up the 3D structure. More atoms = more molecular detail.",
-  uniqueness: "How structurally novel your protein is. Higher = more one-of-a-kind shape.",
-  dimensions: "The 3D bounding box of your protein in Ångströms (1Å = 0.1 nanometers).",
-  mass: "Estimated molecular weight. For reference, water is 0.018 kDa.",
+  residues:
+    'Amino acids in your protein sequence. Each letter in your names becomes one residue.',
+  atoms:
+    'Total atoms making up the 3D structure. More atoms = more molecular detail.',
+  uniqueness:
+    'How structurally novel your protein is. Higher = more one-of-a-kind shape.',
+  dimensions:
+    'The 3D bounding box of your protein in Ångströms (1Å = 0.1 nanometers).',
+  mass: 'Estimated molecular weight. For reference, water is 0.018 kDa.',
   backbone: "Alpha carbon atoms forming the protein's spine. One per residue.",
 }
 
 // Protein stats card component
-function ProteinStatsCard({ pdbData, sequence }: { pdbData: string; sequence: string }) {
+function ProteinStatsCard({
+  pdbData,
+  sequence,
+}: {
+  pdbData: string
+  sequence: string
+}) {
   const stats = useMemo(() => parsePdbStats(pdbData), [pdbData])
-  const personality = useMemo(() => getProteinPersonality(stats, sequence), [stats, sequence])
+  const personality = useMemo(
+    () => getProteinPersonality(stats, sequence),
+    [stats, sequence],
+  )
 
   if (stats.atomCount === 0) return null
 
@@ -479,7 +497,7 @@ function ProteinStatsCard({ pdbData, sequence }: { pdbData: string; sequence: st
       <h3 className="mb-3 text-sm font-medium text-muted-foreground uppercase tracking-wider">
         Structure Data
       </h3>
-      
+
       <table className="w-full text-sm">
         <tbody className="divide-y divide-border/50">
           <tr>
@@ -489,7 +507,9 @@ function ProteinStatsCard({ pdbData, sequence }: { pdbData: string; sequence: st
                 <InfoTooltip text={STAT_DESCRIPTIONS.residues} />
               </span>
             </td>
-            <td className="py-1.5 text-right font-mono text-foreground">{stats.residueCount}</td>
+            <td className="py-1.5 text-right font-mono text-foreground">
+              {stats.residueCount}
+            </td>
           </tr>
           <tr>
             <td className="py-1.5 text-muted-foreground">
@@ -498,7 +518,9 @@ function ProteinStatsCard({ pdbData, sequence }: { pdbData: string; sequence: st
                 <InfoTooltip text={STAT_DESCRIPTIONS.atoms} />
               </span>
             </td>
-            <td className="py-1.5 text-right font-mono text-foreground">{stats.atomCount.toLocaleString()}</td>
+            <td className="py-1.5 text-right font-mono text-foreground">
+              {stats.atomCount.toLocaleString()}
+            </td>
           </tr>
           <tr>
             <td className="py-1.5 text-muted-foreground">
@@ -520,7 +542,9 @@ function ProteinStatsCard({ pdbData, sequence }: { pdbData: string; sequence: st
               </span>
             </td>
             <td className="py-1.5 text-right font-mono text-foreground">
-              {stats.dimensions.width.toFixed(1)} × {stats.dimensions.height.toFixed(1)} × {stats.dimensions.depth.toFixed(1)}
+              {stats.dimensions.width.toFixed(1)} ×{' '}
+              {stats.dimensions.height.toFixed(1)} ×{' '}
+              {stats.dimensions.depth.toFixed(1)}
             </td>
           </tr>
           <tr>
@@ -542,7 +566,9 @@ function ProteinStatsCard({ pdbData, sequence }: { pdbData: string; sequence: st
                 <InfoTooltip text={STAT_DESCRIPTIONS.backbone} />
               </span>
             </td>
-            <td className="py-1.5 text-right font-mono text-foreground">{stats.backboneAtoms}</td>
+            <td className="py-1.5 text-right font-mono text-foreground">
+              {stats.backboneAtoms}
+            </td>
           </tr>
         </tbody>
       </table>

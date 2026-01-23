@@ -1,29 +1,30 @@
-import * as React from "react"
-import { motion, useReducedMotion } from "motion/react"
-import { cva } from "class-variance-authority"
+import * as React from 'react'
+import { motion, useReducedMotion } from 'motion/react'
+import { cva } from 'class-variance-authority'
 
-import type { VariantProps } from "class-variance-authority"
+import type { VariantProps } from 'class-variance-authority'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
 const featureCardVariants = cva(
-  "h-full rounded-2xl border p-6 transition-colors",
+  'h-full rounded-2xl border p-6 transition-colors',
   {
     variants: {
       size: {
-        sm: "",
-        md: "",
-        lg: "",
+        sm: '',
+        md: '',
+        lg: '',
       },
     },
     defaultVariants: {
-      size: "md",
+      size: 'md',
     },
-  }
+  },
 )
 
 interface FeatureCardProps
-  extends Omit<React.ComponentProps<"div">, "title">,
+  extends
+    Omit<React.ComponentProps<'div'>, 'title'>,
     VariantProps<typeof featureCardVariants> {
   icon?: React.ReactNode
   title: string
@@ -48,9 +49,9 @@ function FeatureCard({
     <div
       className={cn(
         featureCardVariants({ size }),
-        "border-border/50 bg-card/50",
-        "hover:border-primary/20 hover:bg-card/80",
-        className
+        'border-border/50 bg-card/50',
+        'hover:border-primary/20 hover:bg-card/80',
+        className,
       )}
       {...props}
     >
@@ -75,7 +76,7 @@ function FeatureCard({
       <motion.div
         className="h-full"
         whileHover={{ scale: 1.02, y: -4 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
       >
         {cardContent}
       </motion.div>

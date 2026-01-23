@@ -18,7 +18,9 @@ export interface PDBValidationResult {
  *
  * Requirements: 5.1, 5.2, 5.3
  */
-export function validatePDB(pdbText: string | null | undefined): PDBValidationResult {
+export function validatePDB(
+  pdbText: string | null | undefined,
+): PDBValidationResult {
   // Check for empty/null input
   if (pdbText === null || pdbText === undefined) {
     return { isValid: false, error: 'PDB data is empty' }

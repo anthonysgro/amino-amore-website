@@ -48,6 +48,7 @@ interface NavItem {
 ```
 
 The Navigation component renders a sticky header with:
+
 - Brand mark (logo + "FoldedHearts" text) on the left
 - Center navigation links (desktop only)
 - Primary CTA button + hamburger menu on the right
@@ -62,6 +63,7 @@ interface HeroSectionProps extends React.ComponentProps<'section'> {
 ```
 
 The HeroSection component renders:
+
 - Large headline with romantic messaging
 - Subheadline explaining the value proposition
 - Primary CTA button linking to the fold experience
@@ -78,6 +80,7 @@ interface MobileNavProps {
 ```
 
 The MobileNav component provides:
+
 - Hamburger menu trigger button
 - Full-screen overlay using Sheet component
 - Navigation links with smooth scroll behavior
@@ -130,50 +133,55 @@ const heroVisualVariants = {
 
 ## Correctness Properties
 
-*A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+_A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees._
 
 ### Property 1: Animation Duration Bounds
 
-*For any* animation variant defined in the hero section, the duration value should be between 300ms and 500ms (0.3 to 0.5 seconds).
+_For any_ animation variant defined in the hero section, the duration value should be between 300ms and 500ms (0.3 to 0.5 seconds).
 
 **Validates: Requirements 4.3**
 
 ### Property 2: Reduced Motion Respect
 
-*For any* user with reduced motion preferences enabled (useReducedMotion returns true), the hero section should render without motion animations applied to its elements.
+_For any_ user with reduced motion preferences enabled (useReducedMotion returns true), the hero section should render without motion animations applied to its elements.
 
 **Validates: Requirements 4.4**
 
 ### Property 3: Mobile Navigation Completeness
 
-*For any* set of navigation items defined for the landing page, all items should be present and accessible in the mobile navigation overlay.
+_For any_ set of navigation items defined for the landing page, all items should be present and accessible in the mobile navigation overlay.
 
 **Validates: Requirements 5.2**
 
 ### Property 4: Interactive Element Focus Indicators
 
-*For any* interactive element (buttons, links) in the Navigation and HeroSection components, the element should have focus-visible CSS classes that provide visible focus indicators.
+_For any_ interactive element (buttons, links) in the Navigation and HeroSection components, the element should have focus-visible CSS classes that provide visible focus indicators.
 
 **Validates: Requirements 6.3**
 
 ## Error Handling
 
 ### Missing Assets
+
 - If hero visual images fail to load, display a fallback gradient background
 - Use CSS background-image with fallback colors
 
 ### Animation Failures
+
 - If motion library fails to load, components render without animations
 - Reduced motion preference is checked before applying any animations
 
 ### Navigation Errors
+
 - Smooth scroll gracefully degrades to instant scroll if not supported
 - Hash links work even if JavaScript fails (native browser behavior)
 
 ## Testing Strategy
 
 ### Unit Tests
+
 Unit tests will verify specific examples and edge cases:
+
 - Navigation renders with correct structure and elements
 - HeroSection renders headline, subheadline, and CTA
 - Mobile navigation opens and closes correctly
@@ -181,6 +189,7 @@ Unit tests will verify specific examples and edge cases:
 - Correct CSS classes are applied for responsive breakpoints
 
 ### Property-Based Tests
+
 Property-based tests will verify universal properties using `fast-check`:
 
 1. **Animation Duration Property**: Generate random animation variant objects and verify all duration values fall within 300-500ms range
@@ -189,9 +198,9 @@ Property-based tests will verify universal properties using `fast-check`:
 4. **Focus Indicator Property**: Query all interactive elements and verify each has focus-visible classes
 
 ### Testing Configuration
+
 - Use Vitest as the test runner (already configured in project)
 - Use `@testing-library/react` for component testing
 - Use `fast-check` for property-based testing
 - Minimum 100 iterations per property test
 - Tag format: **Feature: homepage-hero, Property {number}: {property_text}**
-

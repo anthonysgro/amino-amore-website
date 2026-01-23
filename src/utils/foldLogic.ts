@@ -156,7 +156,7 @@ export interface CreateLoveSequenceError {
 export function createLoveSequence(
   name1: string,
   name2: string,
-  options?: CreateLoveSequenceOptions
+  options?: CreateLoveSequenceOptions,
 ): CreateLoveSequenceResult | CreateLoveSequenceError {
   // Default to 'anchor' strategy if not specified
   const strategy: LinkerStrategy = options?.strategy ?? 'anchor'
@@ -202,7 +202,7 @@ export function createLoveSequence(
  * Type guard to check if a result is an error.
  */
 export function isCreateLoveSequenceError(
-  result: CreateLoveSequenceResult | CreateLoveSequenceError
+  result: CreateLoveSequenceResult | CreateLoveSequenceError,
 ): result is CreateLoveSequenceError {
   return 'error' in result
 }

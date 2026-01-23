@@ -5,6 +5,7 @@
 This design enhances the FoldedHearts protein folding system to generate more visually unique and structurally diverse "Love Proteins." The current implementation produces similar-looking structures because it uses a single flexible linker (GGSGGS). This enhancement introduces three linker strategies and pLDDT-based confidence coloring to make each protein truly one-of-a-kind.
 
 The three strategies are:
+
 1. **Flexible Bond** (GGSGGS) - Original flexible linker for smooth, flowing structures
 2. **Structural Anchor** (WPHWP) - Bulky motif that forces angular, interesting shapes
 3. **True Love Bond** (Cysteine bridges) - Creates potential loop/circular structures
@@ -55,20 +56,20 @@ const LINKER_CONFIGS: Record<LinkerStrategy, LinkerConfig> = {
     strategy: 'flexible',
     motif: 'GGSGGS',
     displayName: 'Flexible Bond',
-    description: 'A smooth, flowing connection between your names'
+    description: 'A smooth, flowing connection between your names',
   },
   anchor: {
     strategy: 'anchor',
     motif: 'WPHWP',
     displayName: 'Structural Anchor',
-    description: 'A bulky hinge that creates angular, unique shapes'
+    description: 'A bulky hinge that creates angular, unique shapes',
   },
   cysteine: {
     strategy: 'cysteine',
     motif: 'GGSGGS',
     displayName: 'True Love Bond',
-    description: 'Creates a molecular loop - the strongest bond in nature'
-  }
+    description: 'Creates a molecular loop - the strongest bond in nature',
+  },
 }
 ```
 
@@ -90,7 +91,7 @@ interface CreateLoveSequenceResult {
 function createLoveSequence(
   name1: string,
   name2: string,
-  options?: CreateLoveSequenceOptions
+  options?: CreateLoveSequenceOptions,
 ): CreateLoveSequenceResult
 ```
 
@@ -105,23 +106,24 @@ interface ProteinViewerProps {
   name1?: string
   name2?: string
   className?: string
-  colorMode?: ColorMode  // NEW
-  onColorModeChange?: (mode: ColorMode) => void  // NEW
+  colorMode?: ColorMode // NEW
+  onColorModeChange?: (mode: ColorMode) => void // NEW
 }
 ```
 
 ### pLDDT Color Gradient
 
 The romantic pLDDT color scheme:
+
 - High confidence (pLDDT > 70): Bright pink (#ec4899)
 - Medium confidence (50-70): Rose (#f43f5e)
 - Low confidence (< 50): Deep purple (#7c3aed)
 
 ```typescript
 const PLDDT_COLOR_SCHEME = {
-  high: { min: 70, max: 100, color: '#ec4899' },    // Pink-500
-  medium: { min: 50, max: 70, color: '#f43f5e' },   // Rose-500
-  low: { min: 0, max: 50, color: '#7c3aed' }        // Violet-600
+  high: { min: 70, max: 100, color: '#ec4899' }, // Pink-500
+  medium: { min: 50, max: 70, color: '#f43f5e' }, // Rose-500
+  low: { min: 0, max: 50, color: '#7c3aed' }, // Violet-600
 }
 ```
 
@@ -131,10 +133,10 @@ const PLDDT_COLOR_SCHEME = {
 
 For each strategy, the sequence structure is:
 
-| Strategy | Structure |
-|----------|-----------|
-| flexible | `[Name1] + GGSGGS + [Name2]` |
-| anchor | `[Name1] + WPHWP + [Name2]` |
+| Strategy | Structure                            |
+| -------- | ------------------------------------ |
+| flexible | `[Name1] + GGSGGS + [Name2]`         |
+| anchor   | `[Name1] + WPHWP + [Name2]`          |
 | cysteine | `C + [Name1] + GGSGGS + [Name2] + C` |
 
 ### Valid Amino Acid Alphabet
@@ -145,11 +147,12 @@ All output sequences must contain only these characters.
 
 ## Correctness Properties
 
-*A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+_A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees._
 
 ### Property 1: Linker Strategy Correctness
 
-*For any* valid name pair and linker strategy, the generated sequence SHALL contain the correct linker motif:
+_For any_ valid name pair and linker strategy, the generated sequence SHALL contain the correct linker motif:
+
 - "flexible" → contains "GGSGGS"
 - "anchor" → contains "WPHWP"
 - "cysteine" → contains "GGSGGS" (with C bookends)
@@ -158,7 +161,8 @@ All output sequences must contain only these characters.
 
 ### Property 2: Cysteine Bridge Structure
 
-*For any* name pair using the "cysteine" strategy, the generated sequence SHALL:
+_For any_ name pair using the "cysteine" strategy, the generated sequence SHALL:
+
 - Start with the character 'C'
 - End with the character 'C'
 - Follow the structure: C + [Name1_Sequence] + [Linker] + [Name2_Sequence] + C
@@ -167,13 +171,14 @@ All output sequences must contain only these characters.
 
 ### Property 3: Valid Amino Acid Output
 
-*For any* valid name pair and any linker strategy, the generated sequence SHALL contain only characters from the standard amino acid alphabet (ACDEFGHIKLMNPQRSTVWY).
+_For any_ valid name pair and any linker strategy, the generated sequence SHALL contain only characters from the standard amino acid alphabet (ACDEFGHIKLMNPQRSTVWY).
 
 **Validates: Requirements 1.6**
 
 ### Property 4: Input Sanitization
 
-*For any* input string containing non-alphabetic characters, the Fold_Logic SHALL:
+_For any_ input string containing non-alphabetic characters, the Fold_Logic SHALL:
+
 - Filter out all non-alphabetic characters
 - Produce a valid amino acid sequence from remaining characters
 - Substitute "AAA" if the filtered result is empty
@@ -182,13 +187,13 @@ All output sequences must contain only these characters.
 
 ### Property 5: Sequence Length Bounds
 
-*For any* valid input, the generated sequence SHALL have length between 1 and 400 characters (inclusive). *For any* input that would produce a sequence exceeding 400 characters, the function SHALL return an error.
+_For any_ valid input, the generated sequence SHALL have length between 1 and 400 characters (inclusive). _For any_ input that would produce a sequence exceeding 400 characters, the function SHALL return an error.
 
 **Validates: Requirements 4.3, 4.4, 4.5**
 
 ### Property 6: Default Strategy
 
-*For any* call to createLoveSequence without a strategy specified, the function SHALL use the "anchor" strategy (WPHWP motif).
+_For any_ call to createLoveSequence without a strategy specified, the function SHALL use the "anchor" strategy (WPHWP motif).
 
 **Validates: Requirements 1.5**
 
@@ -196,25 +201,26 @@ All output sequences must contain only these characters.
 
 ### Input Validation Errors
 
-| Error Condition | Handling |
-|-----------------|----------|
-| Empty name after filtering | Substitute with "AAA" filler |
-| Sequence > 400 chars | Return error with descriptive message |
-| Invalid strategy value | Default to "anchor" strategy |
+| Error Condition            | Handling                              |
+| -------------------------- | ------------------------------------- |
+| Empty name after filtering | Substitute with "AAA" filler          |
+| Sequence > 400 chars       | Return error with descriptive message |
+| Invalid strategy value     | Default to "anchor" strategy          |
 
 ### Viewer Errors
 
-| Error Condition | Handling |
-|-----------------|----------|
-| WebGL not supported | Show error with browser suggestions |
-| PDB parsing fails | Show error with retry option |
-| Color mode not supported | Fall back to spectrum coloring |
+| Error Condition          | Handling                            |
+| ------------------------ | ----------------------------------- |
+| WebGL not supported      | Show error with browser suggestions |
+| PDB parsing fails        | Show error with retry option        |
+| Color mode not supported | Fall back to spectrum coloring      |
 
 ## Testing Strategy
 
 ### Unit Tests
 
 Unit tests will cover specific examples and edge cases:
+
 - Empty string inputs
 - Single character names
 - Names with special characters (numbers, symbols, spaces)
@@ -226,11 +232,13 @@ Unit tests will cover specific examples and edge cases:
 Property-based tests will use fast-check to verify universal properties across many generated inputs:
 
 **Test Configuration:**
+
 - Minimum 100 iterations per property
 - Use fast-check for TypeScript property-based testing
 - Tag format: `Feature: unique-protein-structures, Property N: [description]`
 
 **Generator Strategy:**
+
 - Generate random strings with mix of alphabetic and non-alphabetic characters
 - Generate names of varying lengths (1-100 characters)
 - Generate all three linker strategies
@@ -252,17 +260,16 @@ import fc from 'fast-check'
 test('all outputs contain only valid amino acids', () => {
   fc.assert(
     fc.property(
-      fc.string(),  // name1
-      fc.string(),  // name2
-      fc.constantFrom('flexible', 'anchor', 'cysteine'),  // strategy
+      fc.string(), // name1
+      fc.string(), // name2
+      fc.constantFrom('flexible', 'anchor', 'cysteine'), // strategy
       (name1, name2, strategy) => {
         const result = createLoveSequence(name1, name2, { strategy })
         const validAminoAcids = /^[ACDEFGHIKLMNPQRSTVWY]+$/
         return validAminoAcids.test(result.sequence)
-      }
+      },
     ),
-    { numRuns: 100 }
+    { numRuns: 100 },
   )
 })
 ```
-

@@ -59,7 +59,7 @@ const containerStyles = cn(
   'border border-pink-100/50',
   // NEW: Larger hero sizing
   'w-full min-h-[400px] sm:min-h-[450px] md:min-h-[500px] lg:min-h-[550px]',
-  className
+  className,
 )
 ```
 
@@ -108,25 +108,26 @@ No changes to data models required. This is a purely presentational change.
 
 ## Correctness Properties
 
-*A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+_A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees._
 
 Based on the prework analysis, most acceptance criteria are specific layout examples rather than universal properties. The testable criteria are primarily DOM structure and CSS verification tests.
 
 ### Property 1: Layout Order Invariant
 
-*For any* fold page render with valid names, the DOM elements SHALL appear in this order: Names Header → Protein Viewer → Strategy Selector.
+_For any_ fold page render with valid names, the DOM elements SHALL appear in this order: Names Header → Protein Viewer → Strategy Selector.
 
 **Validates: Requirements 1.4, 2.2, 3.1**
 
 ### Property 2: Responsive Height Constraints
 
-*For any* viewport width, the Protein Viewer container SHALL have a minimum height of at least 400px.
+_For any_ viewport width, the Protein Viewer container SHALL have a minimum height of at least 400px.
 
 **Validates: Requirements 1.2, 1.3**
 
 ## Error Handling
 
 No changes to error handling. The existing error states in the fold page remain unchanged:
+
 - Sequence generation errors display an error card
 - API errors display a retry option
 - WebGL errors in ProteinViewer display a helpful message

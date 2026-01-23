@@ -63,7 +63,7 @@ Not applicable - this spec only covers configuration files.
 
 ## Correctness Properties
 
-*A property is a characteristic or behavior that should hold true across all valid executions of a system-essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+_A property is a characteristic or behavior that should hold true across all valid executions of a system-essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees._
 
 Given this spec covers only configuration files (Prettier and Amplify), there are no runtime behaviors to validate with property-based testing. The correctness of these configurations is verified through:
 
@@ -75,21 +75,26 @@ No testable properties - configuration correctness is validated through successf
 ## Error Handling
 
 ### Prettier
+
 - If Prettier conflicts with ESLint rules, the format script will fail with clear error messages
 - Resolution: Adjust prettier.config.js settings to align with ESLint
 
 ### Amplify
+
 - If build fails, Amplify console shows detailed logs
 - Common issues: missing dependencies (solved by npm ci), incorrect output directory
 
 ## Testing Strategy
 
 ### Manual Verification
+
 - Run `npm run format` to verify Prettier works
 - Deploy to Amplify to verify build config works
 
 ### No Automated Tests Required
+
 This spec adds configuration files only. The correctness is verified by:
+
 1. Prettier: `npm run format` executes without errors
 2. Amplify: Successful deployment in AWS Amplify console
 

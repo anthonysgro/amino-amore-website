@@ -18,7 +18,7 @@ Create a client-only React component that renders 3D protein structures using 3D
     - Implement useEffect with `typeof window === 'undefined'` check
     - Use dynamic `import('3dmol')` inside useEffect
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
-  - [ ]* 2.2 Write property test for SSR-safe import
+  - [ ]\* 2.2 Write property test for SSR-safe import
     - **Property 1: SSR-Safe Module Import**
     - **Validates: Requirements 1.1, 1.4**
 
@@ -29,7 +29,7 @@ Create a client-only React component that renders 3D protein structures using 3D
     - Call `viewer.zoomTo()` and `viewer.render()`
     - Handle cleanup when pdbData changes (clear previous model)
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
-  - [ ]* 3.2 Write property test for PDB model management
+  - [ ]\* 3.2 Write property test for PDB model management
     - **Property 2: PDB Model Management**
     - **Validates: Requirements 2.1, 2.5**
 
@@ -51,7 +51,7 @@ Create a client-only React component that renders 3D protein structures using 3D
     - Create screenshot button with camera icon
     - Style with romantic pink theme
     - _Requirements: 3.3, 3.4, 6.3_
-  - [ ]* 5.4 Write property test for spin toggle
+  - [ ]\* 5.4 Write property test for spin toggle
     - **Property 3: Spin Toggle State Consistency**
     - **Validates: Requirements 3.3, 3.5**
 
@@ -61,7 +61,7 @@ Create a client-only React component that renders 3D protein structures using 3D
     - Position labels near protein termini
     - Style with pink background and romantic colors
     - _Requirements: 4.1, 4.2_
-  - [ ]* 6.2 Write property test for name labels
+  - [ ]\* 6.2 Write property test for name labels
     - **Property 4: Name Label Creation**
     - **Validates: Requirements 4.1**
 
@@ -83,7 +83,7 @@ Create a client-only React component that renders 3D protein structures using 3D
     - Render EmptyState when pdbData is undefined
     - Render viewer when pdbData is valid
     - _Requirements: 5.1, 5.2, 5.3_
-  - [ ]* 7.5 Write property test for state rendering
+  - [ ]\* 7.5 Write property test for state rendering
     - **Property 5: Loading and Error State Rendering**
     - **Validates: Requirements 5.1, 5.2, 5.3**
 

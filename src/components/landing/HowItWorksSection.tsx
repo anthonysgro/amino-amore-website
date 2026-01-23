@@ -1,69 +1,67 @@
-import { motion, useReducedMotion } from "motion/react"
-import { Clock, Fingerprint, Heart, Share2, Sparkles, Zap } from "lucide-react"
+import { motion, useReducedMotion } from 'motion/react'
+import { Clock, Fingerprint, Heart, Share2, Sparkles, Zap } from 'lucide-react'
 
-import { cn } from "@/lib/utils"
-import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid"
-import { FeatureCard } from "./FeatureCard"
-import { Section } from "./Section"
+import { cn } from '@/lib/utils'
+import { BentoGrid, BentoGridItem } from '@/components/ui/bento-grid'
+import { FeatureCard } from './FeatureCard'
+import { Section } from './Section'
 
 interface Feature {
   id: string
   icon: React.ReactNode
   title: string
   description: string
-  size: "sm" | "md" | "lg"
+  size: 'sm' | 'md' | 'lg'
   colSpan?: 1 | 2
 }
 
 const features: Feature[] = [
   {
-    id: "names",
+    id: 'names',
     icon: <Heart className="h-5 w-5" />,
-    title: "Just Two Names",
-    description:
-      "That's it. Type them in and watch the magic happen.",
-    size: "lg",
+    title: 'Just Two Names',
+    description: "That's it. Type them in and watch the magic happen.",
+    size: 'lg',
     colSpan: 2,
   },
   {
-    id: "unique",
+    id: 'unique',
     icon: <Fingerprint className="h-5 w-5" />,
-    title: "Mathematically Unique",
+    title: 'Mathematically Unique',
     description:
-      "Your name combo maps to a specific amino acid sequence. No one else has this protein.",
-    size: "sm",
+      'Your name combo maps to a specific amino acid sequence. No one else has this protein.',
+    size: 'sm',
   },
   {
-    id: "fast",
+    id: 'fast',
     icon: <Clock className="h-5 w-5" />,
-    title: "~10 Seconds",
+    title: '~10 Seconds',
     description:
-      "ESMFold runs the same prediction that used to take supercomputers days.",
-    size: "sm",
+      'ESMFold runs the same prediction that used to take supercomputers days.',
+    size: 'sm',
   },
   {
-    id: "science",
+    id: 'science',
     icon: <Sparkles className="h-5 w-5" />,
-    title: "Actual Science",
+    title: 'Actual Science',
     description:
-      "This is the tech behind AlphaFold. Nobel prize winning stuff, for your relationship.",
-    size: "sm",
+      'This is the tech behind AlphaFold. Nobel prize winning stuff, for your relationship.',
+    size: 'sm',
   },
   {
-    id: "share",
+    id: 'share',
     icon: <Share2 className="h-5 w-5" />,
-    title: "Send It",
+    title: 'Send It',
     description:
       "Screenshot it, share the link, make it your lock screen. We don't judge.",
-    size: "sm",
+    size: 'sm',
   },
   {
-    id: "free",
+    id: 'free',
     icon: <Zap className="h-5 w-5" />,
-    title: "Free Forever",
-    description:
-      "No account, no paywall, no catch. Just love and proteins.",
-    size: "lg",
+    title: 'Free Forever',
+    description: 'No account, no paywall, no catch. Just love and proteins.',
+    size: 'lg',
     colSpan: 2,
   },
 ]
@@ -106,18 +104,25 @@ interface HowItWorksSectionProps extends React.ComponentProps<typeof Section> {
   className?: string
 }
 
-export function HowItWorksSection({ className, ...props }: HowItWorksSectionProps) {
+export function HowItWorksSection({
+  className,
+  ...props
+}: HowItWorksSectionProps) {
   const prefersReducedMotion = useReducedMotion()
-  const MotionDiv = prefersReducedMotion ? "div" : motion.div
+  const MotionDiv = prefersReducedMotion ? 'div' : motion.div
 
   return (
-    <Section id="how-it-works" className={cn("pt-32 pb-32 lg:pt-48 lg:pb-48", className)} {...props}>
+    <Section
+      id="how-it-works"
+      className={cn('pt-32 pb-32 lg:pt-48 lg:pb-48', className)}
+      {...props}
+    >
       <MotionDiv
         className="mb-12 text-center"
         {...(!prefersReducedMotion && {
-          initial: "hidden",
-          whileInView: "visible",
-          viewport: { once: true, margin: "-100px" },
+          initial: 'hidden',
+          whileInView: 'visible',
+          viewport: { once: true, margin: '-100px' },
           variants: sectionHeaderVariants,
         })}
       >
@@ -131,9 +136,9 @@ export function HowItWorksSection({ className, ...props }: HowItWorksSectionProp
 
       <MotionDiv
         {...(!prefersReducedMotion && {
-          initial: "hidden",
-          whileInView: "visible",
-          viewport: { once: true, margin: "-50px" },
+          initial: 'hidden',
+          whileInView: 'visible',
+          viewport: { once: true, margin: '-50px' },
           variants: gridContainerVariants,
         })}
       >

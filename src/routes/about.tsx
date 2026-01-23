@@ -1,12 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router"
-import { Coffee, Github } from "lucide-react"
+import { createFileRoute } from '@tanstack/react-router'
+import { Coffee, Github } from 'lucide-react'
 
-import { Button } from "@/components/ui/button"
-import { Navigation } from "@/components/landing/Navigation"
-import { Section } from "@/components/landing/Section"
-import { Footer } from "@/components/landing/Footer"
+import { Button } from '@/components/ui/button'
+import { Navigation } from '@/components/landing/Navigation'
+import { Section } from '@/components/landing/Section'
+import { Footer } from '@/components/landing/Footer'
 
-export const Route = createFileRoute("/about")({
+export const Route = createFileRoute('/about')({
   component: AboutPage,
 })
 
@@ -30,10 +30,14 @@ function AboutPage() {
             {/* Bio */}
             <div className="prose prose-neutral dark:prose-invert mx-auto text-center">
               <p className="text-muted-foreground leading-relaxed">
-                Hey, I'm Anthony. I made this because my partner is a huge nerd and I wanted to make her laugh on Valentine's Day.
+                Hey, I'm Anthony. I made this because my partner is a huge nerd
+                and I wanted to make her laugh on Valentine's Day.
               </p>
               <p className="text-muted-foreground leading-relaxed mt-4">
-                Folded.love takes two names, turns them into amino acids, and uses the same AI that won a Nobel Prize to fold them into a 3D protein. It's basically a love letter that's also a molecule. Is it scientifically useful? Probably not. Is it cool? I think so.
+                Folded.love takes two names, turns them into amino acids, and
+                uses the same AI that won a Nobel Prize to fold them into a 3D
+                protein. It's basically a love letter that's also a molecule. Is
+                it scientifically useful? Probably not. Is it cool? I think so.
               </p>
             </div>
 
@@ -61,7 +65,11 @@ function AboutPage() {
                   Buy Me a Coffee
                 </a>
               </Button>
-              <Button asChild size="lg" className="bg-primary text-primary-foreground">
+              <Button
+                asChild
+                size="lg"
+                className="bg-primary text-primary-foreground"
+              >
                 <a href="/create">Create Your Protein</a>
               </Button>
             </div>

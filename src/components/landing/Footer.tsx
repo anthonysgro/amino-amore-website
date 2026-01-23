@@ -1,8 +1,8 @@
-import { Link } from "@tanstack/react-router"
+import { Link } from '@tanstack/react-router'
 
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
-interface FooterProps extends React.ComponentProps<"footer"> {
+interface FooterProps extends React.ComponentProps<'footer'> {
   className?: string
 }
 
@@ -10,11 +10,11 @@ function Footer({ className, ...props }: FooterProps) {
   return (
     <footer
       className={cn(
-        "bg-background",
-        "border-t border-border/50",
-        "py-8",
-        "px-6 md:px-12",
-        className
+        'bg-background',
+        'border-t border-border/50',
+        'py-8',
+        'px-6 md:px-12',
+        className,
       )}
       {...props}
     >
@@ -27,9 +27,9 @@ function Footer({ className, ...props }: FooterProps) {
                 <Link
                   to="/"
                   className={cn(
-                    "text-sm text-muted-foreground",
-                    "hover:text-foreground",
-                    "transition-colors duration-200"
+                    'text-sm text-muted-foreground',
+                    'hover:text-foreground',
+                    'transition-colors duration-200',
                   )}
                 >
                   Home
@@ -39,9 +39,9 @@ function Footer({ className, ...props }: FooterProps) {
                 <Link
                   to="/create"
                   className={cn(
-                    "text-sm text-muted-foreground",
-                    "hover:text-foreground",
-                    "transition-colors duration-200"
+                    'text-sm text-muted-foreground',
+                    'hover:text-foreground',
+                    'transition-colors duration-200',
                   )}
                 >
                   Create

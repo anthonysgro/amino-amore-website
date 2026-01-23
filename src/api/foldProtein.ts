@@ -39,7 +39,7 @@ export const foldProteinFn = createServerFn({ method: 'POST' })
             'Content-Type': 'text/plain',
           },
           signal: controller.signal,
-        }
+        },
       )
 
       if (!response.ok) {

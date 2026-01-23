@@ -166,7 +166,7 @@ export const foldProteinFn = createServerFn({ method: 'POST' })
             'Content-Type': 'text/plain',
           },
           signal: controller.signal,
-        }
+        },
       )
 
       if (!response.ok) {
@@ -235,7 +235,7 @@ export function validatePDB(pdbText: string): PDBValidationResult {
 
   // Check for required PDB records
   const hasAtomRecords = /^ATOM\s+/m.test(pdbText)
-  
+
   if (!hasAtomRecords) {
     return { isValid: false, error: 'PDB missing ATOM records' }
   }
@@ -250,8 +250,8 @@ export function validatePDB(pdbText: string): PDBValidationResult {
 
 ```typescript
 interface FoldProteinResult {
-  pdb: string        // Raw PDB text for 3Dmol.js
-  sequence: string   // Original sequence (for cache key verification)
+  pdb: string // Raw PDB text for 3Dmol.js
+  sequence: string // Original sequence (for cache key verification)
 }
 ```
 
@@ -260,60 +260,66 @@ interface FoldProteinResult {
 ```typescript
 interface FoldError {
   message: string
-  code: 'INVALID_SEQUENCE' | 'SEQUENCE_TOO_LONG' | 'ESMATLAS_ERROR' | 'TIMEOUT' | 'NETWORK_ERROR' | 'INVALID_PDB'
+  code:
+    | 'INVALID_SEQUENCE'
+    | 'SEQUENCE_TOO_LONG'
+    | 'ESMATLAS_ERROR'
+    | 'TIMEOUT'
+    | 'NETWORK_ERROR'
+    | 'INVALID_PDB'
   retryable: boolean
 }
 ```
 
 ## Correctness Properties
 
-*A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+_A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees._
 
 ### Property 1: Cache Hit Returns Cached Data
 
-*For any* valid amino acid sequence that has been successfully fetched, requesting the same sequence again SHALL return the cached PDB data without making a new API request.
+_For any_ valid amino acid sequence that has been successfully fetched, requesting the same sequence again SHALL return the cached PDB data without making a new API request.
 
 **Validates: Requirements 1.4, 3.3**
 
 ### Property 2: Server Function Passthrough Integrity
 
-*For any* valid sequence sent to the server function, it SHALL forward to ESMFold and return the PDB response unchanged (data integrity preserved).
+_For any_ valid sequence sent to the server function, it SHALL forward to ESMFold and return the PDB response unchanged (data integrity preserved).
 
 **Validates: Requirements 2.2, 2.3**
 
 ### Property 3: Server Function Error Transformation
 
-*For any* error response from the ESMFold API, the server function SHALL throw an error with a descriptive message.
+_For any_ error response from the ESMFold API, the server function SHALL throw an error with a descriptive message.
 
 **Validates: Requirements 2.4**
 
 ### Property 4: Hook State Shape
 
-*For any* sequence input (valid, invalid, or undefined), the `useFoldProtein` hook SHALL return an object containing `data`, `isLoading`, `isError`, and `error` properties.
+_For any_ sequence input (valid, invalid, or undefined), the `useFoldProtein` hook SHALL return an object containing `data`, `isLoading`, `isError`, and `error` properties.
 
 **Validates: Requirements 3.2**
 
 ### Property 5: Invalid Input Rejection
 
-*For any* empty string or undefined sequence, the hook SHALL NOT trigger an API request and SHALL return an idle state.
+_For any_ empty string or undefined sequence, the hook SHALL NOT trigger an API request and SHALL return an idle state.
 
 **Validates: Requirements 3.5**
 
 ### Property 6: Cache Persistence on Error
 
-*For any* error that occurs during a fetch, previously cached successful results for other sequences SHALL remain accessible and unchanged.
+_For any_ error that occurs during a fetch, previously cached successful results for other sequences SHALL remain accessible and unchanged.
 
 **Validates: Requirements 4.4**
 
 ### Property 7: PDB Validation Success
 
-*For any* valid PDB text containing ATOM records, the validator SHALL return `{ isValid: true }`.
+_For any_ valid PDB text containing ATOM records, the validator SHALL return `{ isValid: true }`.
 
 **Validates: Requirements 5.1**
 
 ### Property 8: PDB Validation Failure
 
-*For any* malformed or empty PDB text, the validator SHALL return `{ isValid: false, error: <description> }`.
+_For any_ malformed or empty PDB text, the validator SHALL return `{ isValid: false, error: <description> }`.
 
 **Validates: Requirements 5.3**
 
@@ -321,22 +327,22 @@ interface FoldError {
 
 ### Server Function Errors
 
-| Error Type | Detection | Thrown Error |
-|------------|-----------|--------------|
-| Empty sequence | Validator | "Sequence is required" |
-| Sequence too long | Validator | "Sequence too long (max 400 amino acids)" |
-| ESMFold 4xx | Response status | "ESMFold API error: {status}" |
-| ESMFold 5xx | Response status | "ESMFold API error: {status}" |
-| Timeout | AbortController | "AbortError" |
+| Error Type        | Detection       | Thrown Error                              |
+| ----------------- | --------------- | ----------------------------------------- |
+| Empty sequence    | Validator       | "Sequence is required"                    |
+| Sequence too long | Validator       | "Sequence too long (max 400 amino acids)" |
+| ESMFold 4xx       | Response status | "ESMFold API error: {status}"             |
+| ESMFold 5xx       | Response status | "ESMFold API error: {status}"             |
+| Timeout           | AbortController | "AbortError"                              |
 
 ### Client-Side Error Display
 
-| Error Type | User Message | Action |
-|------------|--------------|--------|
-| Network unreachable | "Unable to connect. Check your internet connection." | Show retry button |
-| Timeout | "Folding is taking longer than expected. Try again?" | Show retry button |
-| Sequence too long | "Names are too long! Try shorter names or nicknames." | Highlight input |
-| ESMFold error | "The folding service is having issues. Please try again." | Show retry button |
+| Error Type          | User Message                                              | Action            |
+| ------------------- | --------------------------------------------------------- | ----------------- |
+| Network unreachable | "Unable to connect. Check your internet connection."      | Show retry button |
+| Timeout             | "Folding is taking longer than expected. Try again?"      | Show retry button |
+| Sequence too long   | "Names are too long! Try shorter names or nicknames."     | Highlight input   |
+| ESMFold error       | "The folding service is having issues. Please try again." | Show retry button |
 
 ## Testing Strategy
 

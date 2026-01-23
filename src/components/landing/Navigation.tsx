@@ -1,11 +1,11 @@
-import * as React from "react"
-import { Link } from "@tanstack/react-router"
-import { Coffee } from "lucide-react"
+import * as React from 'react'
+import { Link } from '@tanstack/react-router'
+import { Coffee } from 'lucide-react'
 
-import { MobileNav } from "./MobileNav"
-import { DNAHeartLogo } from "./DNAHeartLogo"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { MobileNav } from './MobileNav'
+import { DNAHeartLogo } from './DNAHeartLogo'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 
 // ============================================================================
 // Types
@@ -25,9 +25,9 @@ interface NavigationProps {
 // ============================================================================
 
 const navItems: Array<NavItem> = [
-  { label: "Home", href: "#" },
-  { label: "How It Works", href: "#how-it-works" },
-  { label: "About", href: "/about" },
+  { label: 'Home', href: '#' },
+  { label: 'How It Works', href: '#how-it-works' },
+  { label: 'About', href: '/about' },
 ]
 
 // ============================================================================
@@ -40,29 +40,29 @@ const navItems: Array<NavItem> = [
  */
 function handleSmoothScroll(
   e: React.MouseEvent<HTMLAnchorElement>,
-  href: string
+  href: string,
 ) {
   // Only handle hash links
-  if (!href.startsWith("#")) return
+  if (!href.startsWith('#')) return
 
   // Check if we're on the home page
-  const isHomePage = window.location.pathname === "/"
+  const isHomePage = window.location.pathname === '/'
 
   if (!isHomePage) {
     // Navigate to home page with the hash - let browser handle it
-    if (href === "#") {
-      window.location.href = "/"
+    if (href === '#') {
+      window.location.href = '/'
     } else {
-      window.location.href = "/" + href
+      window.location.href = '/' + href
     }
     return
   }
 
   e.preventDefault()
 
-  if (href === "#") {
+  if (href === '#') {
     // Scroll to top for home
-    window.scrollTo({ top: 0, behavior: "smooth" })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
     return
   }
 
@@ -70,7 +70,7 @@ function handleSmoothScroll(
   const targetElement = document.getElementById(targetId)
 
   if (targetElement) {
-    targetElement.scrollIntoView({ behavior: "smooth", block: "start" })
+    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 }
 
@@ -83,23 +83,26 @@ function handleSmoothScroll(
  */
 function BrandMark() {
   const sharedClasses = cn(
-    "flex items-center gap-2 justify-self-start",
-    "text-2xl md:text-3xl lg:text-[2rem] font-bold",
-    "transition-opacity duration-200",
-    "hover:opacity-80",
-    "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
-    "rounded-md"
+    'flex items-center gap-2 justify-self-start',
+    'text-2xl md:text-3xl lg:text-[2rem] font-bold',
+    'transition-opacity duration-200',
+    'hover:opacity-80',
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+    'rounded-md',
   )
 
   return (
     <a
       href="#"
-      onClick={(e) => handleSmoothScroll(e, "#")}
+      onClick={(e) => handleSmoothScroll(e, '#')}
       className={sharedClasses}
       aria-label="folded.love - Home"
     >
       <DNAHeartLogo size={36} />
-      <span><span className="text-primary">folded</span><span className="text-muted-foreground">.love</span></span>
+      <span>
+        <span className="text-primary">folded</span>
+        <span className="text-muted-foreground">.love</span>
+      </span>
     </a>
   )
 }
@@ -120,25 +123,25 @@ function NavLink({ href, children, onClick }: NavLinkProps) {
       onClick={onClick}
       className={cn(
         // Base typography
-        "text-base font-medium",
+        'text-base font-medium',
         // Color states
-        "text-muted-foreground",
+        'text-muted-foreground',
         // Transitions
-        "transition-all duration-200",
+        'transition-all duration-200',
         // Hover state
-        "hover:text-foreground",
+        'hover:text-foreground',
         // Underline effect
-        "relative",
-        "after:absolute after:bottom-0 after:left-0 after:h-px",
-        "after:bg-foreground",
-        "after:transition-all after:duration-200",
-        "after:w-0 hover:after:w-full",
+        'relative',
+        'after:absolute after:bottom-0 after:left-0 after:h-px',
+        'after:bg-foreground',
+        'after:transition-all after:duration-200',
+        'after:w-0 hover:after:w-full',
         // Focus state
-        "focus:outline-none",
-        "focus-visible:text-foreground",
-        "focus-visible:after:w-full",
+        'focus:outline-none',
+        'focus-visible:text-foreground',
+        'focus-visible:after:w-full',
         // Touch target padding
-        "py-2"
+        'py-2',
       )}
     >
       {children}
@@ -180,13 +183,13 @@ function RightActions() {
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
-          "hidden lg:inline-flex items-center justify-center",
-          "h-10 w-10 min-h-[44px] min-w-[44px]",
-          "rounded-md",
-          "text-muted-foreground",
-          "hover:text-foreground hover:bg-muted/50",
-          "transition-all duration-200",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          'hidden lg:inline-flex items-center justify-center',
+          'h-10 w-10 min-h-[44px] min-w-[44px]',
+          'rounded-md',
+          'text-muted-foreground',
+          'hover:text-foreground hover:bg-muted/50',
+          'transition-all duration-200',
+          'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
         )}
         aria-label="Buy me a coffee"
       >
@@ -197,12 +200,12 @@ function RightActions() {
       <Button
         asChild
         className={cn(
-          "hidden lg:inline-flex",
-          "bg-primary text-primary-foreground",
-          "hover:brightness-95 transition-all",
-          "px-6 py-3 h-auto rounded-md",
-          "font-semibold text-base",
-          "shadow-md hover:shadow-lg"
+          'hidden lg:inline-flex',
+          'bg-primary text-primary-foreground',
+          'hover:brightness-95 transition-all',
+          'px-6 py-3 h-auto rounded-md',
+          'font-semibold text-base',
+          'shadow-md hover:shadow-lg',
         )}
       >
         <Link to="/create">Create Your Love Protein</Link>
@@ -235,23 +238,23 @@ function Navigation({ className }: NavigationProps) {
       role="banner"
       className={cn(
         // Sticky positioning
-        "sticky top-0 z-50",
+        'sticky top-0 z-50',
         // Background with backdrop blur
-        "bg-background/80 backdrop-blur-md",
+        'bg-background/80 backdrop-blur-md',
         // Top padding for breathing room
-        "pt-2 md:pt-3",
-        className
+        'pt-2 md:pt-3',
+        className,
       )}
     >
       <nav
         className={cn(
           // Full width container with padding
-          "mx-auto w-full",
-          "px-6 md:px-10 lg:px-16",
+          'mx-auto w-full',
+          'px-6 md:px-10 lg:px-16',
           // Flex on mobile, grid on desktop
-          "flex justify-between lg:grid lg:grid-cols-[1fr_auto_1fr] items-center",
+          'flex justify-between lg:grid lg:grid-cols-[1fr_auto_1fr] items-center',
           // Height
-          "h-18 md:h-20"
+          'h-18 md:h-20',
         )}
       >
         {/* Left: Brand Mark */}
