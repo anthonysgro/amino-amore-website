@@ -12,7 +12,7 @@ export interface NavItem {
 }
 
 interface MobileNavProps {
-  items: NavItem[]
+  items: Array<NavItem>
   className?: string
 }
 
@@ -137,11 +137,11 @@ function MobileNav({ items, className }: MobileNavProps) {
               onClick={handleLinkClick}
             >
               <Link
-                to="/fold/$names"
+                to="/create"
                 params={{ names: "Your-Love" }}
                 aria-label="Create Your Love Protein - start the protein folding experience"
               >
-                Create Your Love Protein
+                Fold Our Names
               </Link>
             </Button>
           </div>

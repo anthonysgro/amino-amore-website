@@ -2,10 +2,10 @@ import * as React from "react"
 import { Link } from "@tanstack/react-router"
 import { motion, useReducedMotion } from "motion/react"
 
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import { DNAHeart } from "./DNAHeart"
 import { Section } from "./Section"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 interface HeroSectionProps extends React.ComponentProps<"section"> {
   className?: string
@@ -100,14 +100,13 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
             id="hero-headline"
             className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl"
           >
-            Transform Your Love Into{" "}
-            <span className="text-primary">Molecular Art</span>
+            Love at the{" "}
+            <span className="text-primary whitespace-nowrap">molecular level</span>
           </h1>
 
           <p className="text-lg text-muted-foreground sm:text-xl max-w-2xl mx-auto lg:mx-0">
-            Enter your names and watch as science weaves them into a unique 3D
-            protein structure — a one-of-a-kind "Love Protein" that represents
-            your bond in biological form.
+            Two names → one amino acid sequence → a 3D protein that only exists for you two. 
+            Powered by the same AI that helps scientists discover new medicines.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
@@ -126,7 +125,7 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
                 to="/create"
                 aria-label="Create Your Love Protein - start the protein folding experience"
               >
-                Create Your Love Protein
+                Fold Our Names
               </Link>
             </Button>
           </div>
