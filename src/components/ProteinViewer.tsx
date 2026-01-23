@@ -123,7 +123,7 @@ export function ProteinViewer({
                 position: { x: nX + 5, y: nY + 5, z: nZ },
                 backgroundColor: 'rgba(236, 72, 153, 0.9)',
                 fontColor: '#ffffff',
-                fontSize: 14,
+                fontSize: 18,
                 borderThickness: 0,
                 backgroundOpacity: 0.9,
                 showBackground: true,
@@ -136,7 +136,7 @@ export function ProteinViewer({
                 position: { x: cX - 5, y: cY - 5, z: cZ },
                 backgroundColor: 'rgba(236, 72, 153, 0.9)',
                 fontColor: '#ffffff',
-                fontSize: 14,
+                fontSize: 18,
                 borderThickness: 0,
                 backgroundOpacity: 0.9,
                 showBackground: true,
@@ -184,11 +184,31 @@ export function ProteinViewer({
   }, [isSpinning])
 
   const takeScreenshot = useCallback(() => {
-    if (!viewerRef.current) return
+    if (!viewerRef.current || !containerRef.current) return
     
-    // Get high-res screenshot (2x scale for retina quality)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const proteinDataUrl = (viewerRef.current as any).pngURI(2)
+    // Get the canvas element for high-res capture
+    const canvasEl = containerRef.current.querySelector('canvas')
+    if (!canvasEl) return
+    
+    // Store original size
+    const originalWidth = canvasEl.width
+    const originalHeight = canvasEl.height
+    
+    // Scale up for higher resolution (4x)
+    const scale = 4
+    canvasEl.width = originalWidth * scale
+    canvasEl.height = originalHeight * scale
+    
+    // Re-render at higher resolution
+    viewerRef.current.render()
+    
+    // Get the high-res screenshot
+    const proteinDataUrl = viewerRef.current.pngURI()
+    
+    // Restore original size
+    canvasEl.width = originalWidth
+    canvasEl.height = originalHeight
+    viewerRef.current.render()
     
     // Create a canvas to composite the screenshot with branding
     const canvas = document.createElement('canvas')
@@ -231,20 +251,20 @@ export function ProteinViewer({
       logoImg.onload = () => {
         if (sequence) {
           // Scale sizes based on canvas width - cap at 1.2x for desktop
-          const scale = Math.min(1.2, Math.max(1, canvas.width / 600))
-          const seqFontSize = Math.round(14 * scale)
-          const brandFontSize = Math.round(26 * scale)
-          const logoSize = Math.round(28 * scale)
+          const fontScale = Math.min(1.2, Math.max(1, canvas.width / 600))
+          const seqFontSize = Math.round(14 * fontScale)
+          const brandFontSize = Math.round(26 * fontScale)
+          const logoSize = Math.round(28 * fontScale)
           
           // Draw sequence text centered in footer
           ctx.font = `${seqFontSize}px monospace`
           ctx.fillStyle = seqTextColor
           ctx.textAlign = 'center'
           ctx.textBaseline = 'top'
-          ctx.fillText(sequence, canvas.width / 2, img.height + 12 * scale)
+          ctx.fillText(sequence, canvas.width / 2, img.height + 12 * fontScale)
           
           // Draw branding below sequence: logo + "folded.love"
-          const brandY = img.height + 60 * scale
+          const brandY = img.height + 60 * fontScale
           const fontSize = brandFontSize
           
           // Measure text to center the whole brand block
@@ -450,8 +470,9 @@ function LoadingSkeleton() {
           </svg>
         </div>
       </div>
-      <p className="mt-5 text-base font-medium text-primary">Folding your Love Protein...</p>
-      <div className="mt-2 flex gap-1">
+      <p className="mt-5 text-base font-medium text-primary">Working on some amino amore...</p>
+      <p className="mt-1 text-sm text-muted-foreground">Folding your Love Protein</p>
+      <div className="mt-3 flex gap-1">
         <span className="h-2 w-2 animate-bounce rounded-full bg-primary" style={{ animationDelay: '0ms' }} />
         <span className="h-2 w-2 animate-bounce rounded-full bg-primary" style={{ animationDelay: '150ms' }} />
         <span className="h-2 w-2 animate-bounce rounded-full bg-primary" style={{ animationDelay: '300ms' }} />

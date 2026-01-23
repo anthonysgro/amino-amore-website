@@ -359,6 +359,7 @@ function ShareButton({ name1, name2 }: { name1: string; name2: string }) {
     const text = `Someone special created a unique protein from our names! See our molecular bond at folded.love 🧬💕`
 
     // Try native share API first (mobile)
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (navigator.share) {
       try {
         await navigator.share({ title, text, url })

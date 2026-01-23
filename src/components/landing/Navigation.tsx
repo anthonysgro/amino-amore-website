@@ -2,11 +2,11 @@ import * as React from "react"
 import { Link } from "@tanstack/react-router"
 import { Coffee } from "lucide-react"
 
+import { MobileNav } from "./MobileNav"
+import { DNAHeartLogo } from "./DNAHeartLogo"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { MobileNav } from "./MobileNav"
-import { DNAHeartLogo } from "./DNAHeartLogo"
 
 // ============================================================================
 // Types
@@ -25,7 +25,7 @@ interface NavigationProps {
 // Constants
 // ============================================================================
 
-const navItems: NavItem[] = [
+const navItems: Array<NavItem> = [
   { label: "Home", href: "#" },
   { label: "How It Works", href: "#how-it-works" },
   { label: "About", href: "/about" },

@@ -24,12 +24,12 @@ export const Route = createFileRoute("/create")({
 })
 
 const CUTE_MESSAGES = [
+  "Working on some amino amore...",
   "Weaving your names into amino acids... 🧬",
-  "Adding the heart linker... 💕",
+  "Adding the heart linker... 💗",
   "Folding your love protein... 🔬",
   "Calculating molecular bonds... ⚛️",
   "Almost there, love takes time... 💫",
-  "Creating something beautiful... ✨",
 ]
 
 interface PartnerFormData {

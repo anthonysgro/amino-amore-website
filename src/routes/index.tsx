@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { FAQSection } from "@/components/landing/FAQSection";
 import { Footer } from "@/components/landing/Footer";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
@@ -14,6 +15,7 @@ function App() {
       <main>
         <HeroSection />
         <HowItWorksSection />
+        <FAQSection />
       </main>
       <Footer />
     </div>

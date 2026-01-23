@@ -21,48 +21,48 @@ const features: Feature[] = [
     icon: <Heart className="h-5 w-5" />,
     title: "Just Two Names",
     description:
-      "Enter your names and we handle the rest. No science degree required.",
+      "That's it. Type them in and watch the magic happen.",
     size: "lg",
     colSpan: 2,
   },
   {
     id: "unique",
     icon: <Fingerprint className="h-5 w-5" />,
-    title: "Truly Unique",
+    title: "Mathematically Unique",
     description:
-      "Every name combination creates a one-of-a-kind protein structure.",
+      "Your name combo maps to a specific amino acid sequence. No one else has this protein.",
     size: "sm",
   },
   {
     id: "fast",
     icon: <Clock className="h-5 w-5" />,
-    title: "Seconds, Not Hours",
+    title: "~10 Seconds",
     description:
-      "ESMFold predicts your structure in under 10 seconds.",
+      "ESMFold runs the same prediction that used to take supercomputers days.",
     size: "sm",
   },
   {
     id: "science",
     icon: <Sparkles className="h-5 w-5" />,
-    title: "Real Science",
+    title: "Actual Science",
     description:
-      "Uses the same AI that helps researchers discover new medicines.",
+      "This is the tech behind AlphaFold. Nobel prize winning stuff, for your relationship.",
     size: "sm",
   },
   {
     id: "share",
     icon: <Share2 className="h-5 w-5" />,
-    title: "Share Your Bond",
+    title: "Send It",
     description:
-      "Send your love protein to your partner with a unique link.",
+      "Screenshot it, share the link, make it your lock screen. We don't judge.",
     size: "sm",
   },
   {
     id: "free",
     icon: <Zap className="h-5 w-5" />,
-    title: "Completely Free",
+    title: "Free Forever",
     description:
-      "No sign-up, no payment. Just pure molecular romance.",
+      "No account, no paywall, no catch. Just love and proteins.",
     size: "lg",
     colSpan: 2,
   },
@@ -125,7 +125,7 @@ export function HowItWorksSection({ className, ...props }: HowItWorksSectionProp
           Love, Visualized
         </h2>
         <p className="mt-4 text-lg text-muted-foreground">
-          Turn your connection into something you can see and share
+          No two proteins are the same. Yours is literally one of a kind.
         </p>
       </MotionDiv>
 
