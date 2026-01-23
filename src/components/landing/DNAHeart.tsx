@@ -176,6 +176,9 @@ function DNAHeart({ className }: DNAHeartProps) {
       // Track the current manual rotation offset (from user dragging)
       let manualRotationY = 0
       let manualRotationX = 0
+      // Track velocity for momentum/throw effect
+      let velocityY = 0
+      let velocityX = 0
 
       sceneRef.current = {
         scene,
@@ -201,13 +204,27 @@ function DNAHeart({ className }: DNAHeartProps) {
           const targetX = 0
           
           if (!sceneRef.current.isDragging) {
-            // Gradually ease manual offset back to zero
-            manualRotationY *= 0.97
-            manualRotationX *= 0.97
+            // Apply velocity (momentum from throw)
+            manualRotationY += velocityY
+            manualRotationX += velocityX
             
-            // If offset is tiny, snap to zero to avoid floating point drift
-            if (Math.abs(manualRotationY) < 0.001) manualRotationY = 0
-            if (Math.abs(manualRotationX) < 0.001) manualRotationX = 0
+            // Apply friction to slow down velocity
+            velocityY *= 0.96
+            velocityX *= 0.96
+            
+            // Gently ease the offset back toward zero (no spring, just smooth decay)
+            manualRotationY *= 0.985
+            manualRotationX *= 0.985
+            
+            // If everything is tiny, snap to zero to avoid drift
+            if (Math.abs(manualRotationY) < 0.001 && Math.abs(velocityY) < 0.0001) {
+              manualRotationY = 0
+              velocityY = 0
+            }
+            if (Math.abs(manualRotationX) < 0.001 && Math.abs(velocityX) < 0.0001) {
+              manualRotationX = 0
+              velocityX = 0
+            }
           }
           
           // Apply base oscillation + manual offset
@@ -222,6 +239,9 @@ function DNAHeart({ className }: DNAHeartProps) {
         if (!sceneRef.current) return
         sceneRef.current.isDragging = true
         sceneRef.current.previousMousePosition = { x: e.clientX, y: e.clientY }
+        // Kill velocity when grabbing
+        velocityY = 0
+        velocityX = 0
         container.style.cursor = "grabbing"
       }
 
@@ -229,9 +249,12 @@ function DNAHeart({ className }: DNAHeartProps) {
         if (!sceneRef.current || !sceneRef.current.isDragging) return
         const deltaX = e.clientX - sceneRef.current.previousMousePosition.x
         const deltaY = e.clientY - sceneRef.current.previousMousePosition.y
-        // Add to manual offset instead of directly to rotation
+        // Add to manual offset
         manualRotationY += deltaX * 0.005
         manualRotationX += deltaY * 0.005
+        // Track velocity based on movement (for throw momentum)
+        velocityY = deltaX * 0.002
+        velocityX = deltaY * 0.002
         sceneRef.current.previousMousePosition = { x: e.clientX, y: e.clientY }
       }
 
