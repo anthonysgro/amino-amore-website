@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { GLViewer } from '3dmol'
 import { cn } from '@/lib/utils'
+import { parsePdbStats } from '@/utils/pdbStats'
 
 export type ColorMode = 'spectrum' | 'plddt'
 
@@ -184,31 +185,13 @@ export function ProteinViewer({
   }, [isSpinning])
 
   const takeScreenshot = useCallback(() => {
-    if (!viewerRef.current || !containerRef.current) return
+    if (!viewerRef.current || !containerRef.current || !pdbData) return
     
-    // Get the canvas element for high-res capture
-    const canvasEl = containerRef.current.querySelector('canvas')
-    if (!canvasEl) return
+    // Parse stats from PDB data
+    const stats = parsePdbStats(pdbData)
     
-    // Store original size
-    const originalWidth = canvasEl.width
-    const originalHeight = canvasEl.height
-    
-    // Scale up for higher resolution (4x)
-    const scale = 4
-    canvasEl.width = originalWidth * scale
-    canvasEl.height = originalHeight * scale
-    
-    // Re-render at higher resolution
-    viewerRef.current.render()
-    
-    // Get the high-res screenshot
+    // Get screenshot at current resolution
     const proteinDataUrl = viewerRef.current.pngURI()
-    
-    // Restore original size
-    canvasEl.width = originalWidth
-    canvasEl.height = originalHeight
-    viewerRef.current.render()
     
     // Create a canvas to composite the screenshot with branding
     const canvas = document.createElement('canvas')
@@ -219,27 +202,80 @@ export function ProteinViewer({
     img.onload = () => {
       // Detect current theme
       const isDarkMode = document.documentElement.classList.contains('dark')
-      const footerBg = isDarkMode ? 'rgb(20, 20, 20)' : 'rgb(250, 250, 250)'
-      const seqTextColor = isDarkMode ? 'rgba(255, 255, 255, 0.8)' : 'rgba(0, 0, 0, 0.7)'
-      const brandTextColor = isDarkMode ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.5)'
+      const panelBg = isDarkMode ? 'rgba(20, 20, 20, 0.85)' : 'rgba(255, 255, 255, 0.9)'
+      const textPrimary = isDarkMode ? 'rgba(255, 255, 255, 0.95)' : 'rgba(0, 0, 0, 0.9)'
+      const textSecondary = isDarkMode ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.5)'
+      const accentColor = '#f472b6'
       
-      // Add extra space at bottom for sequence + branding
-      // Scale footer height based on canvas width - cap at 1.2x for desktop
-      const footerScale = Math.min(1.2, Math.max(1, img.width / 600))
-      const footerHeight = sequence ? Math.round(110 * footerScale) : 0
       canvas.width = img.width
-      canvas.height = img.height + footerHeight
-      
-      // Fill the footer area with theme-appropriate background
-      if (footerHeight > 0) {
-        ctx.fillStyle = footerBg
-        ctx.fillRect(0, img.height, canvas.width, footerHeight)
-      }
+      canvas.height = img.height
       
       // Draw the protein image
       ctx.drawImage(img, 0, 0)
       
-      // Draw the DNA heart logo SVG for footer branding
+      // Draw stats panel on the left
+      if (stats.atomCount > 0) {
+        const panelPadding = 20
+        const panelWidth = 220
+        const lineHeight = 28
+        const headerHeight = 40
+        
+        const statsData = [
+          ['Residues', stats.residueCount.toString()],
+          ['Atoms', stats.atomCount.toLocaleString()],
+          ['Uniqueness', `${(100 - stats.averagePlddt).toFixed(1)}%`],
+          ['Size (Å)', `${stats.dimensions.width.toFixed(0)}×${stats.dimensions.height.toFixed(0)}×${stats.dimensions.depth.toFixed(0)}`],
+          ['Mass', `${stats.molecularWeight.toFixed(1)} kDa`],
+        ]
+        
+        const panelHeight = headerHeight + panelPadding + (statsData.length * lineHeight) + panelPadding
+        
+        // Draw panel background
+        ctx.fillStyle = panelBg
+        ctx.fillRect(16, 16, panelWidth, panelHeight)
+        
+        // Draw header
+        ctx.fillStyle = accentColor
+        ctx.font = 'bold 16px system-ui, -apple-system, sans-serif'
+        ctx.textAlign = 'left'
+        ctx.textBaseline = 'middle'
+        ctx.fillText('STRUCTURE DATA', 16 + panelPadding, 16 + headerHeight / 2 + 4)
+        
+        // Draw divider line
+        ctx.strokeStyle = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
+        ctx.beginPath()
+        ctx.moveTo(16 + panelPadding, 16 + headerHeight)
+        ctx.lineTo(16 + panelWidth - panelPadding, 16 + headerHeight)
+        ctx.stroke()
+        
+        // Draw stats
+        statsData.forEach(([label, value], i) => {
+          const y = 16 + headerHeight + panelPadding + (i * lineHeight) + lineHeight / 2
+          
+          // Label
+          ctx.fillStyle = textSecondary
+          ctx.font = '14px system-ui, -apple-system, sans-serif'
+          ctx.textAlign = 'left'
+          ctx.fillText(label, 16 + panelPadding, y)
+          
+          // Value
+          ctx.fillStyle = textPrimary
+          ctx.font = 'bold 14px monospace'
+          ctx.textAlign = 'right'
+          ctx.fillText(value, 16 + panelWidth - panelPadding, y)
+        })
+      }
+      
+      // Draw sequence at the bottom (bigger)
+      if (sequence) {
+        ctx.fillStyle = isDarkMode ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.4)'
+        ctx.font = '18px monospace'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'bottom'
+        ctx.fillText(sequence, canvas.width / 2, canvas.height - 16)
+      }
+      
+      // Draw logo + branding in bottom right
       const logoSvg = `<svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M32 56 C16 44 8 32 8 22 C8 12 16 6 24 6 C28 6 31 8 32 12 C33 8 36 6 40 6 C48 6 56 12 56 22 C56 32 48 44 32 56" stroke="#f472b6" stroke-width="3.5" stroke-linecap="round" fill="none"/>
         <path d="M32 48 C20 40 14 32 14 24 C14 17 19 12 25 12 C28 12 30 13 32 16 C34 13 36 12 39 12 C45 12 50 17 50 24 C50 32 44 40 32 48" stroke="#fb7185" stroke-width="3.5" stroke-linecap="round" fill="none"/>
@@ -249,44 +285,36 @@ export function ProteinViewer({
       const logoDataUrl = 'data:image/svg+xml;base64,' + btoa(logoSvg)
       
       logoImg.onload = () => {
-        if (sequence) {
-          // Scale sizes based on canvas width - cap at 1.2x for desktop
-          const fontScale = Math.min(1.2, Math.max(1, canvas.width / 600))
-          const seqFontSize = Math.round(14 * fontScale)
-          const brandFontSize = Math.round(26 * fontScale)
-          const logoSize = Math.round(28 * fontScale)
-          
-          // Draw sequence text centered in footer
-          ctx.font = `${seqFontSize}px monospace`
-          ctx.fillStyle = seqTextColor
-          ctx.textAlign = 'center'
-          ctx.textBaseline = 'top'
-          ctx.fillText(sequence, canvas.width / 2, img.height + 12 * fontScale)
-          
-          // Draw branding below sequence: logo + "folded.love"
-          const brandY = img.height + 60 * fontScale
-          const fontSize = brandFontSize
-          
-          // Measure text to center the whole brand block
-          ctx.font = `bold ${fontSize}px "Nunito Sans Variable", "Nunito Sans", sans-serif`
-          const foldedWidth = ctx.measureText('folded').width
-          const loveWidth = ctx.measureText('.love').width
-          const totalWidth = logoSize + 6 + foldedWidth + loveWidth
-          const startX = (canvas.width - totalWidth) / 2
-          
-          // Draw logo
-          ctx.drawImage(logoImg, startX, brandY - logoSize / 2 - 2, logoSize, logoSize)
-          
-          // Draw "folded" in pink
-          ctx.fillStyle = '#f472b6'
-          ctx.textAlign = 'left'
-          ctx.textBaseline = 'middle'
-          ctx.fillText('folded', startX + logoSize + 6, brandY)
-          
-          // Draw ".love" in muted color
-          ctx.fillStyle = brandTextColor
-          ctx.fillText('.love', startX + logoSize + 6 + foldedWidth, brandY)
-        }
+        const logoSize = 48
+        const brandFontSize = 28
+        const rightPadding = 20
+        const bottomPadding = 20
+        
+        // Measure brand text
+        ctx.font = `bold ${brandFontSize}px system-ui, -apple-system, sans-serif`
+        const foldedWidth = ctx.measureText('folded').width
+        const loveWidth = ctx.measureText('.love').width
+        const totalWidth = logoSize + 10 + foldedWidth + loveWidth
+        
+        const brandX = canvas.width - rightPadding - totalWidth
+        const brandY = canvas.height - bottomPadding - logoSize / 2
+        
+        // Draw semi-transparent background behind brand
+        ctx.fillStyle = panelBg
+        ctx.fillRect(brandX - 16, brandY - logoSize / 2 - 10, totalWidth + 32, logoSize + 20)
+        
+        // Draw logo
+        ctx.drawImage(logoImg, brandX, brandY - logoSize / 2, logoSize, logoSize)
+        
+        // Draw "folded" in pink
+        ctx.fillStyle = accentColor
+        ctx.textAlign = 'left'
+        ctx.textBaseline = 'middle'
+        ctx.fillText('folded', brandX + logoSize + 10, brandY)
+        
+        // Draw ".love" in secondary color
+        ctx.fillStyle = textSecondary
+        ctx.fillText('.love', brandX + logoSize + 10 + foldedWidth, brandY)
         
         // Convert canvas to blob and share/download
         canvas.toBlob(async (blob) => {
@@ -322,7 +350,7 @@ export function ProteinViewer({
       logoImg.src = logoDataUrl
     }
     img.src = proteinDataUrl
-  }, [name1, name2, sequence])
+  }, [name1, name2, sequence, pdbData])
 
   const containerStyles = cn(
     'relative overflow-hidden',
@@ -470,9 +498,8 @@ function LoadingSkeleton() {
           </svg>
         </div>
       </div>
-      <p className="mt-5 text-base font-medium text-primary">Working on some amino amore...</p>
-      <p className="mt-1 text-sm text-muted-foreground">Folding your Love Protein</p>
-      <div className="mt-3 flex gap-1">
+      <p className="mt-5 text-base font-medium text-primary">Folding your Love Protein...</p>
+      <div className="mt-2 flex gap-1">
         <span className="h-2 w-2 animate-bounce rounded-full bg-primary" style={{ animationDelay: '0ms' }} />
         <span className="h-2 w-2 animate-bounce rounded-full bg-primary" style={{ animationDelay: '150ms' }} />
         <span className="h-2 w-2 animate-bounce rounded-full bg-primary" style={{ animationDelay: '300ms' }} />

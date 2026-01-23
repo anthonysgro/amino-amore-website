@@ -9,6 +9,7 @@ import {
   createLoveSequence,
   isCreateLoveSequenceError
 } from '@/utils/foldLogic'
+import { getProteinPersonality, parsePdbStats } from '@/utils/pdbStats'
 import { useFoldProtein } from '@/hooks/useFoldProtein'
 import { ProteinViewer } from '@/components/ProteinViewer'
 import { StrategySelector } from '@/components/StrategySelector'
@@ -225,6 +226,11 @@ function FoldRoute() {
                   />
                 </motion.div>
               )}
+
+              {/* Protein Stats */}
+              {data?.pdb && sequence && (
+                <ProteinStatsCard pdbData={data.pdb} sequence={sequence} />
+              )}
             </motion.div>
 
             {/* Footer */}
@@ -406,5 +412,68 @@ function ShareButton({ name1, name2 }: { name1: string; name2: string }) {
         </>
       )}
     </Button>
+  )
+}
+
+// Protein stats card component
+function ProteinStatsCard({ pdbData, sequence }: { pdbData: string; sequence: string }) {
+  const stats = useMemo(() => parsePdbStats(pdbData), [pdbData])
+  const personality = useMemo(() => getProteinPersonality(stats, sequence), [stats, sequence])
+
+  if (stats.atomCount === 0) return null
+
+  return (
+    <motion.div
+      className="mt-6 rounded-xl border border-border/50 bg-card/80 p-4 backdrop-blur-sm"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+    >
+      {/* Personality description */}
+      <p className="mb-4 text-center text-sm text-muted-foreground italic">
+        "{personality}"
+      </p>
+
+      <h3 className="mb-3 text-sm font-medium text-muted-foreground uppercase tracking-wider">
+        Structure Data
+      </h3>
+      
+      <table className="w-full text-sm">
+        <tbody className="divide-y divide-border/50">
+          <tr>
+            <td className="py-1.5 text-muted-foreground">Residues</td>
+            <td className="py-1.5 text-right font-mono text-foreground">{stats.residueCount}</td>
+          </tr>
+          <tr>
+            <td className="py-1.5 text-muted-foreground">Atoms</td>
+            <td className="py-1.5 text-right font-mono text-foreground">{stats.atomCount.toLocaleString()}</td>
+          </tr>
+          <tr>
+            <td className="py-1.5 text-muted-foreground">Uniqueness</td>
+            <td className="py-1.5 text-right font-mono text-foreground">
+              {(100 - stats.averagePlddt).toFixed(1)}
+              <span className="ml-1 text-xs text-muted-foreground">/ 100</span>
+            </td>
+          </tr>
+          <tr>
+            <td className="py-1.5 text-muted-foreground">Dimensions (Å)</td>
+            <td className="py-1.5 text-right font-mono text-foreground">
+              {stats.dimensions.width.toFixed(1)} × {stats.dimensions.height.toFixed(1)} × {stats.dimensions.depth.toFixed(1)}
+            </td>
+          </tr>
+          <tr>
+            <td className="py-1.5 text-muted-foreground">Est. Mass</td>
+            <td className="py-1.5 text-right font-mono text-foreground">
+              {stats.molecularWeight.toFixed(1)}
+              <span className="ml-1 text-xs text-muted-foreground">kDa</span>
+            </td>
+          </tr>
+          <tr>
+            <td className="py-1.5 text-muted-foreground">Backbone (Cα)</td>
+            <td className="py-1.5 text-right font-mono text-foreground">{stats.backboneAtoms}</td>
+          </tr>
+        </tbody>
+      </table>
+    </motion.div>
   )
 }
