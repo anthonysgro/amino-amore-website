@@ -30,14 +30,10 @@ function AboutPage() {
             {/* Bio */}
             <div className="prose prose-neutral dark:prose-invert mx-auto text-center">
               <p className="text-muted-foreground leading-relaxed">
-                Hey! I'm Anthony, a software engineer who loves building fun things 
-                at the intersection of science and technology. I created folded.love 
-                as a way to make protein folding — something usually reserved for 
-                research labs — into a playful, romantic experience anyone can enjoy.
+                Hey, I'm Anthony. I made this because my partner is a huge nerd and I wanted to make her laugh on Valentine's Day.
               </p>
               <p className="text-muted-foreground leading-relaxed mt-4">
-                The idea is simple: your names become amino acids, and AI folds them 
-                into a unique 3D structure. It's real science wrapped in a love letter.
+                Folded.love takes two names, turns them into amino acids, and uses the same AI that won a Nobel Prize to fold them into a 3D protein. It's basically a love letter that's also a molecule. Is it scientifically useful? Probably not. Is it cool? I think so.
               </p>
             </div>
 
