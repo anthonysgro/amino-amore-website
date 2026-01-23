@@ -242,8 +242,9 @@ function DNAHeart({ className }: DNAHeartProps) {
 
           time += 0.008
 
-          const targetY = Math.sin(time) * 0.5
-          const targetX = 0
+          const targetY = Math.sin(time) * 0.35
+          const targetX = Math.sin(time * 0.7) * 0.12
+          const targetZ = 0
 
           if (!sceneRef.current.isDragging) {
             manualRotationY += velocityY
@@ -273,6 +274,7 @@ function DNAHeart({ className }: DNAHeartProps) {
 
           dna.rotation.y = targetY + manualRotationY
           dna.rotation.x = targetX + manualRotationX
+          dna.rotation.z = targetZ
         }
 
         renderer.render(scene, camera)
