@@ -113,7 +113,7 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
 
           <p className="text-lg text-muted-foreground sm:text-xl max-w-2xl mx-auto lg:mx-0">
             Two names → one amino acid sequence → a 3D protein that only exists for you two. 
-            Powered by the same AI that helps scientists discover new medicines.
+            Powered by Nobel Prize-winning AI.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
