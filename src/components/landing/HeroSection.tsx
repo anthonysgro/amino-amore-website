@@ -71,10 +71,15 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
         variants={visualVariants}
         aria-hidden="true"
       >
-        {/* Soft animated glow background */}
+        {/* Soft animated glow background - Safari-compatible */}
         <div
-          className="absolute inset-[15%] rounded-full blur-[100px] lg:blur-[200px] animate-pulse bg-pink-500/40 dark:bg-pink-500/20"
-          style={{ animationDuration: "8s" }}
+          className="absolute inset-[15%] rounded-full animate-pulse"
+          style={{ 
+            animationDuration: "8s",
+            background: "radial-gradient(circle, rgba(236, 72, 153, 0.4) 0%, rgba(236, 72, 153, 0.3) 20%, rgba(236, 72, 153, 0.15) 40%, rgba(236, 72, 153, 0.05) 60%, rgba(236, 72, 153, 0) 70%)",
+            transform: "translateZ(0)", // Force GPU acceleration for Safari
+            willChange: "opacity",
+          }}
           aria-hidden="true"
         />
 

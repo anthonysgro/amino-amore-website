@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import * as THREE from "three"
 
 interface DNAHeartProps {
@@ -62,6 +62,7 @@ function generateStrandPoints(
 
 function DNAHeart({ className }: DNAHeartProps) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [isSafari, setIsSafari] = useState(false)
   const sceneRef = useRef<{
     scene: THREE.Scene
     camera: THREE.PerspectiveCamera
@@ -72,6 +73,13 @@ function DNAHeart({ className }: DNAHeartProps) {
     autoRotate: boolean
     previousMousePosition: { x: number; y: number }
   } | null>(null)
+
+  // Detect Safari on mount
+  useEffect(() => {
+    const ua = navigator.userAgent
+    const isSafariBrowser = /^((?!chrome|android).)*safari/i.test(ua)
+    setIsSafari(isSafariBrowser)
+  }, [])
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -86,7 +94,6 @@ function DNAHeart({ className }: DNAHeartProps) {
         const entry = entries[0]
         if (entry && entry.contentRect.width > 0 && entry.contentRect.height > 0) {
           resizeObserver.disconnect()
-          // Re-run effect by forcing update - but simpler to just init here
           initScene(container, entry.contentRect.width, entry.contentRect.height)
         }
       })
@@ -116,11 +123,8 @@ function DNAHeart({ className }: DNAHeartProps) {
       const purple = 0xa855f7
       const fuchsia = 0xe879f9
 
-      // Use emissive materials for a glow effect
       const pinkMaterial = new THREE.MeshBasicMaterial({ color: pink })
       const roseMaterial = new THREE.MeshBasicMaterial({ color: rose })
-      
-      // Rungs get brighter emissive glow
       const purpleMaterial = new THREE.MeshBasicMaterial({ color: purple })
       const fuchsiaMaterial = new THREE.MeshBasicMaterial({ color: fuchsia })
 
@@ -128,7 +132,7 @@ function DNAHeart({ className }: DNAHeartProps) {
 
       const numPoints = 100
       const helixRadius = 2.2
-      const helixTwist = 0.12 // Original twist amount
+      const helixTwist = 0.12
 
       const strand1Points = generateStrandPoints(numPoints, helixRadius, helixTwist, 0)
       const strand2Points = generateStrandPoints(numPoints, helixRadius, helixTwist, Math.PI)
@@ -176,12 +180,9 @@ function DNAHeart({ className }: DNAHeartProps) {
       dna.position.y = 1.2
       scene.add(dna)
 
-      // Track animation time for oscillation
       let time = 0
-      // Track the current manual rotation offset (from user dragging)
       let manualRotationY = 0
       let manualRotationX = 0
-      // Track velocity for momentum/throw effect
       let velocityY = 0
       let velocityX = 0
 
@@ -201,27 +202,21 @@ function DNAHeart({ className }: DNAHeartProps) {
         if (sceneRef.current) {
           sceneRef.current.animationId = id
           
-          // Always advance time for the base oscillation
           time += 0.008
           
-          // Target oscillation position
           const targetY = Math.sin(time) * 0.5
           const targetX = 0
           
           if (!sceneRef.current.isDragging) {
-            // Apply velocity (momentum from throw)
             manualRotationY += velocityY
             manualRotationX += velocityX
             
-            // Apply friction to slow down velocity
             velocityY *= 0.96
             velocityX *= 0.96
             
-            // Gently ease the offset back toward zero (no spring, just smooth decay)
             manualRotationY *= 0.985
             manualRotationX *= 0.985
             
-            // If everything is tiny, snap to zero to avoid drift
             if (Math.abs(manualRotationY) < 0.001 && Math.abs(velocityY) < 0.0001) {
               manualRotationY = 0
               velocityY = 0
@@ -232,10 +227,10 @@ function DNAHeart({ className }: DNAHeartProps) {
             }
           }
           
-          // Apply base oscillation + manual offset
           dna.rotation.y = targetY + manualRotationY
           dna.rotation.x = targetX + manualRotationX
         }
+        
         renderer.render(scene, camera)
       }
       animate()
@@ -244,7 +239,6 @@ function DNAHeart({ className }: DNAHeartProps) {
         if (!sceneRef.current) return
         sceneRef.current.isDragging = true
         sceneRef.current.previousMousePosition = { x: e.clientX, y: e.clientY }
-        // Kill velocity when grabbing
         velocityY = 0
         velocityX = 0
         container.style.cursor = "grabbing"
@@ -254,10 +248,8 @@ function DNAHeart({ className }: DNAHeartProps) {
         if (!sceneRef.current || !sceneRef.current.isDragging) return
         const deltaX = e.clientX - sceneRef.current.previousMousePosition.x
         const deltaY = e.clientY - sceneRef.current.previousMousePosition.y
-        // Add to manual offset
         manualRotationY += deltaX * 0.005
         manualRotationX += deltaY * 0.005
-        // Track velocity based on movement (for throw momentum)
         velocityY = deltaX * 0.002
         velocityX = deltaY * 0.002
         sceneRef.current.previousMousePosition = { x: e.clientX, y: e.clientY }
@@ -288,7 +280,6 @@ function DNAHeart({ className }: DNAHeartProps) {
         sceneRef.current.camera.updateProjectionMatrix()
         sceneRef.current.renderer.setSize(newWidth, newHeight)
         
-        // Update camera zoom based on viewport width
         const isMobile = window.innerWidth < 1024
         sceneRef.current.camera.position.z = isMobile ? 28 : 38
       }
@@ -320,7 +311,8 @@ function DNAHeart({ className }: DNAHeartProps) {
         width: "100%", 
         height: "100%", 
         cursor: "grab",
-        filter: "drop-shadow(0 0 8px rgba(244, 114, 182, 0.6)) drop-shadow(0 0 20px rgba(168, 85, 247, 0.4))",
+        // Only apply drop-shadow on non-Safari browsers (Safari has issues with WebGL canvas filters)
+        filter: isSafari ? "none" : "drop-shadow(0 0 8px rgba(244, 114, 182, 0.6)) drop-shadow(0 0 20px rgba(168, 85, 247, 0.4))",
       }}
       aria-hidden="true"
     />
