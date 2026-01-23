@@ -171,6 +171,12 @@ function DNAHeart({ className }: DNAHeartProps) {
       dna.position.y = 1.2
       scene.add(dna)
 
+      // Track animation time for oscillation
+      let time = 0
+      // Track the current manual rotation offset (from user dragging)
+      let manualRotationY = 0
+      let manualRotationX = 0
+
       sceneRef.current = {
         scene,
         camera,
@@ -186,9 +192,27 @@ function DNAHeart({ className }: DNAHeartProps) {
         const id = requestAnimationFrame(animate)
         if (sceneRef.current) {
           sceneRef.current.animationId = id
-          if (sceneRef.current.autoRotate && !sceneRef.current.isDragging) {
-            dna.rotation.y += 0.002
+          
+          // Always advance time for the base oscillation
+          time += 0.008
+          
+          // Target oscillation position
+          const targetY = Math.sin(time) * 0.5
+          const targetX = 0
+          
+          if (!sceneRef.current.isDragging) {
+            // Gradually ease manual offset back to zero
+            manualRotationY *= 0.97
+            manualRotationX *= 0.97
+            
+            // If offset is tiny, snap to zero to avoid floating point drift
+            if (Math.abs(manualRotationY) < 0.001) manualRotationY = 0
+            if (Math.abs(manualRotationX) < 0.001) manualRotationX = 0
           }
+          
+          // Apply base oscillation + manual offset
+          dna.rotation.y = targetY + manualRotationY
+          dna.rotation.x = targetX + manualRotationX
         }
         renderer.render(scene, camera)
       }
@@ -197,7 +221,6 @@ function DNAHeart({ className }: DNAHeartProps) {
       const onMouseDown = (e: MouseEvent) => {
         if (!sceneRef.current) return
         sceneRef.current.isDragging = true
-        sceneRef.current.autoRotate = false
         sceneRef.current.previousMousePosition = { x: e.clientX, y: e.clientY }
         container.style.cursor = "grabbing"
       }
@@ -206,15 +229,15 @@ function DNAHeart({ className }: DNAHeartProps) {
         if (!sceneRef.current || !sceneRef.current.isDragging) return
         const deltaX = e.clientX - sceneRef.current.previousMousePosition.x
         const deltaY = e.clientY - sceneRef.current.previousMousePosition.y
-        dna.rotation.y += deltaX * 0.005
-        dna.rotation.x += deltaY * 0.005
+        // Add to manual offset instead of directly to rotation
+        manualRotationY += deltaX * 0.005
+        manualRotationX += deltaY * 0.005
         sceneRef.current.previousMousePosition = { x: e.clientX, y: e.clientY }
       }
 
       const onMouseUp = () => {
         if (!sceneRef.current) return
         sceneRef.current.isDragging = false
-        sceneRef.current.autoRotate = true
         container.style.cursor = "grab"
       }
 
