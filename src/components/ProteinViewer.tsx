@@ -1,17 +1,28 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 import type { GLViewer } from '3dmol'
 import { cn } from '@/lib/utils'
 import { parsePdbStats } from '@/utils/pdbStats'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 export type ColorMode = 'spectrum' | 'plddt'
 
 export const PLDDT_COLOR_SCHEME = {
-  high: { min: 70, max: 100, color: '#ec4899' },
-  medium: { min: 50, max: 70, color: '#f43f5e' },
-  low: { min: 0, max: 50, color: '#7c3aed' },
+  high: { min: 70, max: 100, color: '#ec4899', label: 'High confidence' },
+  medium: { min: 50, max: 70, color: '#f43f5e', label: 'Medium confidence' },
+  low: { min: 0, max: 50, color: '#7c3aed', label: 'Low confidence' },
 } as const
+
+// Amino acid display names
+const AMINO_ACID_NAMES: Record<string, string> = {
+  A: 'Alanine', C: 'Cysteine', D: 'Aspartic Acid', E: 'Glutamic Acid',
+  F: 'Phenylalanine', G: 'Glycine', H: 'Histidine', I: 'Isoleucine',
+  K: 'Lysine', L: 'Leucine', M: 'Methionine', N: 'Asparagine',
+  P: 'Proline', Q: 'Glutamine', R: 'Arginine', S: 'Serine',
+  T: 'Threonine', V: 'Valine', W: 'Tryptophan', Y: 'Tyrosine',
+}
 
 interface ProteinViewerProps {
   pdbData: string | undefined
@@ -42,6 +53,10 @@ export function ProteinViewer({
   const [internalColorMode, setInternalColorMode] = useState<ColorMode>(colorMode)
   const [showStats, setShowStats] = useState(true)
   const [showSequence, setShowSequence] = useState(true)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [hoveredResidue, setHoveredResidue] = useState<{ index: number; name: string; plddt: number } | null>(null)
+  const [highlightedResidue, setHighlightedResidue] = useState<number | null>(null)
+  const fullscreenRef = useRef<HTMLDivElement>(null)
 
   const toggleColorMode = useCallback(() => {
     const newMode: ColorMode = internalColorMode === 'spectrum' ? 'plddt' : 'spectrum'
@@ -52,6 +67,31 @@ export function ProteinViewer({
   useEffect(() => {
     setInternalColorMode(colorMode)
   }, [colorMode])
+
+  // Fullscreen handling
+  const toggleFullscreen = useCallback(() => {
+    if (!fullscreenRef.current) return
+    
+    if (!document.fullscreenElement) {
+      fullscreenRef.current.requestFullscreen().then(() => {
+        setIsFullscreen(true)
+      }).catch(() => {
+        // Fullscreen not supported or denied
+      })
+    } else {
+      document.exitFullscreen().then(() => {
+        setIsFullscreen(false)
+      }).catch(() => {})
+    }
+  }, [])
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement)
+    }
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange)
+  }, [])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -156,6 +196,25 @@ export function ProteinViewer({
         viewer.zoomTo()
         viewer.zoom(0.8)
         viewer.spin('y', 0.5)
+        
+        // Add hover callback for residue info
+        viewer.setHoverable(
+          {},
+          true,
+          (atom: { resi?: number; resn?: string; b?: number } | null) => {
+            if (atom) {
+              setHoveredResidue({
+                index: atom.resi ?? 0,
+                name: atom.resn ?? '',
+                plddt: atom.b ?? 0,
+              })
+            }
+          },
+          () => {
+            setHoveredResidue(null)
+          }
+        )
+        
         viewer.render()
 
         viewerRef.current = viewer
@@ -187,6 +246,84 @@ export function ProteinViewer({
     }
     setIsSpinning(newSpinState)
   }, [isSpinning])
+
+  // Highlight a specific residue in the 3D view
+  const highlightResidue = useCallback((residueIndex: number | null) => {
+    if (!viewerRef.current || !pdbData) return
+    setHighlightedResidue(residueIndex)
+    
+    // Re-render with highlight
+    viewerRef.current.removeAllLabels()
+    
+    if (residueIndex !== null) {
+      const atoms = viewerRef.current.getModel().selectedAtoms({ resi: residueIndex + 1 })
+      if (atoms.length > 0) {
+        const caAtom = atoms.find(a => a.atom === 'CA') ?? atoms[0]
+        viewerRef.current.addLabel(sequence?.[residueIndex] || '', {
+          position: { x: caAtom.x ?? 0, y: (caAtom.y ?? 0) + 3, z: caAtom.z ?? 0 },
+          backgroundColor: 'rgba(236, 72, 153, 0.95)',
+          fontColor: '#ffffff',
+          fontSize: 16,
+          borderThickness: 0,
+          backgroundOpacity: 0.95,
+          showBackground: true,
+          font: 'Arial',
+          fontOpacity: 1,
+          inFront: true,
+        })
+      }
+    }
+    
+    // Re-add name labels
+    if (name1 && name2) {
+      const atoms = viewerRef.current.getModel().selectedAtoms({})
+      const caAtoms = atoms.filter((atom) => atom.atom === 'CA')
+      if (caAtoms.length > 0) {
+        const nTerminus = caAtoms[0]
+        const cTerminus = caAtoms[caAtoms.length - 1]
+        
+        viewerRef.current.addLabel(name1, {
+          position: { x: (nTerminus.x ?? 0) + 5, y: (nTerminus.y ?? 0) + 5, z: nTerminus.z ?? 0 },
+          backgroundColor: 'rgba(236, 72, 153, 0.9)',
+          fontColor: '#ffffff',
+          fontSize: 18,
+          borderThickness: 0,
+          backgroundOpacity: 0.9,
+          showBackground: true,
+          font: 'Arial',
+          fontOpacity: 1,
+          inFront: true,
+        })
+        
+        viewerRef.current.addLabel(name2, {
+          position: { x: (cTerminus.x ?? 0) - 5, y: (cTerminus.y ?? 0) - 5, z: cTerminus.z ?? 0 },
+          backgroundColor: 'rgba(236, 72, 153, 0.9)',
+          fontColor: '#ffffff',
+          fontSize: 18,
+          borderThickness: 0,
+          backgroundOpacity: 0.9,
+          showBackground: true,
+          font: 'Arial',
+          fontOpacity: 1,
+          inFront: true,
+        })
+      }
+    }
+    
+    viewerRef.current.render()
+  }, [pdbData, name1, name2, sequence])
+
+  // Download PDB file
+  const downloadPdb = useCallback(() => {
+    if (!pdbData) return
+    const blob = new Blob([pdbData], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.download = `love-protein-${name1 || 'partner1'}-${name2 || 'partner2'}.pdb`
+    link.href = url
+    link.click()
+    URL.revokeObjectURL(url)
+  }, [pdbData, name1, name2])
 
   const takeScreenshot = useCallback(() => {
     if (!viewerRef.current || !containerRef.current || !pdbData) return
@@ -396,7 +533,10 @@ export function ProteinViewer({
   const stats = pdbData ? parsePdbStats(pdbData) : null
 
   return (
-    <div className={cn(containerStyles, 'flex flex-col')}>
+    <div ref={fullscreenRef} className={cn(containerStyles, 'flex flex-col', isFullscreen && 'rounded-none')}>
+      {/* Ambient glow effect */}
+      <div className="absolute -inset-1 bg-linear-to-r from-pink-500/20 via-rose-500/20 to-purple-500/20 rounded-2xl blur-xl opacity-50 -z-10 animate-pulse" style={{ animationDuration: '3s' }} />
+      
       <div className="relative flex-1 min-h-[450px]">
         <div
           ref={containerRef}
@@ -406,8 +546,74 @@ export function ProteinViewer({
           }}
         />
         
-        {/* Stats overlay */}
-        {viewerReady && stats && stats.atomCount > 0 && showStats && (
+        {/* Floating Toolbar */}
+        {viewerReady && (
+          <FloatingToolbar
+            isSpinning={isSpinning}
+            onToggleSpin={toggleSpin}
+            onScreenshot={takeScreenshot}
+            onDownloadPdb={downloadPdb}
+            onToggleFullscreen={toggleFullscreen}
+            isFullscreen={isFullscreen}
+            colorMode={internalColorMode}
+            onColorModeToggle={toggleColorMode}
+          />
+        )}
+        
+        {/* Residue Hover Info */}
+        <AnimatePresence>
+          {hoveredResidue && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="absolute bottom-4 left-4 pointer-events-none"
+            >
+              <div className="bg-background/90 backdrop-blur-md rounded-lg px-3 py-2 border border-border/50 shadow-lg">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-mono font-bold text-primary">{hoveredResidue.name}</span>
+                  <span className="text-sm text-muted-foreground">
+                    {AMINO_ACID_NAMES[hoveredResidue.name] || 'Unknown'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 mt-1 text-xs">
+                  <span className="text-muted-foreground">Position {hoveredResidue.index}</span>
+                  <span className="text-muted-foreground">•</span>
+                  <span className={cn(
+                    'font-medium',
+                    hoveredResidue.plddt >= 70 ? 'text-pink-500' :
+                    hoveredResidue.plddt >= 50 ? 'text-rose-500' : 'text-purple-500'
+                  )}>
+                    pLDDT: {hoveredResidue.plddt.toFixed(1)}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
+        {/* pLDDT Legend */}
+        {viewerReady && internalColorMode === 'plddt' && (
+          <div className="absolute top-3 left-3 pointer-events-none">
+            <div className="bg-background/85 backdrop-blur-sm rounded-lg p-3 text-xs">
+              <div className="text-primary font-semibold text-[10px] uppercase tracking-wider mb-2">
+                Confidence (pLDDT)
+              </div>
+              <div className="space-y-1.5">
+                {Object.entries(PLDDT_COLOR_SCHEME).map(([key, { color, label, min, max }]) => (
+                  <div key={key} className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: color }} />
+                    <span className="text-muted-foreground">{label}</span>
+                    <span className="text-foreground/50 ml-auto">{min}-{max}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Stats overlay (when not pLDDT mode) */}
+        {viewerReady && stats && stats.atomCount > 0 && showStats && internalColorMode !== 'plddt' && (
           <div className="absolute top-3 left-3 pointer-events-none">
             <div className="bg-background/85 backdrop-blur-sm rounded-lg p-3 text-xs">
               <div className="text-primary font-semibold text-[10px] uppercase tracking-wider mb-2">
@@ -434,28 +640,48 @@ export function ProteinViewer({
             </div>
           </div>
         )}
-        
-        {/* Sequence overlay */}
-        {viewerReady && sequence && showSequence && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none">
-            <div className="text-sm font-mono text-foreground/50">
-              {sequence}
+      </div>
+      
+      {/* Bottom section: Sequence bar + checkboxes */}
+      {viewerReady && (
+        <div className="border-t border-border/30">
+          {/* Interactive Sequence Bar */}
+          {sequence && (
+            <SequenceBar
+              sequence={sequence}
+              name1={name1}
+              name2={name2}
+              hoveredResidue={hoveredResidue?.index ?? null}
+              highlightedResidue={highlightedResidue}
+              onResidueHover={highlightResidue}
+              colorMode={internalColorMode}
+            />
+          )}
+          
+          {/* Checkboxes for overlay toggles */}
+          <div className="flex justify-center gap-4 py-2 text-sm border-t border-border/20">
+            <div className="flex items-center gap-2">
+              <Checkbox 
+                id="show-stats" 
+                checked={showStats} 
+                onCheckedChange={(checked) => setShowStats(checked === true)}
+              />
+              <Label htmlFor="show-stats" className="text-muted-foreground cursor-pointer text-xs">
+                Show Stats
+              </Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <Checkbox 
+                id="show-sequence" 
+                checked={showSequence} 
+                onCheckedChange={(checked) => setShowSequence(checked === true)}
+              />
+              <Label htmlFor="show-sequence" className="text-muted-foreground cursor-pointer text-xs">
+                Show Sequence
+              </Label>
             </div>
           </div>
-        )}
-      </div>
-      {viewerReady && (
-        <ControlPanel
-          isSpinning={isSpinning}
-          onToggleSpin={toggleSpin}
-          onScreenshot={takeScreenshot}
-          colorMode={internalColorMode}
-          onColorModeToggle={toggleColorMode}
-          showStats={showStats}
-          onShowStatsChange={setShowStats}
-          showSequence={showSequence}
-          onShowSequenceChange={setShowSequence}
-        />
+        </div>
       )}
     </div>
   )
@@ -496,82 +722,239 @@ function PaletteIcon() {
   )
 }
 
-// Control Panel
-interface ControlPanelProps {
+function DownloadIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+    </svg>
+  )
+}
+
+function FullscreenIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+    </svg>
+  )
+}
+
+function ExitFullscreenIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" />
+    </svg>
+  )
+}
+
+// Interactive Sequence Bar
+interface SequenceBarProps {
+  sequence: string
+  name1?: string
+  name2?: string
+  hoveredResidue: number | null
+  highlightedResidue: number | null
+  onResidueHover: (index: number | null) => void
+  colorMode: ColorMode
+}
+
+function SequenceBar({ 
+  sequence, 
+  name1, 
+  name2, 
+  hoveredResidue, 
+  highlightedResidue,
+  onResidueHover,
+  colorMode,
+}: SequenceBarProps) {
+  // Calculate name boundaries (approximate - names are at start and end with linker in middle)
+  const name1Length = name1?.length || 0
+  const name2Length = name2?.length || 0
+  const linkerStart = name1Length
+  const linkerEnd = sequence.length - name2Length
+  
+  return (
+    <div 
+      className="px-3 pt-4 pb-2 border-b border-border/30 bg-background/50 backdrop-blur-sm overflow-x-auto scrollbar-thin"
+      style={{
+        scrollbarWidth: 'thin',
+        scrollbarColor: 'rgb(236 72 153 / 0.3) transparent',
+      }}
+    >
+      <style>{`
+        .scrollbar-thin::-webkit-scrollbar {
+          height: 6px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+          background: rgb(236 72 153 / 0.3);
+          border-radius: 3px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+          background: rgb(236 72 153 / 0.5);
+        }
+      `}</style>
+      <div className="flex items-center gap-0.5 justify-center min-w-max">
+        {sequence.split('').map((residue, index) => {
+          const isName1 = index < linkerStart
+          const isName2 = index >= linkerEnd
+          const isLinker = !isName1 && !isName2
+          const isHovered = hoveredResidue === index
+          const isHighlighted = highlightedResidue === index
+          
+          // Determine color based on position and mode
+          let bgColor = 'bg-muted/50'
+          if (colorMode === 'spectrum') {
+            if (isName1) bgColor = 'bg-pink-500/70'
+            else if (isName2) bgColor = 'bg-rose-500/70'
+            else bgColor = 'bg-purple-500/50'
+          }
+          
+          return (
+            <Tooltip key={index}>
+              <TooltipTrigger asChild>
+                <button
+                  className={cn(
+                    'w-5 h-6 text-[10px] font-mono font-medium rounded-sm transition-all duration-150',
+                    bgColor,
+                    'text-white/90',
+                    'hover:scale-110 hover:z-10',
+                    (isHovered || isHighlighted) && 'ring-2 ring-primary ring-offset-1 ring-offset-background scale-110 z-10',
+                    isLinker && 'opacity-60'
+                  )}
+                  onMouseEnter={() => onResidueHover(index)}
+                  onMouseLeave={() => onResidueHover(null)}
+                >
+                  {residue}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs">
+                <div className="font-medium">{AMINO_ACID_NAMES[residue] || residue}</div>
+                <div className="text-muted-foreground">
+                  Position {index + 1} • {isName1 ? name1 : isName2 ? name2 : 'Linker'}
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          )
+        })}
+      </div>
+      
+      {/* Legend */}
+      <div className="flex items-center justify-center gap-4 mt-2 text-[10px] text-muted-foreground">
+        {name1 && (
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-sm bg-pink-500" />
+            <span>{name1}</span>
+          </div>
+        )}
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 rounded-sm bg-purple-500/50" />
+          <span>Linker</span>
+        </div>
+        {name2 && (
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-sm bg-rose-500" />
+            <span>{name2}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// Floating Toolbar
+interface FloatingToolbarProps {
   isSpinning: boolean
   onToggleSpin: () => void
   onScreenshot: () => void
+  onDownloadPdb: () => void
+  onToggleFullscreen: () => void
+  isFullscreen: boolean
   colorMode: ColorMode
   onColorModeToggle: () => void
-  showStats: boolean
-  onShowStatsChange: (show: boolean) => void
-  showSequence: boolean
-  onShowSequenceChange: (show: boolean) => void
 }
 
-function ControlPanel({ 
-  isSpinning, 
-  onToggleSpin, 
-  onScreenshot, 
-  colorMode, 
+function FloatingToolbar({
+  isSpinning,
+  onToggleSpin,
+  onScreenshot,
+  onDownloadPdb,
+  onToggleFullscreen,
+  isFullscreen,
+  colorMode,
   onColorModeToggle,
-  showStats,
-  onShowStatsChange,
-  showSequence,
-  onShowSequenceChange,
-}: ControlPanelProps) {
+}: FloatingToolbarProps) {
   const buttonStyles = cn(
-    'flex items-center justify-center gap-1.5',
-    'px-3 py-2 sm:px-4',
+    'flex items-center justify-center',
+    'w-10 h-10',
     'rounded-full',
-    'bg-primary/10 text-primary',
-    'border border-primary/20',
-    'hover:bg-primary/20',
+    'bg-background/80 backdrop-blur-md',
+    'text-foreground/80',
+    'border border-border/50',
+    'hover:bg-primary/10 hover:text-primary hover:border-primary/30',
     'active:scale-95',
-    'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background',
-    'transition-all duration-200'
+    'transition-all duration-200',
+    'shadow-lg shadow-black/5'
   )
 
   return (
-    <div className="p-3 sm:p-4 space-y-3">
-      <div className="flex justify-center gap-2 sm:gap-3">
-        <button onClick={onToggleSpin} className={buttonStyles} aria-label={isSpinning ? 'Stop rotation' : 'Start rotation'}>
-          {isSpinning ? <PauseIcon /> : <PlayIcon />}
-          <span className="text-sm font-medium">{isSpinning ? 'Stop' : 'Spin'}</span>
-        </button>
-        <button onClick={onScreenshot} className={buttonStyles} aria-label="Download screenshot">
-          <CameraIcon />
-          <span className="text-sm font-medium">Save</span>
-        </button>
-        <button onClick={onColorModeToggle} className={buttonStyles} aria-label="Toggle color mode">
-          <PaletteIcon />
-          <span className="text-sm font-medium">{colorMode === 'spectrum' ? 'pLDDT' : 'Spectrum'}</span>
-        </button>
-      </div>
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-2"
+    >
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button onClick={onToggleSpin} className={buttonStyles}>
+            {isSpinning ? <PauseIcon /> : <PlayIcon />}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="left">{isSpinning ? 'Stop rotation' : 'Start rotation'}</TooltipContent>
+      </Tooltip>
       
-      <div className="flex justify-center gap-4 text-sm">
-        <div className="flex items-center gap-2">
-          <Checkbox 
-            id="show-stats" 
-            checked={showStats} 
-            onCheckedChange={(checked) => onShowStatsChange(checked === true)}
-          />
-          <Label htmlFor="show-stats" className="text-muted-foreground cursor-pointer">
-            Stats
-          </Label>
-        </div>
-        <div className="flex items-center gap-2">
-          <Checkbox 
-            id="show-sequence" 
-            checked={showSequence} 
-            onCheckedChange={(checked) => onShowSequenceChange(checked === true)}
-          />
-          <Label htmlFor="show-sequence" className="text-muted-foreground cursor-pointer">
-            Sequence
-          </Label>
-        </div>
-      </div>
-    </div>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button onClick={onColorModeToggle} className={buttonStyles}>
+            <PaletteIcon />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="left">
+          {colorMode === 'spectrum' ? 'Show pLDDT colors' : 'Show spectrum colors'}
+        </TooltipContent>
+      </Tooltip>
+      
+      <div className="h-px bg-border/50 my-1" />
+      
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button onClick={onScreenshot} className={buttonStyles}>
+            <CameraIcon />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="left">Save image</TooltipContent>
+      </Tooltip>
+      
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button onClick={onDownloadPdb} className={buttonStyles}>
+            <DownloadIcon />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="left">Download PDB file</TooltipContent>
+      </Tooltip>
+      
+      <div className="h-px bg-border/50 my-1" />
+      
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button onClick={onToggleFullscreen} className={buttonStyles}>
+            {isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="left">{isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}</TooltipContent>
+      </Tooltip>
+    </motion.div>
   )
 }
 
