@@ -142,7 +142,7 @@ function FoldRoute() {
               variants={textVariants}
             >
               {/* Stacked on mobile, inline on larger screens */}
-              <h1 className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl lg:text-5xl">
+              <h1 className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
                 <span className="text-primary">{formatName(name1)}</span>
                 <DNAHeartLogo size={32} className="shrink-0 my-1 sm:my-0" />
                 <span className="text-primary">{formatName(name2)}</span>
