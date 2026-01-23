@@ -452,7 +452,7 @@ export function ProteinViewer({
         ctx.fillText(sequence, canvas.width / 2, canvas.height - 20)
       }
       
-      // Draw logo + branding in bottom right
+      // Draw logo + branding in top right
       const logoSvg = `<svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M32 56 C16 44 8 32 8 22 C8 12 16 6 24 6 C28 6 31 8 32 12 C33 8 36 6 40 6 C48 6 56 12 56 22 C56 32 48 44 32 56" stroke="#f472b6" stroke-width="3.5" stroke-linecap="round" fill="none"/>
         <path d="M32 48 C20 40 14 32 14 24 C14 17 19 12 25 12 C28 12 30 13 32 16 C34 13 36 12 39 12 C45 12 50 17 50 24 C50 32 44 40 32 48" stroke="#fb7185" stroke-width="3.5" stroke-linecap="round" fill="none"/>
@@ -465,9 +465,9 @@ export function ProteinViewer({
         const logoSize = 48
         const brandFontSize = 28
         const rightPadding = 20
-        // Align with sequence baseline (sequence is at canvas.height - 20, font 24px)
-        // Logo center should align with text baseline
-        const brandY = canvas.height - 20 - 12 // baseline minus half of font height
+        const topPadding = 20
+        // Position in top right
+        const brandY = topPadding + logoSize / 2
         
         // Measure brand text
         ctx.font = `bold ${brandFontSize}px system-ui, -apple-system, sans-serif`
