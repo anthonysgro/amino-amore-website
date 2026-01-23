@@ -6,7 +6,6 @@ import { MobileNav } from "./MobileNav"
 import { DNAHeartLogo } from "./DNAHeartLogo"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/theme-toggle"
 
 // ============================================================================
 // Types
@@ -170,14 +169,11 @@ function CenterNavLinks() {
 }
 
 /**
- * RightActions - Right-side actions (theme toggle, coffee, CTA)
+ * RightActions - Right-side actions (coffee, CTA)
  */
 function RightActions() {
   return (
     <>
-      {/* Theme Toggle */}
-      <ThemeToggle />
-
       {/* Buy Me a Coffee Link - desktop only */}
       <a
         href="https://www.buymeacoffee.com/sgro"
