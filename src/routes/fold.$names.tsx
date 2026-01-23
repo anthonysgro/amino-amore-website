@@ -117,14 +117,14 @@ function FoldRoute() {
   const hasError = sequenceError || strategyError || isError
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background">
+    <div className="relative min-h-screen bg-background">
       {/* Static gradient background - GPU friendly */}
       <div 
-        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-pink-100/60 via-rose-50/40 to-purple-100/50 dark:from-pink-950/30 dark:via-rose-950/20 dark:to-purple-950/30" 
+        className="pointer-events-none fixed inset-0 bg-gradient-to-br from-pink-100/60 via-rose-50/40 to-purple-100/50 dark:from-pink-950/30 dark:via-rose-950/20 dark:to-purple-950/30" 
       />
 
       {/* Subtle overlay for better contrast */}
-      <div className="pointer-events-none absolute inset-0 bg-background/30 dark:bg-background/50" />
+      <div className="pointer-events-none fixed inset-0 bg-background/30 dark:bg-background/50" />
 
       <Navigation />
 
@@ -138,7 +138,7 @@ function FoldRoute() {
           <>
             {/* Hero header with names */}
             <motion.header
-              className="px-4 pt-6 text-center md:px-6 md:pt-8"
+              className="px-4 pt-8 text-center md:px-6 md:pt-12"
               initial="hidden"
               animate="visible"
               variants={textVariants}
@@ -149,14 +149,14 @@ function FoldRoute() {
                 <DNAHeartLogo size={32} className="shrink-0 my-1 sm:my-0" />
                 <span className="text-primary">{formatName(name2)}</span>
               </h1>
-              <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+              <p className="mt-3 text-sm text-muted-foreground sm:text-base">
                 Your names, bonded at the molecular level
               </p>
             </motion.header>
 
             {/* Main protein viewer - the hero */}
             <motion.div
-              className="relative mx-auto mt-4 max-w-5xl px-4 md:mt-6 md:px-6"
+              className="relative mx-auto mt-6 max-w-5xl px-4 md:mt-10 md:px-6"
               initial="hidden"
               animate="visible"
               variants={contentVariants}
@@ -173,7 +173,7 @@ function FoldRoute() {
 
             {/* Info badges and controls */}
             <motion.div
-              className="mx-auto mt-4 max-w-5xl px-4 md:px-6"
+              className="mx-auto mt-6 max-w-5xl px-4 md:mt-8 md:px-6"
               initial="hidden"
               animate="visible"
               variants={contentVariants}
@@ -236,7 +236,7 @@ function FoldRoute() {
 
             {/* Footer */}
             <motion.footer
-              className="mt-8 pb-8 text-center"
+              className="mt-16 pb-10 text-center"
               initial="hidden"
               animate="visible"
               variants={contentVariants}
@@ -244,7 +244,7 @@ function FoldRoute() {
               <p className="text-sm text-muted-foreground">
                 Made with 💕 and science
               </p>
-              <div className="mt-3 flex justify-center gap-4">
+              <div className="mt-4 flex justify-center gap-4">
                 <Button variant="ghost" size="sm" asChild>
                   <Link to="/create">Create Another</Link>
                 </Button>

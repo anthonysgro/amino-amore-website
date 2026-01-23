@@ -218,7 +218,7 @@ export function ProteinViewer({
       ctx.drawImage(img, 0, 0)
       
       // Draw stats panel on the left
-      if (stats.atomCount > 0) {
+      if (showStats && stats.atomCount > 0) {
         const panelPadding = 20
         const panelWidth = 220
         const lineHeight = 28
@@ -271,7 +271,7 @@ export function ProteinViewer({
       }
       
       // Draw sequence at the bottom (bigger)
-      if (sequence) {
+      if (showSequence && sequence) {
         ctx.fillStyle = isDarkMode ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)'
         ctx.font = '24px monospace'
         ctx.textAlign = 'center'
@@ -356,7 +356,7 @@ export function ProteinViewer({
       logoImg.src = logoDataUrl
     }
     img.src = proteinDataUrl
-  }, [name1, name2, sequence, pdbData])
+  }, [name1, name2, sequence, pdbData, showStats, showSequence])
 
   const containerStyles = cn(
     'relative overflow-hidden',
