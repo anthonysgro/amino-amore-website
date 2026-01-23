@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react"
+import { useEffect, useRef } from "react"
 import * as THREE from "three"
 
 interface DNAHeartProps {
@@ -36,8 +36,8 @@ function generateStrandPoints(
   helixRadius: number,
   helixTwist: number,
   offset: number = 0
-): THREE.Vector3[] {
-  const points: THREE.Vector3[] = []
+): Array<THREE.Vector3> {
+  const points: Array<THREE.Vector3> = []
 
   for (let i = 0; i <= numPoints; i++) {
     const t = (i / numPoints) * Math.PI * 2
@@ -114,8 +114,11 @@ function DNAHeart({ className }: DNAHeartProps) {
       const purple = 0xa855f7
       const fuchsia = 0xe879f9
 
+      // Use emissive materials for a glow effect
       const pinkMaterial = new THREE.MeshBasicMaterial({ color: pink })
       const roseMaterial = new THREE.MeshBasicMaterial({ color: rose })
+      
+      // Rungs get brighter emissive glow
       const purpleMaterial = new THREE.MeshBasicMaterial({ color: purple })
       const fuchsiaMaterial = new THREE.MeshBasicMaterial({ color: fuchsia })
 
@@ -307,7 +310,12 @@ function DNAHeart({ className }: DNAHeartProps) {
     <div
       ref={containerRef}
       className={className}
-      style={{ width: "100%", height: "100%", cursor: "grab" }}
+      style={{ 
+        width: "100%", 
+        height: "100%", 
+        cursor: "grab",
+        filter: "drop-shadow(0 0 8px rgba(244, 114, 182, 0.6)) drop-shadow(0 0 20px rgba(168, 85, 247, 0.4))",
+      }}
       aria-hidden="true"
     />
   )

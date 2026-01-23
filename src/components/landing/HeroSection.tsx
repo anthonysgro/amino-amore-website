@@ -60,10 +60,10 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
         className={cn(
           // Mobile: in-flow, centered, fills width
           "relative flex items-center justify-center",
-          "w-full max-w-[600px] aspect-square mx-auto -mb-8",
+          "w-full max-w-[700px] aspect-square mx-auto -mb-8",
           // Desktop: absolute positioned like original
           "lg:absolute lg:top-1/2 lg:left-1/2 lg:-translate-x-[20%] lg:-translate-y-1/2",
-          "lg:w-[1100px] lg:max-w-none lg:h-[1100px] lg:mb-0 lg:mx-0",
+          "lg:w-[1250px] lg:max-w-none lg:h-[1250px] lg:mb-0 lg:mx-0",
           "lg:z-20"
         )}
         initial="hidden"
@@ -101,7 +101,14 @@ function HeroSection({ className, ...props }: HeroSectionProps) {
             className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl"
           >
             Love at the{" "}
-            <span className="text-primary whitespace-nowrap">molecular level</span>
+            <span 
+              className="text-primary whitespace-nowrap"
+              style={{ 
+                filter: "drop-shadow(0 0 5px rgba(244, 114, 182, 0.5))",
+              }}
+            >
+              molecular level
+            </span>
           </h1>
 
           <p className="text-lg text-muted-foreground sm:text-xl max-w-2xl mx-auto lg:mx-0">
