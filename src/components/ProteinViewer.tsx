@@ -52,6 +52,7 @@ interface ProteinViewerProps {
   className?: string
   colorMode?: ColorMode
   onColorModeChange?: (mode: ColorMode) => void
+  onViewerReady?: (getImageData: () => string | null) => void
 }
 
 export function ProteinViewer({
@@ -63,6 +64,7 @@ export function ProteinViewer({
   className,
   colorMode = 'spectrum',
   onColorModeChange,
+  onViewerReady,
 }: ProteinViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const viewerRef = useRef<GLViewer | null>(null)
@@ -300,6 +302,19 @@ export function ProteinViewer({
         viewerRef.current = viewer
         setViewerReady(true)
         setError(null)
+
+        // Call onViewerReady callback with a function to get image data
+        if (onViewerReady) {
+          // Small delay to ensure render is complete
+          setTimeout(() => {
+            onViewerReady(() => {
+              if (viewerRef.current) {
+                return viewerRef.current.pngURI()
+              }
+              return null
+            })
+          }, 500)
+        }
       } catch (err) {
         setError('Unable to initialize 3D viewer. WebGL may not be supported.')
         console.error('3Dmol initialization error:', err)
@@ -314,7 +329,7 @@ export function ProteinViewer({
         viewerRef.current = null
       }
     }
-  }, [pdbData, name1, name2, internalColorMode])
+  }, [pdbData, name1, name2, internalColorMode, onViewerReady])
 
   const toggleSpin = useCallback(() => {
     if (!viewerRef.current) return

@@ -13,6 +13,7 @@ import { Route as CreateRouteImport } from './routes/create'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FoldNamesRouteImport } from './routes/fold.$names'
+import { Route as ApiOgNamesRouteImport } from './routes/api.og.$names'
 
 const CreateRoute = CreateRouteImport.update({
   id: '/create',
@@ -34,18 +35,25 @@ const FoldNamesRoute = FoldNamesRouteImport.update({
   path: '/fold/$names',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiOgNamesRoute = ApiOgNamesRouteImport.update({
+  id: '/api/og/$names',
+  path: '/api/og/$names',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/create': typeof CreateRoute
   '/fold/$names': typeof FoldNamesRoute
+  '/api/og/$names': typeof ApiOgNamesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/create': typeof CreateRoute
   '/fold/$names': typeof FoldNamesRoute
+  '/api/og/$names': typeof ApiOgNamesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,20 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/create': typeof CreateRoute
   '/fold/$names': typeof FoldNamesRoute
+  '/api/og/$names': typeof ApiOgNamesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/create' | '/fold/$names'
+  fullPaths: '/' | '/about' | '/create' | '/fold/$names' | '/api/og/$names'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/create' | '/fold/$names'
-  id: '__root__' | '/' | '/about' | '/create' | '/fold/$names'
+  to: '/' | '/about' | '/create' | '/fold/$names' | '/api/og/$names'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/create'
+    | '/fold/$names'
+    | '/api/og/$names'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +82,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   CreateRoute: typeof CreateRoute
   FoldNamesRoute: typeof FoldNamesRoute
+  ApiOgNamesRoute: typeof ApiOgNamesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +115,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FoldNamesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/og/$names': {
+      id: '/api/og/$names'
+      path: '/api/og/$names'
+      fullPath: '/api/og/$names'
+      preLoaderRoute: typeof ApiOgNamesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +130,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   CreateRoute: CreateRoute,
   FoldNamesRoute: FoldNamesRoute,
+  ApiOgNamesRoute: ApiOgNamesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

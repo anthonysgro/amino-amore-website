@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { motion, useReducedMotion } from 'motion/react'
 import type { LinkerStrategy } from '@/utils/foldLogic'
@@ -10,6 +10,7 @@ import {
 } from '@/utils/foldLogic'
 import { getProteinPersonality, parsePdbStats } from '@/utils/pdbStats'
 import { useFoldProtein } from '@/hooks/useFoldProtein'
+import { useOgImageCapture } from '@/hooks/useOgImageCapture'
 import { ProteinViewer } from '@/components/ProteinViewer'
 import { StrategySelector } from '@/components/StrategySelector'
 import { Navigation } from '@/components/landing/Navigation'
@@ -30,6 +31,7 @@ export const Route = createFileRoute('/fold/$names')({
       n ? n.charAt(0).toUpperCase() + n.slice(1).toLowerCase() : ''
     const title = `${formatName(name1)} 💕 ${formatName(name2)} - Our Love Protein`
     const description = `Someone special created a unique molecular bond from your names! See your Love Protein at folded.love 🧬`
+    const ogImageUrl = `https://folded.love/api/og/${names}`
 
     return {
       meta: [
@@ -37,9 +39,13 @@ export const Route = createFileRoute('/fold/$names')({
         { name: 'description', content: description },
         { property: 'og:title', content: title },
         { property: 'og:description', content: description },
-        { property: 'og:image', content: 'https://folded.love/preview.png' },
+        { property: 'og:image', content: ogImageUrl },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
+        { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:title', content: title },
         { name: 'twitter:description', content: description },
+        { name: 'twitter:image', content: ogImageUrl },
       ],
       links: [
         { rel: 'canonical', href: `https://folded.love/fold/${names}` },
@@ -99,6 +105,18 @@ const staticVariants = {
 function FoldRoute() {
   const { name1, name2, error: sequenceError } = Route.useLoaderData()
   const shouldReduceMotion = useReducedMotion()
+  const { names } = Route.useParams()
+
+  // OG image capture hook
+  const { captureAndUpload } = useOgImageCapture({ names })
+
+  const handleViewerReady = useCallback(
+    (getImageData: () => string | null) => {
+      // Capture and upload OG image in the background
+      captureAndUpload(getImageData)
+    },
+    [captureAndUpload],
+  )
 
   const textVariants = shouldReduceMotion ? staticVariants : fadeInUp
   const contentVariants = shouldReduceMotion ? staticVariants : fadeIn
@@ -179,6 +197,7 @@ function FoldRoute() {
                 name2={name2}
                 sequence={sequence}
                 className="min-h-[450px] sm:min-h-[500px] md:min-h-[550px] lg:min-h-[600px]"
+                onViewerReady={handleViewerReady}
               />
             </motion.div>
 
