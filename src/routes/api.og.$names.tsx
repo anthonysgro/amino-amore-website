@@ -10,8 +10,8 @@ export const Route = createFileRoute('/api/og/$names')({
         const cloudName = process.env.CLOUDINARY_CLOUD_NAME
         if (cloudName) {
           const publicId = `og-images/${names.toLowerCase()}`
-          // Use Cloudinary transformations: zoom 1.2x, crop to 1200x630, focus on center
-          const cloudinaryUrl = `https://res.cloudinary.com/${cloudName}/image/upload/c_crop,w_1200,h_630,g_center,z_1.2/${publicId}.png`
+          // Scale up 1.4x then crop to 1200x630 centered (creates zoom effect)
+          const cloudinaryUrl = `https://res.cloudinary.com/${cloudName}/image/upload/c_scale,w_1680/c_crop,w_1200,h_630,g_center/${publicId}.png`
 
           try {
             // Fetch and proxy the image directly (crawlers don't always follow redirects)
