@@ -37,6 +37,7 @@ export const Route = createFileRoute('/fold/$names')({
       meta: [
         { title },
         { name: 'description', content: description },
+        { property: 'og:url', content: `https://folded.love/fold/${names}` },
         { property: 'og:title', content: title },
         { property: 'og:description', content: description },
         { property: 'og:image', content: ogImageUrl },
