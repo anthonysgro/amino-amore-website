@@ -82,6 +82,10 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     ],
     links: [
       {
+        rel: 'canonical',
+        href: 'https://folded.love',
+      },
+      {
         rel: 'icon',
         type: 'image/svg+xml',
         href: '/favicon.svg',
@@ -126,11 +130,31 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     })();
   `
 
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'FoldedHearts',
+    url: 'https://folded.love',
+    description:
+      'Transform your names into a unique 3D protein structure. Real science, wrapped in a love letter.',
+    applicationCategory: 'Entertainment',
+    operatingSystem: 'Any',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
       </head>
       <body>
         {children}

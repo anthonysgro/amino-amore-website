@@ -41,6 +41,9 @@ export const Route = createFileRoute('/fold/$names')({
         { name: 'twitter:title', content: title },
         { name: 'twitter:description', content: description },
       ],
+      links: [
+        { rel: 'canonical', href: `https://folded.love/fold/${names}` },
+      ],
     }
   },
   loader: async ({ context, params }) => {
