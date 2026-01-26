@@ -73,17 +73,19 @@ function CreatePage() {
     e.preventDefault()
 
     const name1Parts = [
-      partner1.firstName.trim(),
-      partner1.middleName.trim(),
-      partner1.lastName.trim(),
+      partner1.firstName,
+      partner1.middleName,
+      partner1.lastName,
     ]
+      .map((s) => s.replace(/\s+/g, ''))
       .filter(Boolean)
       .join('')
     const name2Parts = [
-      partner2.firstName.trim(),
-      partner2.middleName.trim(),
-      partner2.lastName.trim(),
+      partner2.firstName,
+      partner2.middleName,
+      partner2.lastName,
     ]
+      .map((s) => s.replace(/\s+/g, ''))
       .filter(Boolean)
       .join('')
 
