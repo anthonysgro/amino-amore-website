@@ -94,11 +94,66 @@ const DEFAULT_FILLER = 'AAA'
 const MAX_SEQUENCE_LENGTH = 400
 
 /**
+ * Cyrillic to Latin transliteration map.
+ * Covers Russian, Ukrainian, Bulgarian, etc.
+ */
+const CYRILLIC_TO_LATIN: Record<string, string> = {
+  А: 'A', Б: 'B', В: 'V', Г: 'G', Д: 'D', Е: 'E', Ё: 'E', Ж: 'ZH',
+  З: 'Z', И: 'I', Й: 'Y', К: 'K', Л: 'L', М: 'M', Н: 'N', О: 'O',
+  П: 'P', Р: 'R', С: 'S', Т: 'T', У: 'U', Ф: 'F', Х: 'KH', Ц: 'TS',
+  Ч: 'CH', Ш: 'SH', Щ: 'SHCH', Ъ: '', Ы: 'Y', Ь: '', Э: 'E', Ю: 'YU',
+  Я: 'YA',
+  // Ukrainian specific
+  І: 'I', Ї: 'YI', Є: 'YE', Ґ: 'G',
+  // Lowercase
+  а: 'a', б: 'b', в: 'v', г: 'g', д: 'd', е: 'e', ё: 'e', ж: 'zh',
+  з: 'z', и: 'i', й: 'y', к: 'k', л: 'l', м: 'm', н: 'n', о: 'o',
+  п: 'p', р: 'r', с: 's', т: 't', у: 'u', ф: 'f', х: 'kh', ц: 'ts',
+  ч: 'ch', ш: 'sh', щ: 'shch', ъ: '', ы: 'y', ь: '', э: 'e', ю: 'yu',
+  я: 'ya',
+  і: 'i', ї: 'yi', є: 'ye', ґ: 'g',
+}
+
+/**
+ * Greek to Latin transliteration map.
+ */
+const GREEK_TO_LATIN: Record<string, string> = {
+  Α: 'A', Β: 'B', Γ: 'G', Δ: 'D', Ε: 'E', Ζ: 'Z', Η: 'I', Θ: 'TH',
+  Ι: 'I', Κ: 'K', Λ: 'L', Μ: 'M', Ν: 'N', Ξ: 'X', Ο: 'O', Π: 'P',
+  Ρ: 'R', Σ: 'S', Τ: 'T', Υ: 'Y', Φ: 'F', Χ: 'CH', Ψ: 'PS', Ω: 'O',
+  α: 'a', β: 'b', γ: 'g', δ: 'd', ε: 'e', ζ: 'z', η: 'i', θ: 'th',
+  ι: 'i', κ: 'k', λ: 'l', μ: 'm', ν: 'n', ξ: 'x', ο: 'o', π: 'p',
+  ρ: 'r', σ: 's', ς: 's', τ: 't', υ: 'y', φ: 'f', χ: 'ch', ψ: 'ps', ω: 'o',
+}
+
+/**
+ * Transliterates non-Latin scripts to Latin characters.
+ * Supports Cyrillic and Greek.
+ */
+function transliterate(str: string): string {
+  return str
+    .split('')
+    .map((char) => CYRILLIC_TO_LATIN[char] ?? GREEK_TO_LATIN[char] ?? char)
+    .join('')
+}
+
+/**
+ * Normalizes a string by removing diacritics/accents and converting to ASCII.
+ * Examples: é→e, ñ→n, ü→u, ø→o, ç→c
+ */
+function normalizeToAscii(str: string): string {
+  return str
+    .normalize('NFD') // Decompose accented characters (é → e + ́)
+    .replace(/[\u0300-\u036f]/g, '') // Remove combining diacritical marks
+}
+
+/**
  * Converts a single name to an amino acid sequence.
- * Only alphabetic characters are converted; others are ignored.
+ * Handles accented characters and non-Latin scripts (Cyrillic, Greek).
+ * Non-alphabetic characters are ignored.
  */
 function nameToAminoSequence(name: string): string {
-  return name
+  return normalizeToAscii(transliterate(name))
     .toUpperCase()
     .split('')
     .filter((char) => /[A-Z]/.test(char))
