@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-router'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
@@ -160,6 +161,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         {children}
         <Scripts />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
