@@ -82,10 +82,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       },
     ],
     links: [
-      {
-        rel: 'canonical',
-        href: 'https://folded.love',
-      },
+      // Note: canonical is set per-route to avoid conflicts
       {
         rel: 'icon',
         type: 'image/svg+xml',

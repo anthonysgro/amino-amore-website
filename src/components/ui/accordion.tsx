@@ -1,9 +1,8 @@
 import * as React from 'react'
 import { Accordion as AccordionPrimitive } from 'radix-ui'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { ArrowDown01Icon, ArrowUp01Icon } from '@hugeicons/core-free-icons'
 
 function Accordion({
   className,
@@ -44,23 +43,21 @@ function AccordionTrigger({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          '**:data-[slot=accordion-trigger-icon]:text-muted-foreground gap-6 p-4 text-left text-sm font-medium hover:underline **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 group/accordion-trigger relative flex flex-1 items-start justify-between border border-transparent transition-all outline-none disabled:pointer-events-none disabled:opacity-50',
+          'cursor-pointer **:data-[slot=accordion-trigger-icon]:text-muted-foreground gap-6 p-4 text-left text-sm font-medium hover:underline **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 group/accordion-trigger relative flex flex-1 items-start justify-between border border-transparent transition-all outline-none disabled:pointer-events-none disabled:opacity-50',
           className,
         )}
         {...props}
       >
         {children}
-        <HugeiconsIcon
-          icon={ArrowDown01Icon}
-          strokeWidth={2}
+        <ChevronDown
+          className="size-4 pointer-events-none cursor-pointer shrink-0 group-aria-expanded/accordion-trigger:hidden"
           data-slot="accordion-trigger-icon"
-          className="pointer-events-none shrink-0 group-aria-expanded/accordion-trigger:hidden"
+          strokeWidth={2}
         />
-        <HugeiconsIcon
-          icon={ArrowUp01Icon}
-          strokeWidth={2}
+        <ChevronUp
+          className="size-4 pointer-events-none cursor-pointer hidden shrink-0 group-aria-expanded/accordion-trigger:inline"
           data-slot="accordion-trigger-icon"
-          className="pointer-events-none hidden shrink-0 group-aria-expanded/accordion-trigger:inline"
+          strokeWidth={2}
         />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>

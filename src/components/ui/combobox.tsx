@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { Combobox as ComboboxPrimitive } from '@base-ui/react'
+import { Check, ChevronDown, X } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -11,12 +12,6 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from '@/components/ui/input-group'
-import { HugeiconsIcon } from '@hugeicons/react'
-import {
-  ArrowDown01Icon,
-  Cancel01Icon,
-  Tick02Icon,
-} from '@hugeicons/core-free-icons'
 
 const Combobox = ComboboxPrimitive.Root
 
@@ -36,10 +31,9 @@ function ComboboxTrigger({
       {...props}
     >
       {children}
-      <HugeiconsIcon
-        icon={ArrowDown01Icon}
-        strokeWidth={2}
+      <ChevronDown
         className="text-muted-foreground size-4 pointer-events-none"
+        strokeWidth={2}
       />
     </ComboboxPrimitive.Trigger>
   )
@@ -53,11 +47,7 @@ function ComboboxClear({ className, ...props }: ComboboxPrimitive.Clear.Props) {
       className={cn(className)}
       {...props}
     >
-      <HugeiconsIcon
-        icon={Cancel01Icon}
-        strokeWidth={2}
-        className="pointer-events-none"
-      />
+      <X className="size-4 pointer-events-none" strokeWidth={2} />
     </ComboboxPrimitive.Clear>
   )
 }
@@ -169,11 +159,7 @@ function ComboboxItem({
           <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center" />
         }
       >
-        <HugeiconsIcon
-          icon={Tick02Icon}
-          strokeWidth={2}
-          className="pointer-events-none"
-        />
+        <Check className="size-4 pointer-events-none" strokeWidth={2} />
       </ComboboxPrimitive.ItemIndicator>
     </ComboboxPrimitive.Item>
   )
@@ -275,11 +261,7 @@ function ComboboxChip({
           className="-ml-1 opacity-50 hover:opacity-100"
           data-slot="combobox-chip-remove"
         >
-          <HugeiconsIcon
-            icon={Cancel01Icon}
-            strokeWidth={2}
-            className="pointer-events-none"
-          />
+          <X className="size-4 pointer-events-none" strokeWidth={2} />
         </ComboboxPrimitive.ChipRemove>
       )}
     </ComboboxPrimitive.Chip>

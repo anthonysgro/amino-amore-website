@@ -23,6 +23,9 @@ import {
 } from '@/utils/foldLogic'
 
 export const Route = createFileRoute('/create')({
+  head: () => ({
+    links: [{ rel: 'canonical', href: 'https://folded.love/create' }],
+  }),
   component: CreatePage,
 })
 

@@ -1052,7 +1052,7 @@ function SequenceBar({
               <TooltipTrigger asChild>
                 <button
                   className={cn(
-                    'w-5 h-6 text-[10px] font-mono font-medium rounded-sm transition-all duration-150',
+                    'min-w-[24px] min-h-[24px] w-6 h-6 text-[10px] font-mono font-medium rounded-sm transition-all duration-150',
                     bgColor,
                     'text-white/90',
                     'hover:scale-110 hover:z-10',
@@ -1062,6 +1062,7 @@ function SequenceBar({
                   )}
                   onMouseEnter={() => onResidueHover(index)}
                   onMouseLeave={() => onResidueHover(null)}
+                  aria-label={`${AMINO_ACID_NAMES[residue] || residue} at position ${index + 1}`}
                 >
                   {residue}
                 </button>
@@ -1139,12 +1140,20 @@ function FloatingToolbar({
   )
 
   // Divider: vertical on mobile (horizontal layout), horizontal on desktop (vertical layout)
-  const dividerStyles = 'bg-border/50 w-px h-6 sm:w-auto sm:h-px sm:my-1'
+  const dividerStyles =
+    'bg-border/50 w-px h-6 sm:w-auto sm:h-px sm:my-1' as const
+
+  const spinLabel = isSpinning ? 'Stop rotation' : 'Start rotation'
+  const colorLabel =
+    colorMode === 'spectrum' ? 'Show pLDDT colors' : 'Show spectrum colors'
+  const fullscreenLabel = isFullscreen ? 'Exit fullscreen' : 'Fullscreen'
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
+      role="toolbar"
+      aria-label="Protein viewer controls"
       className={cn(
         'absolute',
         // Mobile: horizontal bar at bottom center
@@ -1156,41 +1165,50 @@ function FloatingToolbar({
     >
       <Tooltip>
         <TooltipTrigger asChild>
-          <button onClick={onToggleSpin} className={buttonStyles}>
+          <button
+            onClick={onToggleSpin}
+            className={buttonStyles}
+            aria-label={spinLabel}
+            aria-pressed={isSpinning}
+          >
             {isSpinning ? <PauseIcon /> : <PlayIcon />}
           </button>
         </TooltipTrigger>
         <TooltipContent side="top" className="sm:hidden">
-          {isSpinning ? 'Stop rotation' : 'Start rotation'}
+          {spinLabel}
         </TooltipContent>
         <TooltipContent side="left" className="hidden sm:block">
-          {isSpinning ? 'Stop rotation' : 'Start rotation'}
+          {spinLabel}
         </TooltipContent>
       </Tooltip>
 
       <Tooltip>
         <TooltipTrigger asChild>
-          <button onClick={onColorModeToggle} className={buttonStyles}>
+          <button
+            onClick={onColorModeToggle}
+            className={buttonStyles}
+            aria-label={colorLabel}
+          >
             <PaletteIcon />
           </button>
         </TooltipTrigger>
         <TooltipContent side="top" className="sm:hidden">
-          {colorMode === 'spectrum'
-            ? 'Show pLDDT colors'
-            : 'Show spectrum colors'}
+          {colorLabel}
         </TooltipContent>
         <TooltipContent side="left" className="hidden sm:block">
-          {colorMode === 'spectrum'
-            ? 'Show pLDDT colors'
-            : 'Show spectrum colors'}
+          {colorLabel}
         </TooltipContent>
       </Tooltip>
 
-      <div className={dividerStyles} />
+      <div className={dividerStyles} role="separator" aria-hidden="true" />
 
       <Tooltip>
         <TooltipTrigger asChild>
-          <button onClick={onScreenshot} className={buttonStyles}>
+          <button
+            onClick={onScreenshot}
+            className={buttonStyles}
+            aria-label="Save image"
+          >
             <CameraIcon />
           </button>
         </TooltipTrigger>
@@ -1204,7 +1222,11 @@ function FloatingToolbar({
 
       <Tooltip>
         <TooltipTrigger asChild>
-          <button onClick={onDownloadPdb} className={buttonStyles}>
+          <button
+            onClick={onDownloadPdb}
+            className={buttonStyles}
+            aria-label="Download PDB file"
+          >
             <DownloadIcon />
           </button>
         </TooltipTrigger>
@@ -1216,19 +1238,24 @@ function FloatingToolbar({
         </TooltipContent>
       </Tooltip>
 
-      <div className={dividerStyles} />
+      <div className={dividerStyles} role="separator" aria-hidden="true" />
 
       <Tooltip>
         <TooltipTrigger asChild>
-          <button onClick={onToggleFullscreen} className={buttonStyles}>
+          <button
+            onClick={onToggleFullscreen}
+            className={buttonStyles}
+            aria-label={fullscreenLabel}
+            aria-pressed={isFullscreen}
+          >
             {isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
           </button>
         </TooltipTrigger>
         <TooltipContent side="top" className="sm:hidden">
-          {isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+          {fullscreenLabel}
         </TooltipContent>
         <TooltipContent side="left" className="hidden sm:block">
-          {isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+          {fullscreenLabel}
         </TooltipContent>
       </Tooltip>
     </motion.div>

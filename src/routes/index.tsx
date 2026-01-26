@@ -6,7 +6,12 @@ import { HeroSection } from '@/components/landing/HeroSection'
 import { HowItWorksSection } from '@/components/landing/HowItWorksSection'
 import { Navigation } from '@/components/landing/Navigation'
 
-export const Route = createFileRoute('/')({ component: App })
+export const Route = createFileRoute('/')({
+  head: () => ({
+    links: [{ rel: 'canonical', href: 'https://folded.love/' }],
+  }),
+  component: App,
+})
 
 function App() {
   return (

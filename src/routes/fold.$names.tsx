@@ -517,9 +517,9 @@ function ProteinStatsCard({
         "{personality}"
       </p>
 
-      <h3 className="mb-3 text-sm font-medium text-muted-foreground uppercase tracking-wider">
+      <h2 className="mb-3 text-sm font-medium text-muted-foreground uppercase tracking-wider">
         Structure Data
-      </h3>
+      </h2>
 
       <table className="w-full text-sm">
         <tbody className="divide-y divide-border/50">

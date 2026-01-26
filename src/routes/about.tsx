@@ -7,6 +7,9 @@ import { Section } from '@/components/landing/Section'
 import { Footer } from '@/components/landing/Footer'
 
 export const Route = createFileRoute('/about')({
+  head: () => ({
+    links: [{ rel: 'canonical', href: 'https://folded.love/about' }],
+  }),
   component: AboutPage,
 })
 
