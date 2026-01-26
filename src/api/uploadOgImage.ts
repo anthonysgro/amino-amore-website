@@ -36,7 +36,9 @@ export const uploadOgImageFn = createServerFn({ method: 'POST' })
     try {
       // Generate signature for upload
       const timestamp = Math.floor(Date.now() / 1000)
-      const publicId = `og-images/${names.toLowerCase()}`
+      // Sanitize names: trim whitespace and replace any remaining spaces with hyphens
+      const sanitizedNames = names.trim().toLowerCase().replace(/\s+/g, '-')
+      const publicId = `og-images/${sanitizedNames}`
 
       // Create signature string
       const signatureString = `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`
@@ -96,7 +98,8 @@ export const checkOgImageFn = createServerFn({ method: 'GET' })
     }
 
     // Construct the Cloudinary URL for the image
-    const publicId = `og-images/${names.toLowerCase()}`
+    const sanitizedNames = names.trim().toLowerCase().replace(/\s+/g, '-')
+    const publicId = `og-images/${sanitizedNames}`
     const url = `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}.png`
 
     try {
