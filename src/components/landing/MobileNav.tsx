@@ -169,19 +169,9 @@ function MobileNav({ items, className }: MobileNavProps) {
 
           {/* CTA Button */}
           <div className="mt-auto pt-6 flex flex-col gap-3">
-            <a
-              href="https://www.buymeacoffee.com/sgro"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={handleClose}
-              className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-md border border-border text-foreground font-medium transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            >
-              <Coffee className="h-5 w-5" />
-              Buy Me a Coffee
-            </a>
             <Button
               asChild
-              className="w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="w-full py-6 text-base font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               size="lg"
               onClick={handleClose}
             >
@@ -193,6 +183,16 @@ function MobileNav({ items, className }: MobileNavProps) {
                 Fold Our Names
               </Link>
             </Button>
+            <a
+              href="https://www.buymeacoffee.com/sgro"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleClose}
+              className="border rounded-2xl flex items-center justify-center gap-2 w-full px-3 py-2 text-sm text-muted-foreground font-medium transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <Coffee className="h-4 w-4" />
+              Buy Me a Coffee
+            </a>
           </div>
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
