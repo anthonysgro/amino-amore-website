@@ -3,7 +3,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import { FAQSection } from '@/components/landing/FAQSection'
 import { Footer } from '@/components/landing/Footer'
 import { HeroSection } from '@/components/landing/HeroSection'
-import { HowItWorksSection } from '@/components/landing/HowItWorksSection'
+import { FeaturesSection } from '@/components/landing/HowItWorksSection'
+import { ScienceSection } from '@/components/landing/ScienceSection'
 import { Navigation } from '@/components/landing/Navigation'
 
 export const Route = createFileRoute('/')({
@@ -19,7 +20,8 @@ function App() {
       <Navigation />
       <main>
         <HeroSection />
-        <HowItWorksSection />
+        <ScienceSection />
+        <FeaturesSection />
         <FAQSection />
       </main>
       <Footer />

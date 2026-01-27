@@ -104,7 +104,7 @@ interface HowItWorksSectionProps extends React.ComponentProps<typeof Section> {
   className?: string
 }
 
-export function HowItWorksSection({
+export function FeaturesSection({
   className,
   ...props
 }: HowItWorksSectionProps) {
@@ -113,7 +113,6 @@ export function HowItWorksSection({
 
   return (
     <Section
-      id="how-it-works"
       className={cn('pt-32 pb-32 lg:pt-48 lg:pb-48', className)}
       {...props}
     >
@@ -127,7 +126,7 @@ export function HowItWorksSection({
         })}
       >
         <h2 className="text-3xl font-bold text-foreground sm:text-4xl">
-          Love, Visualized
+          Why You'll Love It
         </h2>
         <p className="mt-4 text-lg text-muted-foreground">
           No two proteins are the same. Yours is literally one of a kind.
