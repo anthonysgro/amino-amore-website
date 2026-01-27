@@ -16,10 +16,55 @@ interface MobileNavProps {
   className?: string
 }
 
+/**
+ * Handles navigation for hash links.
+ * If on homepage, scrolls smoothly. Otherwise, navigates to homepage with hash.
+ */
+function handleNavClick(
+  e: React.MouseEvent<HTMLAnchorElement>,
+  href: string,
+  onClose: () => void,
+) {
+  // Always close the menu
+  onClose()
+
+  // Only handle hash links specially
+  if (!href.startsWith('#')) return
+
+  // Check if we're on the home page
+  const isHomePage = window.location.pathname === '/'
+
+  if (!isHomePage) {
+    // Navigate to home page with the hash
+    e.preventDefault()
+    if (href === '#') {
+      window.location.href = '/'
+    } else {
+      window.location.href = '/' + href
+    }
+    return
+  }
+
+  // On homepage - do smooth scroll
+  e.preventDefault()
+
+  if (href === '#') {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
+
+  const targetId = href.slice(1)
+  const targetElement = document.getElementById(targetId)
+
+  if (targetElement) {
+    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+
 function MobileNav({ items, className }: MobileNavProps) {
   const [open, setOpen] = React.useState(false)
 
-  const handleLinkClick = () => {
+  const handleClose = () => {
     setOpen(false)
   }
 
@@ -112,7 +157,7 @@ function MobileNav({ items, className }: MobileNavProps) {
                 <li key={item.label}>
                   <a
                     href={item.href}
-                    onClick={handleLinkClick}
+                    onClick={(e) => handleNavClick(e, item.href, handleClose)}
                     className="block text-lg font-medium text-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:rounded-md rounded-md px-2 py-2"
                   >
                     {item.label}
@@ -128,7 +173,7 @@ function MobileNav({ items, className }: MobileNavProps) {
               href="https://www.buymeacoffee.com/sgro"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={handleLinkClick}
+              onClick={handleClose}
               className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-md border border-border text-foreground font-medium transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               <Coffee className="h-5 w-5" />
@@ -138,7 +183,7 @@ function MobileNav({ items, className }: MobileNavProps) {
               asChild
               className="w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               size="lg"
-              onClick={handleLinkClick}
+              onClick={handleClose}
             >
               <Link
                 to="/create"
