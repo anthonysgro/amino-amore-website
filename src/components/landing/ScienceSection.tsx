@@ -1,8 +1,8 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { ArrowRight } from 'lucide-react'
 
-import { cn } from '@/lib/utils'
 import { Section } from './Section'
+import { cn } from '@/lib/utils'
 
 interface Step {
   number: string

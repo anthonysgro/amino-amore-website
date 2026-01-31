@@ -1,10 +1,10 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { Clock, Fingerprint, Heart, Share2, Sparkles, Zap } from 'lucide-react'
 
-import { cn } from '@/lib/utils'
-import { BentoGrid, BentoGridItem } from '@/components/ui/bento-grid'
 import { FeatureCard } from './FeatureCard'
 import { Section } from './Section'
+import { cn } from '@/lib/utils'
+import { BentoGrid, BentoGridItem } from '@/components/ui/bento-grid'
 
 interface Feature {
   id: string
@@ -15,7 +15,7 @@ interface Feature {
   colSpan?: 1 | 2
 }
 
-const features: Feature[] = [
+const features: Array<Feature> = [
   {
     id: 'names',
     icon: <Heart className="h-5 w-5" />,
